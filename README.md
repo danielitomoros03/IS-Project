@@ -1,3 +1,3 @@
-# PROYECTO DE LA ASIGNATURA INGENIERÍA DEL SOFTWARE
+## PROYECTO DE LA ASIGNATURA INGENIERÍA DEL SOFTWARE
 
-Repositorio para el proyecto del Comedor de la UCV de la asignatura Ingeniería del Software.
+## Repositorio para el proyecto del Comedor de la UCV de la asignatura Ingeniería del Software.
