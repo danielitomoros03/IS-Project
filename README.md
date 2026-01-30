@@ -1,2 +1,3 @@
-# IS-PRACTICAS
-Repositorio para las prácticas de la asignatura Ingeniería del Software UCV
+# PROYECTO DE LA ASIGNATURA INGENIERÍA DEL SOFTWARE
+
+Repositorio para el proyecto del Comedor de la UCV de la asignatura Ingeniería del Software.
