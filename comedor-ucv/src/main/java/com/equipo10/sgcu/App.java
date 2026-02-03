@@ -1,7 +1,7 @@
 package com.equipo10.sgcu;
 
 /**
- * Hello world!
+ hola daniel
  *
  */
 public class App 
