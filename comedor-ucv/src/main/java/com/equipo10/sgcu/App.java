@@ -2,6 +2,7 @@ package com.equipo10.sgcu;
 
 /**
  hola daniel
+<<<<<<< HEAD
 Tenían su movie, pero se le' apagó
 No muestro los truco', como un mago
 Quedaron pintado' después del amago
@@ -58,6 +59,9 @@ Ella no fuma, pero siempre me lo prende
 Varios dólare', no te entran en un cheque
 Sangre pura, los jefe' del sudoeste
 Tamos vendiendo, pero acá nadie se vende
+=======
+ *
+>>>>>>> 8c5a5b0e5ee3d33ca2f3e37329adf45a7d38ba83
  */
 public class App 
 {
