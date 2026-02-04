@@ -2,6 +2,7 @@ package com.equipo10.sgcu;
 
 /**
  hola daniel
+
  */
 public class App 
 {
