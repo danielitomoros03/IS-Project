@@ -6,7 +6,7 @@ public abstract class Usuario {
     protected String password;
     protected String nombre;
 
-    public Usuario(String email, String password){
+    public Usuario(String email, String password, String nombre){
         this.email = email;
         this.password = password;
         this.nombre = nombre;

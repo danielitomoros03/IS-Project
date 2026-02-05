@@ -169,5 +169,10 @@ public class Login extends JFrame {
         });
     } */
 
-    
+    /*//AGREGADO POR DONANDER - PARA QUE FUNCIONE CON EL CONTROLADOR , TA RARO YA VA   
+    public abstract String getRol();
+    public String getNombre() { return nombre; }
+    public String getEmail() { return email; }  
+    public String getPassword() { return password; }
+    */
 }
