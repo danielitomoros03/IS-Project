@@ -123,56 +123,27 @@ public class Login extends JFrame {
         lblError.setVisible(true);
     }
 
+    //Metodos Getters
 
+    public JTextField getEmail(){ return txtEmail;}
+    
+    public JPasswordField getTxtPassword() { return txtPassword; }
 
+    public JButton getBtnLogin() { return btnLogin; }
 
+    public JLabel getLblError() { return lblError; }
 
+    public JPanel getCard() { return card; }
 
+    //Setters
+    public void setTxtPassword(String texto) { this.txtPassword.setText(texto); }
 
+    public void setEmail(String texto){ this.txtEmail.setText(texto);}
 
+    public void setBtnLoginEnabled(boolean estado) { this.btnLogin.setEnabled(estado); }
 
-    private void handleLogin(ActionEvent e) {
-        String email = txtEmail.getText();
-        String password = new String(txtPassword.getPassword());
+    public void setLblError(String texto){ this.lblError.setText(texto);}
 
-        if (email.isEmpty() || password.isEmpty()) {
-            showError("Por favor completa todos los campos");
-            return;
-        }
-
-        // Simulación de carga (isLoading)
-        btnLogin.setEnabled(false);
-        btnLogin.setText("Iniciando sesión...");
-        lblError.setVisible(false);
-
-        Timer timer = new Timer(1000, (evt) -> {
-            String role = email.contains("admin") ? "Administrador" : "Estudiante";
-            JOptionPane.showMessageDialog(this, 
-                "Login Exitoso\nEmail: " + email + "\nRol: " + role);
-            
-            btnLogin.setEnabled(true);
-            btnLogin.setText("Iniciar Sesión");
-        });
-        timer.setRepeats(false);
-        timer.start();
-    }
-
-    private void showError(String msg) {
-        lblError.setText(msg);
-        lblError.setVisible(true);
-        revalidate();
-    }
-
-    /*public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Login().setVisible(true);
-        });
-    } */
-
-    /*//AGREGADO POR DONANDER - PARA QUE FUNCIONE CON EL CONTROLADOR , TA RARO YA VA   
-    public abstract String getRol();
-    public String getNombre() { return nombre; }
-    public String getEmail() { return email; }  
-    public String getPassword() { return password; }
-    */
+    public void setCardVisible(boolean visible) { this.card.setVisible(visible);}
+    
 }
