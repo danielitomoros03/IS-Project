@@ -1,12 +1,12 @@
-package PracticaJava.Inge.Controlador;
+package IS-Project.comedor-ucv.src.main.Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 import javax.swing.*;
 
 import PracticaJava.Inge.Modelo.LoginModel;
 import PracticaJava.Inge.Vista.Login;
+import PracticaJava.Inge.Vista.*;
 
 public class LoginControl implements ActionListener{
 
@@ -38,21 +38,18 @@ public class LoginControl implements ActionListener{
             vista.getBtnLogin().setEnabled(false);            //Desactivar botón mientras carga
             vista.getBtnLogin().setText("Validando...");
 
-
             String role = modelo.autenticar(email, pass);  //Llamar al modelo para autenticar
 
-            // --- AQUÍ CONECTAMOS LA OTRA INTERFAZ ---
-                // Abrir la siguiente ventana según el rol
-                //---CODIGO SEGUN ROL------------------
-                // MenuPrincipal menu = new MenuPrincipal(role);
-                // menu.setVisible(true);
-                // vista.dispose(); // Cerrar login
-        
-            // 1. Ocultar o cerrar la ventana de Login
-            //vista.dispose();
+            //Esta instancia hace que al presionnar "Iniciar Sesion", cambie la vista
+            //BienvenidoVista menu = new BienvenidoVista(email, role); //Se debe colocar la variable en vez de "Donander", esto es solo de prueba
+            //menu.setVisible(true);
+            // ABRE EL CONTROLADOR PRINCIPAL (No la vista directamente)
+            new BienvenidoControl(email, role);
+            vista.dispose();
+
 
             //Esto abre una ventana, se debe quitar al abrir la otra vista
-            JOptionPane.showMessageDialog(vista, "¡Bienvenido! " + role); //Exito
+            //JOptionPane.showMessageDialog(vista, "¡Bienvenido! " + role); //Exito
 
 
         } catch (Exception ex){
@@ -114,6 +111,5 @@ public class LoginControl implements ActionListener{
         } else if (e.getSource() == vista.getBtnSalir()) {
             System.exit(0);
         }
-} */
+    } */
 }
-
