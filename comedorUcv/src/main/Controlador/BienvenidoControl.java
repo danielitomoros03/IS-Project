@@ -1,8 +1,8 @@
-package main.Controlador;
+package comedorUcv.src.main.Controlador;
 
 //import main.Vista.Login;
-import main.Vista.BienvenidoVista;
-import main.Controlador.LoginControl;
+import comedorUcv.src.main.Vista.BienvenidoVista;
+import comedorUcv.src.main.Controlador.LoginControl;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

@@ -1,9 +1,10 @@
-package main;
+package comedorUcv.src.main;
+import comedorUcv.src.main.Controlador.LoginControl;
 
 import javax.swing.SwingUtilities;
 
-import main.Controlador.LoginControl; 
-import main.Vista.BienvenidoVista;
+import comedorUcv.src.main.Controlador.LoginControl; 
+
 
 
 

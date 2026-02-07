@@ -1,4 +1,4 @@
-package main.Modelo;
+package comedorUcv.src.main.Modelo;
 
 
 public class LoginModel {

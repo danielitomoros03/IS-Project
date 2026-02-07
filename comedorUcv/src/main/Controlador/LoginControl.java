@@ -1,11 +1,11 @@
-package main.Controlador;
+package comedorUcv.src.main.Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import main.Vista.Login;
-import main.Vista.BienvenidoVista;
-import main.Modelo.LoginModel;
+import comedorUcv.src.main.Vista.Login;
+import comedorUcv.src.main.Vista.BienvenidoVista;
+import comedorUcv.src.main.Modelo.LoginModel;
 
 
 public class LoginControl implements ActionListener{

@@ -1,10 +1,10 @@
-package main.Modelo;
+package comedorUcv.src.main.Modelo;
 
 public class Estudiante extends Usuario{
     //Demas atributos propios de estudiante
     
     public Estudiante(String email, String password, String nombre){
-        super(email, password); 
+        super(email, password, nombre); 
     }
 
     @Override

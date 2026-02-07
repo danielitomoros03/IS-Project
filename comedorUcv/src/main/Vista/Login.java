@@ -1,4 +1,4 @@
-package main.Vista;
+package comedorUcv.src.main.Vista;
 
 
 import javax.swing.*;
