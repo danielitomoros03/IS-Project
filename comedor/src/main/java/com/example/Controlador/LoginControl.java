@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-import com.example.Vista.*;
+import com.example.Vista.Login;
 import com.example.Modelo.*;
 
 
@@ -16,7 +16,8 @@ public class LoginControl implements ActionListener{
 
     public LoginControl(){
         
-        this.vista = new Login();                   //Inicializamos la vista y el modelo(instanciado)
+        this.vista = new Login(); 
+        this.vista.setSize(1200, 750);                  //Inicializamos la vista y el modelo(instanciado)
         this.modelo = new LoginModel();        
 
         this.vista.addLoginListener(this);
@@ -98,6 +99,8 @@ public class LoginControl implements ActionListener{
             handleLogin();
         }
     }
+
+    
 
     /* Herramienta misteriosa que usaremos mas tarde
     @Override

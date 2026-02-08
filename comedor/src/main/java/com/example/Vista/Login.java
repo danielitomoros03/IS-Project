@@ -10,7 +10,7 @@ public class Login extends JFrame {
 
     private JTextField txtEmail;
     private JPasswordField txtPassword;
-    private JButton btnLogin;
+    private JButton btnLogin, btnRegistrar;
     private JLabel lblError;
     private JPanel card;
 
@@ -18,11 +18,15 @@ public class Login extends JFrame {
         // Configuración básica de la ventana
         setTitle("Sistema de Comedor - UCV");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(450, 600);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //setSize(1200, 750);
+        //setMinimumSize(new Dimension(1200, 750)); 
+        setResizable(false);
         setLocationRelativeTo(null);
         
-        // Contenedor principal con fondo degradado (simulado con color sólido)
+        // Contenedor principal 
         JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setPreferredSize(new Dimension(1200, 750));
         mainPanel.setBackground(new Color(245, 247, 250));
         setContentPane(mainPanel);
 
@@ -62,7 +66,8 @@ public class Login extends JFrame {
 
         JPanel form = new JPanel(new GridLayout(4, 1, 10, 10));
         form.setBackground(Color.WHITE);
-        form.setMaximumSize(new Dimension(350, 250));
+        form.setSize(500, 750);
+        form.setMaximumSize(new Dimension(1200, 0));
 
         txtEmail = new JTextField();
         txtEmail.setBorder(BorderFactory.createTitledBorder("Correo Electrónico"));
@@ -71,11 +76,18 @@ public class Login extends JFrame {
         txtPassword.setBorder(BorderFactory.createTitledBorder("Contraseña"));
 
         btnLogin = new JButton("Iniciar Sesión");
-        btnLogin.setBackground(new Color(34, 120, 64)); //new Color(37, 99, 235)
+        btnLogin.setBackground(new Color(34, 120, 64));
         btnLogin.setForeground(Color.WHITE);
         btnLogin.setFocusPainted(false);
         btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        btnRegistrar = new JButton("Resgistrarse");
+        btnRegistrar.setBackground(new Color(34, 120, 64));
+        btnRegistrar.setForeground(Color.WHITE);
+        btnRegistrar.setFocusPainted(false);
+        btnRegistrar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnRegistrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // --- CREDENCIALES DE PRUEBA ---
         JPanel infoBox = new JPanel();
@@ -105,9 +117,11 @@ public class Login extends JFrame {
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(btnLogin);
         card.add(Box.createRigidArea(new Dimension(0, 20)));
+        card.add(btnRegistrar);
+        card.add(Box.createRigidArea(new Dimension(0, 20)));
         card.add(infoBox);
 
-        mainPanel.add(card);
+        mainPanel.add(card, new GridBagConstraints());
 
     }
 
@@ -129,11 +143,14 @@ public class Login extends JFrame {
 
     public JButton getBtnLogin() { return btnLogin; }
 
+    public JButton getBtnRegistrar() { return btnRegistrar; }
+
     public JLabel getLblError() { return lblError; }
 
     public JPanel getCard() { return card; }
 
-    //Setters
+    // Metodos Setters
+
     public void setTxtPassword(String texto) { this.txtPassword.setText(texto); }
 
     public void setEmail(String texto){ this.txtEmail.setText(texto);}

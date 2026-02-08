@@ -24,7 +24,7 @@ public class AdminVista extends JFrame {
     private JButton btnLogout;
 
     // Botones específicos para Administrador
-    private JButton btnConfigurarMenu, btnGenerarReporte, btnConsultarConsumo, btnGestionUsuarios, btnCargarCosto;
+    private JButton btnDashboard, btnReporte, btnGestionInsumo, btnGestionMenu, btnPerfil;
 
     public AdminVista(String usuario, String rol) {
         setTitle("Panel de Administración - UCV Comedor");
@@ -49,21 +49,21 @@ public class AdminVista extends JFrame {
         sidebar.add(Box.createRigidArea(new Dimension(0, 40)));
 
         // Inicialización de botones solicitados
-        btnConfigurarMenu = crearBotonMenu("Configurar Menú");
-        btnGenerarReporte = crearBotonMenu("Generar Reporte");
-        btnConsultarConsumo = crearBotonMenu("Historial de Consumo");
-        btnGestionUsuarios = crearBotonMenu("Gestión de Usuarios");
-        btnCargarCosto = crearBotonMenu("Cargar Costo");
+        btnDashboard = crearBotonMenu("Dashboard");
+        btnGestionMenu = crearBotonMenu("Gestión de Menús");
+        btnGestionInsumo = crearBotonMenu("Gestión de Insumos");
+        btnReporte = crearBotonMenu("Reportes");
+        btnPerfil = crearBotonMenu("Mi Perfil");
 
-        sidebar.add(btnConfigurarMenu);
+        sidebar.add(btnDashboard);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(btnGenerarReporte);
+        sidebar.add(btnGestionMenu);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(btnConsultarConsumo);
+        sidebar.add(btnGestionInsumo);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(btnGestionUsuarios);
+        sidebar.add(btnReporte);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(btnCargarCosto);
+        sidebar.add(btnPerfil);
 
         sidebar.add(Box.createVerticalGlue());
         JLabel version = new JLabel("Panel Administrativo v1.0");
@@ -101,42 +101,43 @@ public class AdminVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
 
         // Instanciamos las clases externas
+        DashAdminVista dashAdmin = new DashAdminVista();
         ConfigMenuPanel vistaConfig = new ConfigMenuPanel();
         ReportePanel vistaReporte = new ReportePanel();
-        // ... otras vistas
+        // Aqui las otras vistas
 
         // Las añadimos al contenedor principal
-        mainContainer.add(vistaConfig, "VISTA_CONFIG");
-        mainContainer.add(vistaReporte, "VISTA_REPORTE");
+        mainContainer.add(dashAdmin, "DASH_VISTA");
+        mainContainer.add(vistaConfig, "MENU_VISTA");
+        mainContainer.add(vistaReporte, "REPORTE_VISTA");
 
         add(mainContainer, BorderLayout.CENTER);
     }
 
-    /*  private JPanel crearPanelPlaceholder(String texto) {
-        JPanel p = new JPanel(new GridBagLayout());
-        p.setBackground(COLOR_BG);
-        p.add(new JLabel(texto));
-        return p;
-    } */
-
     private JButton crearBotonMenu(String texto) {
         JButton btn = new JButton(texto);
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(240, 45));
-        btn.setBackground(COLOR_PRIMARY);
-        btn.setForeground(Color.WHITE);
+        btn.setMaximumSize(new Dimension(220, 40));
+        btn.setBackground(COLOR_GO); 
+        btn.setForeground(COLOR_TEXT_DARK);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 13));
+        btn.setFont(new Font("SansSerif", Font.PLAIN, 14));
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
+
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(45, 150, 85));
+                // Solo resaltamos si no está ya seleccionado (es decir, si es gris)
+                if (btn.getBackground().equals(COLOR_GO)) {
+                    btn.setBackground(new Color(200, 200, 200)); 
+                }
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(COLOR_PRIMARY);
+                // Si no es el verde activo, vuelve al gris original
+                if (!btn.getBackground().equals(COLOR_PRIMARY)) {
+                    btn.setBackground(COLOR_GO);
+                }
             }
         });
 
@@ -144,11 +145,28 @@ public class AdminVista extends JFrame {
         return btn;
     }
 
+    public void marcarBotonActivo(JButton botonActivo) {
+        // Lista de todos tus botones de la sidebar
+        JButton[] botones = {btnDashboard, btnGestionMenu, btnGestionInsumo, btnReporte, btnPerfil};
+
+        for (JButton b : botones) {
+            if (b == botonActivo) {
+                b.setBackground(COLOR_PRIMARY); // Verde UCV
+                b.setForeground(Color.WHITE);   // Texto blanco para resaltar
+            } else {
+                b.setBackground(COLOR_GO);      // Gris barra
+                b.setForeground(COLOR_TEXT_DARK); // Texto oscuro
+            }
+        }
+    }
+    
+
     // Getters para el Controlador
-    public JButton getBtnConfigurarMenu() { return btnConfigurarMenu; }
-    public JButton getBtnGenerarReporte() { return btnGenerarReporte; }
-    public JButton getBtnConsultarConsumo() { return btnConsultarConsumo; }
-    public JButton getBtnCargarCosto() { return btnCargarCosto; }
+    public JButton getBtnDasboard() { return btnDashboard; }
+    public JButton getBtnGestionMenu() { return btnGestionMenu; }
+    public JButton getBtnGestionInsumo() { return btnGestionInsumo; }
+    public JButton getBtnReporte() { return btnReporte; }
+    public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
 
     public void changeView(String nombreVista) {

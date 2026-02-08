@@ -7,6 +7,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 
+
 public class BienvenidoVista extends JFrame {
 
     // Para los colores de la interfaz
@@ -24,7 +25,8 @@ public class BienvenidoVista extends JFrame {
 
     public BienvenidoVista(String usuario, String rol) {
         setTitle("Sistema de Gestión - UCV");
-        setSize(1200, 750); // Un poco más ancho para que quepan las tarjetas
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //setSize(1200, 750); // Un poco más ancho para que quepan las tarjetas
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -114,187 +116,78 @@ public class BienvenidoVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        // Vista Dashboard
-        JPanel dashboardPanel = crearPanelDashboard();
+        // Instanciando paneles 
+        DashUserPanel dashPanel = new DashUserPanel();
         MenuPanel menuPanel = new MenuPanel();
-        // para las otras vistas, crear su interfaz en otro .java, para historialPanel en adelante
-        JPanel historialPanel = new JPanel();
-        historialPanel.setBackground(COLOR_BG);
-        historialPanel.add(new JLabel("Vista de Historial"));
+        HistorialPanel hist = new HistorialPanel();
+        JPanel regTurnoPanel = new JPanel(); 
+        JPanel perfilPanel = new JPanel();
 
-        mainContainer.add(dashboardPanel, "DASH_VISTA");
+        mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
-        mainContainer.add(historialPanel, "HIST_VISTA");
-
+        mainContainer.add(hist, "HIST_VISTA");
+        mainContainer.add(regTurnoPanel, "TURNO_VISTA");
+        mainContainer.add(perfilPanel, "PERFIL_VISTA");
 
         add(mainContainer, BorderLayout.CENTER);
     }
 
-    // Metodos auxiliares :)
-
-    private JPanel crearPanelDashboard() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(COLOR_BG);
-        panel.setBorder(new EmptyBorder(30, 40, 30, 40));
-
-        // Título de bienvenida
-        JLabel titulo = new JLabel("Bienvenido");
-        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        titulo.setFont(new Font("SansSerif", Font.BOLD, 28));
-        titulo.setForeground(COLOR_TEXT_DARK);
-        
-        JLabel subtitulo = new JLabel("Aquí está el resumen de tu actividad en el comedor");
-        subtitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        subtitulo.setForeground(Color.GRAY);
-
-        panel.add(titulo);
-        panel.add(subtitulo);
-        panel.add(Box.createRigidArea(new Dimension(0, 30)));
-
-        // Contenedor de Tarjetas (Grid para ponerlas una al lado de la otra)
-        JPanel cardsContainer = new JPanel(new GridLayout(1, 2, 20, 0)); // 1 fila, 2 col, espacio 20
-        cardsContainer.setBackground(COLOR_BG);
-        cardsContainer.setMaximumSize(new Dimension(2000, 300)); // Altura fija para las cards
-
-
-        //////////////////////////////////////////////////////////////
-        //Esto de las tarjetas debe variar de acuerdo con la base de datos simulada
-
-
-        // Tarjeta 1, menu del dia de hoy, solo para que haya algo
-        JPanel cardMenu = crearTarjetaBase("Menú de Hoy", "(Fecha de hoy)");
-        agregarFilaMenu(cardMenu, "Entrada", "Ensalada César", "Plato Principal", "Pollo al horno");
-        agregarFilaMenu(cardMenu, "Acompañante", "Arroz blanco", "Postre", "Fruta fresca");
-
-        
-        // Tarjeta 2, turno
-        JPanel cardTurno = crearTarjetaBase("Tu Turno Registrado", "Hoy");
-        JLabel lblTurno = new JLabel("Almuerzo");
-        lblTurno.setOpaque(true);
-        lblTurno.setBackground(COLOR_PRIMARY);
-        lblTurno.setForeground(Color.WHITE);
-        lblTurno.setBorder(new EmptyBorder(5, 10, 5, 10)); 
-        
-        JLabel lblHora = new JLabel("12:00 PM - 2:00 PM");
-        lblHora.setFont(new Font("SansSerif", Font.BOLD, 14));
-        
-        // Barra de capacidad, lo hice por curiosidad
-        JProgressBar barra = new JProgressBar(0, 100);
-        barra.setValue(65);
-        barra.setForeground(COLOR_PRIMARY);
-        barra.setString("Capacidad 65/85");
-        barra.setStringPainted(true);
-
-        // Añadir cosas a la tarjeta de turno
-        JPanel contentTurno = new JPanel(new GridLayout(4, 1, 5, 5));
-        contentTurno.setBackground(Color.WHITE);
-        contentTurno.add(lblTurno);
-        contentTurno.add(lblHora);
-        contentTurno.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentTurno.add(barra);
-        
-        cardTurno.add(contentTurno, BorderLayout.CENTER);
-
-        // Agregar las cards al contenedor
-        cardsContainer.add(cardMenu);
-        cardsContainer.add(cardTurno);
-
-        panel.add(cardsContainer);
-        
-        // Empujar todo hacia arriba :)
-        panel.add(Box.createVerticalGlue());
-
-        return panel;
-    }
-
-    // Crea el esqueleto blanco de una tarjeta
-    private JPanel crearTarjetaBase(String titulo, String sub) {
-        JPanel card = new JPanel(new BorderLayout());
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(new Color(230, 230, 230), 1, true), // Borde gris suave
-            new EmptyBorder(20, 20, 20, 20) // Padding interno
-        ));
-
-        JPanel headerCard = new JPanel(new BorderLayout());
-        headerCard.setBackground(Color.WHITE);
-        
-        JLabel lTitle = new JLabel("<html><b>"+titulo+"</b><br><span style='font-weight:normal; color:gray; font-size:10px'>"+sub+"</span></html>");
-        lTitle.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        
-        headerCard.add(lTitle, BorderLayout.WEST);
-        headerCard.setBorder(new EmptyBorder(0,0,15,0)); // Separación abajo
-        
-        card.add(headerCard, BorderLayout.NORTH);
-        return card;
-    }
-
-    // Ayuda a poner los textos del menú alineados
-    private void agregarFilaMenu(JPanel card, String t1, String v1, String t2, String v2) {
-        JPanel row = new JPanel(new GridLayout(1, 2));
-        row.setBackground(Color.WHITE);
-        
-        JLabel col1 = new JLabel("<html><span style='color:gray; font-size:9px'>"+t1+"</span><br><b>"+v1+"</b></html>");
-        JLabel col2 = new JLabel("<html><span style='color:gray; font-size:9px'>"+t2+"</span><br><b>"+v2+"</b></html>");
-        
-        col1.setBorder(new EmptyBorder(0,0,10,0));
-        
-        row.add(col1);
-        row.add(col2);
-        
-        // Añadimos al centro de la card. Si ya hay algo, Swing lo maneja o usamos un Panel intermedio.
-        // Para simplificar, asumimos que usamos un BoxLayout en el centro si son varias filas
-        if(!(card.getLayout() instanceof BorderLayout)) return;
-        
-        Component center = ((BorderLayout)card.getLayout()).getLayoutComponent(BorderLayout.CENTER);
-        JPanel body;
-        if (center == null) {
-            body = new JPanel();
-            body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-            body.setBackground(Color.WHITE);
-            card.add(body, BorderLayout.CENTER);
-        } else {
-            body = (JPanel) center;
-        }
-        body.add(row);
-    }
-
-
     //Funcion para crear los botones de la sidebar
 
     private JButton crearBotonMenu(String texto) {
-        JButton btn = new JButton(texto); // Espacio para simular icono
+        JButton btn = new JButton(texto);
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(220, 40)); // Ancho fijo
-        btn.setBackground(COLOR_PRIMARY); // Fondo verde
-        btn.setForeground(Color.WHITE);
+        btn.setMaximumSize(new Dimension(220, 40));
+        btn.setBackground(COLOR_GO); 
+        btn.setForeground(COLOR_TEXT_DARK);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setFont(new Font("SansSerif", Font.PLAIN, 14));
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        // Efecto hover simple (opcional) :)
+
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(40, 140, 75)); // Un verde un poco más claro
+                // Solo resaltamos si no está ya seleccionado (es decir, si es gris)
+                if (btn.getBackground().equals(COLOR_GO)) {
+                    btn.setBackground(new Color(200, 200, 200)); 
+                }
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(COLOR_PRIMARY);
+                // Si no es el verde activo, vuelve al gris original
+                if (!btn.getBackground().equals(COLOR_PRIMARY)) {
+                    btn.setBackground(COLOR_GO);
+                }
             }
         });
-        
+
         btn.setActionCommand(texto.trim());
         return btn;
+    }
+
+    public void marcarBotonActivo(JButton botonActivo) {
+        // Lista de todos tus botones de la sidebar
+        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnPerfil};
+
+        for (JButton b : botones) {
+            if (b == botonActivo) {
+                b.setBackground(COLOR_PRIMARY); // Verde UCV
+                b.setForeground(Color.WHITE);   // Texto blanco para resaltar
+            } else {
+                b.setBackground(COLOR_GO);      // Gris barra
+                b.setForeground(COLOR_TEXT_DARK); // Texto oscuro
+            }
+        }
     }
 
 
     // Getter para los botones para usarlos en el controlador
 
-
     public JButton getBtnDashboard() { return btnDashboard; }
     public JButton getBtnMenuDia() { return btnConsultarMenu; }
+    public JButton getBtnRegTurno() { return btnRegTurno; }
+    public JButton getBtnHistorial() { return btnHistorial; }
+    public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
 
     public void changeView(String nombreVista) {
