@@ -3,22 +3,16 @@ package com.example.Vista;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-//import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class AdminVista extends JFrame {
 
     // Colores corporativos UCV (Mantenidos para consistencia)
-    private final Color COLOR_PRIMARY = new Color(34, 120, 64); // Verde UCV
-    private final Color COLOR_BG = new Color(245, 247, 250); 
+    private final Color COLOR_PRIMARY = new Color(34, 120, 64); // Verde
     private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_GO = new Color(220, 220, 220); 
-    /*
-    private final String VISTA_CONFIG = "CONFIG_MENU";
-    private final String VISTA_REPORTE = "GENERAR_REPORTE";
-    private final String VISTA_CONSUMO = "HISTORIAL_CONSUMO";
-    private final String VISTA_USUARIOS = "GESTION_USUARIOS"; */
+    private final Color COLOR_GO = new Color(220, 220, 220); //Gris oscurito
 
+    ConfigMenuPanel vistaConfig;
     private CardLayout cardLayout;
     private JPanel mainContainer;
     private JButton btnLogout;
@@ -33,7 +27,7 @@ public class AdminVista extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- SIDEBAR ---
+        // Sidebar
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(COLOR_GO);
@@ -72,7 +66,7 @@ public class AdminVista extends JFrame {
 
         add(sidebar, BorderLayout.WEST);
 
-        // --- HEADER ---
+        // Header
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
         header.setBorder(new EmptyBorder(10, 20, 10, 20));
@@ -83,7 +77,7 @@ public class AdminVista extends JFrame {
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         userPanel.setBackground(Color.WHITE);
         
-        JLabel lblUser = new JLabel("<html><div style='text-align: right;'><b>"+usuario+"</b><br><span style='color:red; font-size:9px'>"+rol+"</span></div></html>");
+        JLabel lblUser = new JLabel("<html><div style='text-align: right;'><b>"+usuario+"</b><br><span style='color:#666666; font-size:9px'>"+rol+"</span></div></html>");
         
         btnLogout = new JButton("Cerrar Sesión");
         btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -96,15 +90,15 @@ public class AdminVista extends JFrame {
         header.add(userPanel, BorderLayout.EAST);
         add(header, BorderLayout.NORTH);
 
-        // --- CONTENIDO CENTRAL ---
+        // Cuerpo
         cardLayout = new CardLayout();
         mainContainer = new JPanel(cardLayout);
 
         // Instanciamos las clases externas
         DashAdminVista dashAdmin = new DashAdminVista();
-        ConfigMenuPanel vistaConfig = new ConfigMenuPanel();
+        vistaConfig = new ConfigMenuPanel();
         ReportePanel vistaReporte = new ReportePanel();
-        // Aqui las otras vistas
+        // Aqui van las otras vistas
 
         // Las añadimos al contenedor principal
         mainContainer.add(dashAdmin, "DASH_VISTA");
@@ -146,12 +140,12 @@ public class AdminVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        // Lista de todos tus botones de la sidebar
+        // Lista de todos los botones de la sidebar
         JButton[] botones = {btnDashboard, btnGestionMenu, btnGestionInsumo, btnReporte, btnPerfil};
 
         for (JButton b : botones) {
             if (b == botonActivo) {
-                b.setBackground(COLOR_PRIMARY); // Verde UCV
+                b.setBackground(COLOR_PRIMARY); // Verde
                 b.setForeground(Color.WHITE);   // Texto blanco para resaltar
             } else {
                 b.setBackground(COLOR_GO);      // Gris barra
@@ -168,6 +162,9 @@ public class AdminVista extends JFrame {
     public JButton getBtnReporte() { return btnReporte; }
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
+    //Para el panel de menus
+    public ConfigMenuPanel getConfigMenuPanel() { return vistaConfig; }
+
 
     public void changeView(String nombreVista) {
         cardLayout.show(mainContainer, nombreVista);

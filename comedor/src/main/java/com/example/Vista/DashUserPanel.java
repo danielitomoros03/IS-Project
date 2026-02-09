@@ -104,8 +104,7 @@ public class DashUserPanel extends JPanel {
         
         row.add(col1);
         row.add(col2);
-        
-        // Añadimos al centro de la card. Si ya hay algo, Swing lo maneja o usamos un Panel intermedio.
+    
         // Para simplificar, asumimos que usamos un BoxLayout en el centro si son varias filas
         if(!(card.getLayout() instanceof BorderLayout)) return;
         
