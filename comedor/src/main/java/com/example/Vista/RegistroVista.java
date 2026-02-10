@@ -18,7 +18,7 @@ public class RegistroVista extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new BorderLayout());
-
+ 
         // PANEL SUPERIOR (Logo y Títulos) 
         JPanel panelHeader = new JPanel();
         panelHeader.setLayout(new BoxLayout(panelHeader, BoxLayout.Y_AXIS));

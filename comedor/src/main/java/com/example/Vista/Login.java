@@ -12,7 +12,7 @@ public class Login extends JFrame {
     private JPasswordField txtPassword;
     private JButton btnLogin, btnRegistrar;
     private JLabel lblError;
-    private JPanel card;
+    private JPanel card; 
 
     public Login() {
         // Configuración básica de la ventana

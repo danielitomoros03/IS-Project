@@ -13,7 +13,7 @@ public class LoginControl implements ActionListener{
 
     private Login vista;
     private LoginModel modelo;
-
+ 
     public LoginControl(){
         
         this.vista = new Login(); 
