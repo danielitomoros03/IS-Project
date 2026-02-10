@@ -11,7 +11,7 @@ public class RegUsuarioModelo{
     public RegUsuarioModelo() {
         this.nombreArchivo = "Usuarios.txt";
     }
- 
+
     public boolean registrarUsuario(String nombre, String email, String password, String rol, String telf, String facu, String carrera) {
     //Si un campo esta vacio esta malo
         if (nombre == null || password == null || rol == null || email == null || facu == null || carrera == null ||

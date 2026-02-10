@@ -19,7 +19,7 @@ public class BienvenidoVista extends JFrame {
     // Botones del menu
     private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil;
     
-    // Botón exclusivo para admin
+    // Boton para admin
     private JButton btnConfigCCB; 
 
     public BienvenidoVista(String usuario, String rol) {
@@ -45,7 +45,7 @@ public class BienvenidoVista extends JFrame {
         sidebar.add(lblLogo);
         sidebar.add(Box.createRigidArea(new Dimension(0, 40))); 
 
-        // Botones del menú comunes
+        // Botones del menú 
         btnDashboard = crearBotonMenu("Dashboard"); 
         sidebar.add(btnDashboard);  
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -62,8 +62,6 @@ public class BienvenidoVista extends JFrame {
         sidebar.add(btnHistorial);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // --- LÓGICA DE SEGURIDAD (ADMIN) ---
-        // Solo mostramos este botón si el rol es Administrador
         if (rol != null && rol.equalsIgnoreCase("Administrador")) {
             btnConfigCCB = crearBotonMenu("Configuración CCB");
             sidebar.add(btnConfigCCB);
@@ -118,12 +116,11 @@ public class BienvenidoVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        
         DashUserPanel dashPanel = new DashUserPanel();
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
         RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(); 
-        JPanel hist = new JPanel(); // Placeholder
-        JPanel perfilPanel = new JPanel(); // Placeholder
+        JPanel hist = new JPanel(); 
+        JPanel perfilPanel = new JPanel();
 
         mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
@@ -139,6 +136,7 @@ public class BienvenidoVista extends JFrame {
         add(mainContainer, BorderLayout.CENTER);
     }
 
+    // Funciones auxiliares
     private JButton crearBotonMenu(String texto) {
         JButton btn = new JButton(texto);
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -169,7 +167,6 @@ public class BienvenidoVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        
         JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnPerfil, btnConfigCCB};
 
         for (JButton b : botones) {
@@ -192,7 +189,6 @@ public class BienvenidoVista extends JFrame {
     public JButton getBtnHistorial() { return btnHistorial; }
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
-
     public JButton getBtnConfigCCB() { return btnConfigCCB; }
 
     public void changeView(String nombreVista) {

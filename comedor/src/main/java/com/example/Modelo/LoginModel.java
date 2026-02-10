@@ -27,7 +27,7 @@ public class LoginModel {
         if (!email.toLowerCase().endsWith("@ucv.ve")) {
             throw new Exception("Solo se permiten correos del dominio @ucv.ve");
         }
- 
+
         // Búsqueda en el "archivo"
         try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
             String linea;
