@@ -1,11 +1,11 @@
 package com.example.Controlador;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import com.example.Vista.Login;
+import com.example.Vista.RegistroVista;
 import com.example.Modelo.*;
 
 
@@ -17,65 +17,70 @@ public class LoginControl implements ActionListener{
     public LoginControl(){
         
         this.vista = new Login(); 
-        this.vista.setSize(1200, 750);                  //Inicializamos la vista y el modelo(instanciado)
+        //this.vista.setSize(1200, 750);                  //Inicializamos la vista y el modelo(instanciado)
         this.modelo = new LoginModel();        
 
-        this.vista.addLoginListener(this);
+        // Configurar los listeners para ambos botones
+        this.vista.getBtnLogin().addActionListener(this);
+        this.vista.getBtnRegistrar().addActionListener(this);
         
         this.vista.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == vista.getBtnLogin()) {
+            handleLogin();
+        } else if (e.getSource() == vista.getBtnRegistrar()) {
+            irARegistro();
+        }
     }
 
     private void handleLogin(){
         
         // Captura de datos con getters
-        String email = vista.getEmail().getText();;            //Obtener datos de la vista
-        
+        String email = vista.getEmail().getText();   //Obtener datos de la vista
         String pass = new String(vista.getTxtPassword().getPassword()); 
 
         try{
-            //Estado de carga
-
-            //vista.getLblError().setVisible(false);
 
             vista.getBtnLogin().setEnabled(false);            //Desactivar botón mientras carga
             vista.getBtnLogin().setText("Validando...");
 
             String role = modelo.autenticar(email, pass);  //Llamar al modelo para autenticar
 
-            //Esta instancia hace que al presionnar "Iniciar Sesion", cambie la vista
+            //Esta instancia hace que al presionnar "Iniciar Sesion", cambie la vista a Bienvenida
             new BienvenidoControl(email, role);
             vista.dispose();
 
-
-            //Esto abre una ventana, se debe quitar al abrir la otra vista
-            //JOptionPane.showMessageDialog(vista, "¡Bienvenido! " + role); //Exito
-
-
-        } catch (Exception ex){
-            // Caso error de sistema, se puede usar esto para ventanas de dialogo
-            //JOptionPane.showMessageDialog(vista, "Error al conectar: " + ex.getMessage(), "Error de Login", JOptionPane.ERROR_MESSAGE);
-            //ex.printStackTrace();                   // Para ver el error en consola
-
-            //Por otro lado, que el mensaje de error lo de en la misma interfaz
+        } catch (Exception ex) {
             vista.showErrorMessage(ex.getMessage());
-
-            // Si el error causó un bloqueo, deshabilitamos la vista
             if (modelo.isBloqueado()) {
                 bloquearInterfaz();
             }
-            
-        } finally{
-            
-            // Limpieza final si no está bloqueado
+        } finally {
             if (!modelo.isBloqueado()) {
                 vista.getBtnLogin().setEnabled(true);
                 vista.getBtnLogin().setText("Iniciar Sesión");
                 vista.setTxtPassword("");
-            } 
-
+            }
         }
     }
 
+    // Este es el método que abre la ventana de Registro
+    private void irARegistro() {
+        // Creamos la vista de registro
+        RegistroVista vistaRegistro = new RegistroVista();
+        
+        // Creamos el modelo de registro
+        RegUsuarioModelo modeloRegistro = new RegUsuarioModelo();
+        
+        // Creamos su controlador 
+        new RegistroControl(vistaRegistro, modeloRegistro);
+        
+        vistaRegistro.setVisible(true);
+        this.vista.dispose();
+    }
 
     // Método para gestionar el cambio visual tras el bloqueo
     private void bloquearInterfaz() {
@@ -85,32 +90,4 @@ public class LoginControl implements ActionListener{
         vista.getTxtPassword().setEnabled(false);
         vista.getLblError().setText("Usuario bloqueado por seguridad.");
     }
-
-
-    // Método de la interfaz ActionListener (obligatorio por el implements)
-    // Pregunta si se presiono el boton de Login para llamar a la funcion
-    // que hace la autenticacion 
-    @Override
-    public void actionPerformed(ActionEvent e){
-        // Si el objeto que generó el evento es el botón de login, no se necesita el if si hay un solo boton
-        // Pero en caso de tener mas en algun momento, lo voy a dejar
-        if(e.getSource() == vista.getBtnLogin()){
-            System.out.println("Botón presionado!");
-            handleLogin();
-        }
-    }
-
-    
-
-    /* Herramienta misteriosa que usaremos mas tarde
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == vista.getBtnLogin()) {
-            handleLogin();
-        } else if (e.getSource() == vista.getBtnRegistro()) {
-            irARegistro();
-        } else if (e.getSource() == vista.getBtnSalir()) {
-            System.exit(0);
-        }
-} */
 }

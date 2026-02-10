@@ -5,14 +5,16 @@ import java.awt.*;
 
 public class RegistroVista extends JFrame {
     // Definición de componentes
-    public JTextField txtNombre, txtTelefono, txtEmail, txtFacultad, txtCarrera, txtRol;
+    public JTextField txtNombre, txtTelefono, txtEmail, txtFacultad, txtCarrera;
+    public JComboBox<String> comboRol; //Para escoger entre estudiante y empleado
+    public JLabel lblFacultad, lblCarrera; //Las etiquetas como atributos
     public JPasswordField txtPassword; 
     public JButton btnRegistrar;
 
     public RegistroVista() {
         setTitle("Sistema de Comedor - Registro UCV");
         setSize(450, 750); 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new BorderLayout());
@@ -39,7 +41,7 @@ public class RegistroVista extends JFrame {
         panelHeader.add(lblTitulo);
 
         // PANEL CENTRAL (Formulario)
-        JPanel panelForm = new JPanel(new GridLayout(14, 1, 2, 2)); 
+        JPanel panelForm = new JPanel(new GridLayout(15, 1, 2, 2)); 
         panelForm.setBackground(Color.WHITE);
         panelForm.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
 
@@ -48,11 +50,24 @@ public class RegistroVista extends JFrame {
         txtPassword = new JPasswordField();
         estilizarComponente(txtPassword); // Aplicamos el estilo manualmente
         
-        txtRol = crearCampo();
+        String[] roles = {"Selecciones un rol" , "Estudiante" , "Empleado"};
+        comboRol = new JComboBox<>(roles); 
+        comboRol.setBackground(Color.WHITE);
+
         txtTelefono = crearCampo();
         txtEmail = crearCampo();
+
+        // Inicialización de Facultad y Carrera
+        lblFacultad = new JLabel("Facultad:");
         txtFacultad = crearCampo();
+        lblCarrera = new JLabel("Carrera:");
         txtCarrera = crearCampo();
+
+        // Inicialmente los ocultamos
+        lblFacultad.setVisible(false);
+        txtFacultad.setVisible(false);
+        lblCarrera.setVisible(false);
+        txtCarrera.setVisible(false);
 
         // Agregamos en el orden solicitado
         panelForm.add(new JLabel("Nombre Completo:"));
@@ -62,7 +77,7 @@ public class RegistroVista extends JFrame {
         panelForm.add(txtPassword);
         
         panelForm.add(new JLabel("Rol:"));
-        panelForm.add(txtRol);
+        panelForm.add(comboRol);
 
         panelForm.add(new JLabel("Teléfono:"));
         panelForm.add(txtTelefono);
@@ -70,13 +85,13 @@ public class RegistroVista extends JFrame {
         panelForm.add(new JLabel("Correo Electrónico:"));
         panelForm.add(txtEmail);
 
-        panelForm.add(new JLabel("Facultad:"));
+        // Agregamos los campos dinámicos
+        panelForm.add(lblFacultad);
         panelForm.add(txtFacultad);
-
-        panelForm.add(new JLabel("Carrera:"));
+        panelForm.add(lblCarrera);
         panelForm.add(txtCarrera);
 
-        // PANEL INFERIOR (Botón)
+        // Panel inferior para el boton
         JPanel panelFooter = new JPanel();
         panelFooter.setBackground(Color.WHITE);
         panelFooter.setBorder(BorderFactory.createEmptyBorder(10, 40, 30, 40));
