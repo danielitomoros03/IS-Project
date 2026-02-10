@@ -1,6 +1,7 @@
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Controlador\AdminControl.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Controlador\BienvenidoControl.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Controlador\LoginControl.java
+C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Controlador\RegistroControl.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Main.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Modelo\Administrador.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Modelo\Estudiante.java
@@ -17,7 +18,7 @@ C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenie
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\DashUserPanel.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\HistorialPanel.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\Login.java
-C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\MenuDiaPanelVista.java
+C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\MenuDiaPanel.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\MenuPanel.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\RegistroTurnoPanel.java
 C:\Users\donnovan\Documents\TAREA DE DONANDER\PROYECTOS Y COSAS DE INTRO\Ingenieria de Software\Proyecto\repositorio\IS-Project-1\comedor\src\main\java\com\example\Vista\RegistroVista.java

@@ -4,23 +4,23 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-// Asegúrate de importar tus nuevos componentes si están en el mismo paquete
-// o ajusta los imports si los moviste.
-
 public class BienvenidoVista extends JFrame {
 
-    // Para los colores de la interfaz
-    private final Color COLOR_PRIMARY = new Color(34, 120, 64); // Verde UCV
-    private final Color COLOR_BG = new Color(245, 247, 250);    // Gris muy claro de fondo
+    // Colores
+    private final Color COLOR_PRIMARY = new Color(34, 120, 64);
+    private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
-    private final Color COLOR_GO = new Color(220, 220, 220); // Gris oscurito
+    private final Color COLOR_GO = new Color(220, 220, 220);
     
     private CardLayout cardLayout; 
-    private JPanel mainContainer; // Para el contenido central
-    private JButton btnLogout; // Boton de salir
+    private JPanel mainContainer; 
+    private JButton btnLogout;
 
     // Botones del menu
     private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil;
+    
+    // Botón exclusivo para admin
+    private JButton btnConfigCCB; 
 
     public BienvenidoVista(String usuario, String rol) {
         setTitle("Sistema de Gestión - UCV");
@@ -45,7 +45,7 @@ public class BienvenidoVista extends JFrame {
         sidebar.add(lblLogo);
         sidebar.add(Box.createRigidArea(new Dimension(0, 40))); 
 
-        // Botones del menú
+        // Botones del menú comunes
         btnDashboard = crearBotonMenu("Dashboard"); 
         sidebar.add(btnDashboard);  
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -62,18 +62,24 @@ public class BienvenidoVista extends JFrame {
         sidebar.add(btnHistorial);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
+        // --- LÓGICA DE SEGURIDAD (ADMIN) ---
+        // Solo mostramos este botón si el rol es Administrador
+        if (rol != null && rol.equalsIgnoreCase("Administrador")) {
+            btnConfigCCB = crearBotonMenu("Configuración CCB");
+            sidebar.add(btnConfigCCB);
+            sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
         btnPerfil = crearBotonMenu("Perfil"); 
         sidebar.add(btnPerfil);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         
-        // Versión al final
         sidebar.add(Box.createVerticalGlue()); 
-        JLabel version = new JLabel("Versión 1.0");
-        version.setForeground(new Color(255,255,255,100)); // Un poco transparente
+        JLabel version = new JLabel("Versión 1.1");
+        version.setForeground(new Color(255,255,255,100));
         sidebar.add(version);
 
         add(sidebar, BorderLayout.WEST);
-
 
         // --- HEADER (ARRIBA) ---
         JPanel header = new JPanel(new BorderLayout());
@@ -86,7 +92,6 @@ public class BienvenidoVista extends JFrame {
         tituloHeader.setFont(new Font("SansSerif", Font.BOLD, 18));
         tituloHeader.setForeground(COLOR_TEXT_DARK);
         
-        // Panel de usuario (Derecha del header)
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         userPanel.setBackground(Color.WHITE);
         
@@ -108,39 +113,31 @@ public class BienvenidoVista extends JFrame {
 
         add(header, BorderLayout.NORTH);
 
-
-        // --- CONTENIDO CENTRAL (CARDLAYOUT) ---
+        // --- CONTENIDO CENTRAL ---
         cardLayout = new CardLayout();
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        // =========================================================
-        // 1. INSTANCIACIÓN DE PANELES (INTEGRACIÓN)
-        // =========================================================
         
         DashUserPanel dashPanel = new DashUserPanel();
-        
-        // Asumiendo que ya tienes MenuDiaPanel del paso anterior
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
-        
-        // --- AQUÍ INTEGRAMOS EL NUEVO PANEL DE TURNOS ---
-        // Reemplazamos el JPanel vacio por nuestra clase lógica
         RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(); 
-        
-        JPanel hist = new JPanel(); 
-        JPanel perfilPanel = new JPanel();
+        JPanel hist = new JPanel(); // Placeholder
+        JPanel perfilPanel = new JPanel(); // Placeholder
 
-        // 2. Agregando al contenedor principal
         mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
         mainContainer.add(hist, "HIST_VISTA");
-        mainContainer.add(regTurnoPanel, "TURNO_VISTA"); // Clave usada en el Controlador
+        mainContainer.add(regTurnoPanel, "TURNO_VISTA");
         mainContainer.add(perfilPanel, "PERFIL_VISTA");
+
+        if (rol != null && rol.equalsIgnoreCase("Administrador")) {
+            ConfiguracionCCBPanel configPanel = new ConfiguracionCCBPanel();
+            mainContainer.add(configPanel, "CONFIG_CCB_VISTA");
+        }
 
         add(mainContainer, BorderLayout.CENTER);
     }
-
-    // Funciones auxiliares de UI
 
     private JButton crearBotonMenu(String texto) {
         JButton btn = new JButton(texto);
@@ -153,7 +150,7 @@ public class BienvenidoVista extends JFrame {
         btn.setFont(new Font("SansSerif", Font.PLAIN, 14));
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
+        
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 if (btn.getBackground().equals(COLOR_GO)) {
@@ -172,14 +169,17 @@ public class BienvenidoVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnPerfil};
+        
+        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnPerfil, btnConfigCCB};
 
         for (JButton b : botones) {
+            if (b == null) continue; // Si no es admin, btnConfigCCB es null
+
             if (b == botonActivo) {
-                b.setBackground(COLOR_PRIMARY); // Verde Activo
+                b.setBackground(COLOR_PRIMARY); 
                 b.setForeground(Color.WHITE);   
             } else {
-                b.setBackground(COLOR_GO);      // Gris Inactivo
+                b.setBackground(COLOR_GO);      
                 b.setForeground(COLOR_TEXT_DARK); 
             }
         }
@@ -192,6 +192,8 @@ public class BienvenidoVista extends JFrame {
     public JButton getBtnHistorial() { return btnHistorial; }
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
+
+    public JButton getBtnConfigCCB() { return btnConfigCCB; }
 
     public void changeView(String nombreVista) {
         cardLayout.show(mainContainer, nombreVista);
