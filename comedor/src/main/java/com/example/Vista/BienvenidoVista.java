@@ -1,12 +1,11 @@
 package com.example.Vista;
 
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
-
+// Asegúrate de importar tus nuevos componentes si están en el mismo paquete
+// o ajusta los imports si los moviste.
 
 public class BienvenidoVista extends JFrame {
 
@@ -17,39 +16,38 @@ public class BienvenidoVista extends JFrame {
     private final Color COLOR_GO = new Color(220, 220, 220); // Gris oscurito
     
     private CardLayout cardLayout; 
-    private JPanel mainContainer; // Para el contenido central, aqui dentro va toda la informacion de la vista 
-    private JButton btnLogout; //Boton de salir
+    private JPanel mainContainer; // Para el contenido central
+    private JButton btnLogout; // Boton de salir
 
-    //Botones del menu
+    // Botones del menu
     private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil;
 
     public BienvenidoVista(String usuario, String rol) {
         setTitle("Sistema de Gestión - UCV");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //setSize(1200, 750); // Un poco más ancho para que quepan las tarjetas
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Barra gris de la izquierda
+        // --- SIDEBAR (IZQUIERDA) ---
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(COLOR_GO);
         sidebar.setPreferredSize(new Dimension(240, 0));
         sidebar.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // Logo en Sidebar
+        // Logo
         JLabel lblLogo = new JLabel("UCV Comedor");
         lblLogo.setForeground(Color.BLACK);
         lblLogo.setFont(new Font("SansSerif", Font.BOLD, 22));
         lblLogo.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         sidebar.add(lblLogo);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 40))); // Espacio
+        sidebar.add(Box.createRigidArea(new Dimension(0, 40))); 
 
         // Botones del menú
         btnDashboard = crearBotonMenu("Dashboard"); 
-        sidebar.add(btnDashboard);  //Guardar boton
+        sidebar.add(btnDashboard);  
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         btnConsultarMenu = crearBotonMenu("Menu del Dia"); 
@@ -68,16 +66,16 @@ public class BienvenidoVista extends JFrame {
         sidebar.add(btnPerfil);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         
-        // Versión al final, en caso de querer colocarlo :)
-        sidebar.add(Box.createVerticalGlue()); // Empuja lo siguiente al fondo
+        // Versión al final
+        sidebar.add(Box.createVerticalGlue()); 
         JLabel version = new JLabel("Versión 1.0");
-        version.setForeground(new Color(255,255,255,100));
+        version.setForeground(new Color(255,255,255,100)); // Un poco transparente
         sidebar.add(version);
 
         add(sidebar, BorderLayout.WEST);
 
 
-        // Para el Header de arriba blanco
+        // --- HEADER (ARRIBA) ---
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(230,230,230)));
@@ -99,7 +97,7 @@ public class BienvenidoVista extends JFrame {
         btnLogout.setForeground(Color.BLACK);
         btnLogout.setBorder(BorderFactory.createLineBorder(new Color(200,200,200)));
         btnLogout.setFocusPainted(false);                    
-        btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));    //La manito del cursor
+        btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));    
 
         userPanel.add(lblUser);
         userPanel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -111,33 +109,43 @@ public class BienvenidoVista extends JFrame {
         add(header, BorderLayout.NORTH);
 
 
-        // Para el contenido central, Gris claro
+        // --- CONTENIDO CENTRAL (CARDLAYOUT) ---
         cardLayout = new CardLayout();
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        // Instanciando paneles 
+        // =========================================================
+        // 1. INSTANCIACIÓN DE PANELES (INTEGRACIÓN)
+        // =========================================================
+        
         DashUserPanel dashPanel = new DashUserPanel();
-        MenuPanel menuPanel = new MenuPanel();
-        HistorialPanel hist = new HistorialPanel();
-        JPanel regTurnoPanel = new JPanel(); 
+        
+        // Asumiendo que ya tienes MenuDiaPanel del paso anterior
+        MenuDiaPanel menuPanel = new MenuDiaPanel(); 
+        
+        // --- AQUÍ INTEGRAMOS EL NUEVO PANEL DE TURNOS ---
+        // Reemplazamos el JPanel vacio por nuestra clase lógica
+        RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(); 
+        
+        JPanel hist = new JPanel(); 
         JPanel perfilPanel = new JPanel();
 
+        // 2. Agregando al contenedor principal
         mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
         mainContainer.add(hist, "HIST_VISTA");
-        mainContainer.add(regTurnoPanel, "TURNO_VISTA");
+        mainContainer.add(regTurnoPanel, "TURNO_VISTA"); // Clave usada en el Controlador
         mainContainer.add(perfilPanel, "PERFIL_VISTA");
 
         add(mainContainer, BorderLayout.CENTER);
     }
 
-    //Funcion para crear los botones de la sidebar
+    // Funciones auxiliares de UI
 
     private JButton crearBotonMenu(String texto) {
         JButton btn = new JButton(texto);
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(220, 40));
+        btn.setMaximumSize(new Dimension(240, 45)); 
         btn.setBackground(COLOR_GO); 
         btn.setForeground(COLOR_TEXT_DARK);
         btn.setFocusPainted(false);
@@ -148,13 +156,11 @@ public class BienvenidoVista extends JFrame {
 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                // Solo resaltamos si no está ya seleccionado (es decir, si es gris)
                 if (btn.getBackground().equals(COLOR_GO)) {
                     btn.setBackground(new Color(200, 200, 200)); 
                 }
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                // Si no es el verde activo, vuelve al gris original
                 if (!btn.getBackground().equals(COLOR_PRIMARY)) {
                     btn.setBackground(COLOR_GO);
                 }
@@ -166,23 +172,20 @@ public class BienvenidoVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        // Lista de todos tus botones de la sidebar
         JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnPerfil};
 
         for (JButton b : botones) {
             if (b == botonActivo) {
-                b.setBackground(COLOR_PRIMARY); // Verde UCV
-                b.setForeground(Color.WHITE);   // Texto blanco para resaltar
+                b.setBackground(COLOR_PRIMARY); // Verde Activo
+                b.setForeground(Color.WHITE);   
             } else {
-                b.setBackground(COLOR_GO);      // Gris barra
-                b.setForeground(COLOR_TEXT_DARK); // Texto oscuro
+                b.setBackground(COLOR_GO);      // Gris Inactivo
+                b.setForeground(COLOR_TEXT_DARK); 
             }
         }
     }
 
-
-    // Getter para los botones para usarlos en el controlador
-
+    // Getters
     public JButton getBtnDashboard() { return btnDashboard; }
     public JButton getBtnMenuDia() { return btnConsultarMenu; }
     public JButton getBtnRegTurno() { return btnRegTurno; }
