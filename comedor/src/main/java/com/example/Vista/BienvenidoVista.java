@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+// Asegúrate de importar tus nuevos componentes si están en el mismo paquete
+// o ajusta los imports si los moviste.
+
 public class BienvenidoVista extends JFrame {
 
     // Para los colores de la interfaz
@@ -111,24 +114,27 @@ public class BienvenidoVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        // 1. Instanciando paneles (Aquí integramos el MenuDiaPanel)
-        // Asegúrate de borrar o comentar la línea anterior "MenuPanel menuPanel = new MenuPanel();"
+        // =========================================================
+        // 1. INSTANCIACIÓN DE PANELES (INTEGRACIÓN)
+        // =========================================================
         
         DashUserPanel dashPanel = new DashUserPanel();
         
-        // INTEGRACIÓN: Usamos la nueva clase MenuDiaPanel creada anteriormente
+        // Asumiendo que ya tienes MenuDiaPanel del paso anterior
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
         
-        // Asumo que ya tienes HistorialPanel, si no, usa JPanel temporalmente
-        JPanel hist = new JPanel(); // O new HistorialPanel(); si ya existe
-        JPanel regTurnoPanel = new JPanel(); 
+        // --- AQUÍ INTEGRAMOS EL NUEVO PANEL DE TURNOS ---
+        // Reemplazamos el JPanel vacio por nuestra clase lógica
+        RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(); 
+        
+        JPanel hist = new JPanel(); 
         JPanel perfilPanel = new JPanel();
 
-        // 2. Agregando al contenedor principal con sus CLAVES (Strings)
+        // 2. Agregando al contenedor principal
         mainContainer.add(dashPanel, "DASH_VISTA");
-        mainContainer.add(menuPanel, "MENU_VISTA"); // Clave usada en el Controlador
+        mainContainer.add(menuPanel, "MENU_VISTA");
         mainContainer.add(hist, "HIST_VISTA");
-        mainContainer.add(regTurnoPanel, "TURNO_VISTA");
+        mainContainer.add(regTurnoPanel, "TURNO_VISTA"); // Clave usada en el Controlador
         mainContainer.add(perfilPanel, "PERFIL_VISTA");
 
         add(mainContainer, BorderLayout.CENTER);
@@ -139,7 +145,7 @@ public class BienvenidoVista extends JFrame {
     private JButton crearBotonMenu(String texto) {
         JButton btn = new JButton(texto);
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(240, 45)); // Ajustado ligeramente
+        btn.setMaximumSize(new Dimension(240, 45)); 
         btn.setBackground(COLOR_GO); 
         btn.setForeground(COLOR_TEXT_DARK);
         btn.setFocusPainted(false);
