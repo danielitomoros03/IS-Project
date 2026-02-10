@@ -10,7 +10,7 @@ public class RegistroVista extends JFrame {
     public JLabel lblFacultad, lblCarrera; //Las etiquetas como atributos
     public JPasswordField txtPassword; 
     public JButton btnRegistrar;
-
+ 
     public RegistroVista() {
         setTitle("Sistema de Comedor - Registro UCV");
         setSize(450, 750); 

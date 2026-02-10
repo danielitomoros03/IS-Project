@@ -19,7 +19,7 @@ public class LoginControl implements ActionListener{
         this.vista = new Login(); 
         //this.vista.setSize(1200, 750);                  //Inicializamos la vista y el modelo(instanciado)
         this.modelo = new LoginModel();        
-
+ 
         // Configurar los listeners para ambos botones
         this.vista.getBtnLogin().addActionListener(this);
         this.vista.getBtnRegistrar().addActionListener(this);

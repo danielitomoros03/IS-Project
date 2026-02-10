@@ -51,7 +51,7 @@ public class RegistroControl {
         // Si no es estudiante, enviamos "N/A" para mantener la estructura del TXT
         String facultad = vista.txtFacultad.isVisible() ? vista.txtFacultad.getText() : "N/A";
         String carrera = vista.txtCarrera.isVisible() ? vista.txtCarrera.getText() : "N/A";
-
+ 
         //Validacion del rol
         if (rol.equals("Seleccione un rol")) {
             JOptionPane.showMessageDialog(vista, "Por favor seleccione un rol (Estudiante/Empleado)");

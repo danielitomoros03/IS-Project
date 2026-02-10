@@ -36,7 +36,7 @@ public class LoginModel {
 
             while ((linea = br.readLine()) != null) {
                 // El orden en el txt es: nombre, email, password, rol, telf, fac, car
-                String[] datos = linea.split(",");
+                String[] datos = linea.split(","); 
 
                 if (datos.length >= 4) {
                     String emailArchivo = datos[1].trim();

@@ -17,7 +17,7 @@ public class RegUsuarioModelo{
         if (nombre == null || password == null || rol == null || email == null || facu == null || carrera == null ||
             nombre.isEmpty() || password.isEmpty() || rol.isEmpty() || email.isEmpty() || facu.isEmpty() || carrera.isEmpty()) {
             System.out.println("Error: Todos los campos son obligatorios.");
-            return false;
+            return false; 
         }
 
     //Uno todos los datos
