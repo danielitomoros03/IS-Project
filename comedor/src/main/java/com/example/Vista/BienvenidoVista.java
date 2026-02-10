@@ -4,8 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-// Asegúrate de importar tus nuevos componentes si están en el mismo paquete
-// o ajusta los imports si los moviste.
+
 
 public class BienvenidoVista extends JFrame {
 
@@ -114,23 +113,17 @@ public class BienvenidoVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        // =========================================================
-        // 1. INSTANCIACIÓN DE PANELES (INTEGRACIÓN)
-        // =========================================================
-        
         DashUserPanel dashPanel = new DashUserPanel();
         
-        // Asumiendo que ya tienes MenuDiaPanel del paso anterior
+
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
-        
-        // --- AQUÍ INTEGRAMOS EL NUEVO PANEL DE TURNOS ---
-        // Reemplazamos el JPanel vacio por nuestra clase lógica
+
         RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(); 
         
         JPanel hist = new JPanel(); 
         JPanel perfilPanel = new JPanel();
 
-        // 2. Agregando al contenedor principal
+        //Agregando al contenedor principal
         mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
         mainContainer.add(hist, "HIST_VISTA");

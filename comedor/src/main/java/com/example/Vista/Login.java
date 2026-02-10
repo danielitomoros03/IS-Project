@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Login extends JFrame {
- 
+
     private JTextField txtEmail;
     private JPasswordField txtPassword;
     private JButton btnLogin, btnRegistrar;
