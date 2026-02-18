@@ -1,8 +1,9 @@
 package com.example.Controlador;
 
+import javax.swing.JOptionPane;
+
 import com.example.Modelo.RegUsuarioModelo;
 import com.example.Vista.RegistroVista;
-import javax.swing.JOptionPane;
 
 //Controla cuando se presiona el boton registrar para guardar los datos en el txt
 //Tambien en el formulario si el usuario a registrar es Estudiante o Empleado
@@ -15,28 +16,16 @@ public class RegistroControl {
         this.vista = vista;
         this.modelo = modelo;
 
-        // Listener para el cambio de Rol
-        this.vista.comboRol.addActionListener(e -> {
-            actualizarVisibilidad();
-        });
-
         // Listener del boton registrar
         this.vista.btnRegistrar.addActionListener(e -> guardarDatos());
-    }
 
-    private void actualizarVisibilidad() {
-        String seleccion = (String) vista.comboRol.getSelectedItem();
-        boolean esEstudiante = "Estudiante".equals(seleccion);
-
-        // Mostramos u ocultamos segun la seleccion
-        vista.lblFacultad.setVisible(esEstudiante);
-        vista.txtFacultad.setVisible(esEstudiante);
-        vista.lblCarrera.setVisible(esEstudiante);
-        vista.txtCarrera.setVisible(esEstudiante);
-
-        // Forzamos a la ventana a redibujarse para que no queden huecos
-        vista.revalidate();
-        vista.repaint();
+        this.vista.chkMostrarPassword.addActionListener(e -> {
+            if (this.vista.chkMostrarPassword.isSelected()) {
+                this.vista.txtPassword.setEchoChar((char) 0);
+            } else {
+                this.vista.txtPassword.setEchoChar('•');
+            }
+        });
     }
 
     private void guardarDatos() {
@@ -44,22 +33,27 @@ public class RegistroControl {
         // Extraer datos de la vista
         String nombre = vista.txtNombre.getText();
         String password = new String(vista.txtPassword.getPassword());
-        String rol = (String) vista.comboRol.getSelectedItem();
         String telf = vista.txtTelefono.getText();
         String email = vista.txtEmail.getText();
 
-        // Si no es estudiante, enviamos "N/A" para mantener la estructura del TXT
-        String facultad = vista.txtFacultad.isVisible() ? vista.txtFacultad.getText() : "N/A";
-        String carrera = vista.txtCarrera.isVisible() ? vista.txtCarrera.getText() : "N/A";
- 
-        //Validacion del rol
-        if (rol.equals("Seleccione un rol")) {
-            JOptionPane.showMessageDialog(vista, "Por favor seleccione un rol (Estudiante/Empleado)");
+        if (!esEmailValido(email)) {
+            JOptionPane.showMessageDialog(vista, "Correo invalido. Debe ser @ucv.ve o @gmail.com");
+            return;
+        }
+
+        if (password.length() < 6) {
+            JOptionPane.showMessageDialog(vista, "La contraseña debe tener al menos 6 caracteres");
+            return;
+        }
+
+        String rol = modelo.obtenerRolDesdeArchivo(email);
+        if (rol == null || rol.isEmpty()) {
+            JOptionPane.showMessageDialog(vista, "Correo no registrado en Usuarios_UCV.txt");
             return;
         }
 
         // Llamar al modelo para guardar
-        boolean exito = modelo.registrarUsuario(nombre, email, password, rol, telf, facultad, carrera);
+        boolean exito = modelo.registrarUsuario(nombre, email, password, rol, telf);
 
         if (exito) {
             JOptionPane.showMessageDialog(vista, "Usuario registrado con éxito en Usuarios.txt");
@@ -76,13 +70,15 @@ public class RegistroControl {
     private void limpiarCampos() {
         vista.txtNombre.setText("");
         vista.txtPassword.setText("");
-        vista.comboRol.setSelectedIndex(0);
         vista.txtTelefono.setText("");
         vista.txtEmail.setText("");
-        vista.txtFacultad.setText("");
-        vista.txtCarrera.setText("");
+    }
 
-        //Al limpiar se ocultan de nuevo los campos
-        actualizarVisibilidad();
+    private boolean esEmailValido(String email) {
+        if (email == null || email.isEmpty()) {
+            return false;
+        }
+
+        return email.matches("^[^@\\s]+@(ucv\\.ve|gmail\\.com)$");
     }
 }
