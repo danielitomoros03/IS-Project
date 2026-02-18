@@ -23,13 +23,12 @@ public class RegUsuarioModelo{
     //Uno todos los datos
     String linea = nombre + "," + email + "," + password + "," + rol + "," + telf + "," + facu + "," + carrera;
 
-    //Sobreescribo lo que habia antes y guardo con false
+    // Guardar en modo append para no sobrescribir usuarios existentes
         try {
-            FileWriter escritor = new FileWriter(nombreArchivo, false);
-        
-            escritor.write(linea + "\n");
+            FileWriter escritor = new FileWriter(nombreArchivo, true);
+            escritor.write(linea + System.lineSeparator());
             escritor.close();
-            System.out.println("Archivo sobrescrito con éxito.");
+            System.out.println("Usuario agregado con éxito.");
             return true;
 
         } catch (IOException e) {
