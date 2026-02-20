@@ -1,8 +1,23 @@
 package com.example.Vista;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 public class BienvenidoVista extends JFrame {
 
@@ -17,10 +32,12 @@ public class BienvenidoVista extends JFrame {
     private JButton btnLogout;
 
     // Botones del menu
-    private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil;
+    private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil, btnMonedero;
     
     // Boton para admin
     private JButton btnConfigCCB; 
+
+    private DashUserPanel dashPanel;
 
     public BienvenidoVista(String usuario, String rol) {
         setTitle("Sistema de Gestión - UCV");
@@ -60,6 +77,10 @@ public class BienvenidoVista extends JFrame {
 
         btnHistorial = crearBotonMenu("Historial"); 
         sidebar.add(btnHistorial);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        btnMonedero = crearBotonMenu("Monedero");
+        sidebar.add(btnMonedero);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         if (rol != null && rol.equalsIgnoreCase("Administrador")) {
@@ -116,7 +137,7 @@ public class BienvenidoVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
         mainContainer.setBackground(COLOR_BG);
 
-        DashUserPanel dashPanel = new DashUserPanel();
+        dashPanel = new DashUserPanel();
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
         RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(); 
         JPanel hist = new JPanel(); 
@@ -167,7 +188,7 @@ public class BienvenidoVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnPerfil, btnConfigCCB};
+        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnMonedero, btnPerfil, btnConfigCCB};
 
         for (JButton b : botones) {
             if (b == null) continue; // Si no es admin, btnConfigCCB es null
@@ -190,6 +211,10 @@ public class BienvenidoVista extends JFrame {
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
     public JButton getBtnConfigCCB() { return btnConfigCCB; }
+    public JButton getBtnMonederoSidebar() { return btnMonedero; }
+    public JButton getBtnMonedero() {
+        return dashPanel != null ? dashPanel.getBtnMonedero() : null;
+    }
 
     public void changeView(String nombreVista) {
         cardLayout.show(mainContainer, nombreVista);

@@ -2,22 +2,31 @@ package com.example.Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JOptionPane;
-import com.example.Vista.*;
+
+import com.example.Vista.BienvenidoVista;
 
 public class BienvenidoControl implements ActionListener {
 
     private BienvenidoVista vista;
+    private String usuarioEmail;
 
     public BienvenidoControl(String usuario, String rol) {
         this.vista = new BienvenidoVista(usuario, rol);
+        this.usuarioEmail = usuario;
 
         this.vista.getBtnDashboard().addActionListener(this);
         this.vista.getBtnMenuDia().addActionListener(this);
         this.vista.getBtnRegTurno().addActionListener(this);
         this.vista.getBtnHistorial().addActionListener(this);
+        this.vista.getBtnMonederoSidebar().addActionListener(this);
         this.vista.getBtnPerfil().addActionListener(this);
         this.vista.getBtnLogout().addActionListener(this);
+
+        if (this.vista.getBtnMonedero() != null) {
+            this.vista.getBtnMonedero().addActionListener(this);
+        }
 
         if (this.vista.getBtnConfigCCB() != null) {
             this.vista.getBtnConfigCCB().addActionListener(this);
@@ -52,6 +61,10 @@ public class BienvenidoControl implements ActionListener {
             vista.changeView("PERFIL_VISTA");
             vista.marcarBotonActivo(vista.getBtnPerfil());
         }
+        else if ("Monedero".equals(comando)) {
+            vista.marcarBotonActivo(vista.getBtnMonederoSidebar());
+            new MonederoControl(vista, usuarioEmail);
+        }
         // --- CASO NUEVO ---
         else if ("Configuración CCB".equals(comando)) {
             vista.changeView("CONFIG_CCB_VISTA");
@@ -64,6 +77,8 @@ public class BienvenidoControl implements ActionListener {
                 vista.dispose();
                 // new LoginControl(); 
             }
+        } else if (e.getSource() == vista.getBtnMonedero()) {
+            new MonederoControl(vista, usuarioEmail);
         }
     }
 }

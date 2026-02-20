@@ -1,14 +1,28 @@
 package com.example.Vista;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.*;
 
 public class DashUserPanel extends JPanel {
     private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(34, 120, 64);
     private final Color COLOR_TEXT_DARK = new Color(33, 37, 41);
+    private JButton btnMonedero;
     //private final Color COLOR_GO = new Color(220, 220, 220); // Gris oscurito
     
     public DashUserPanel() {
@@ -67,6 +81,27 @@ public class DashUserPanel extends JPanel {
         cardsContainer.add(cardMenu);
         cardsContainer.add(cardTurno);
         add(cardsContainer);
+        add(Box.createRigidArea(new Dimension(0, 20)));
+
+        JPanel cardMonedero = crearTarjetaBase("Monedero Digital", "Consulta tu saldo y recargas");
+        JPanel contentMonedero = new JPanel(new BorderLayout());
+        contentMonedero.setBackground(Color.WHITE);
+
+        JLabel lblInfo = new JLabel("Gestiona tu saldo desde aqui");
+        lblInfo.setForeground(Color.GRAY);
+        lblInfo.setBorder(new EmptyBorder(0, 0, 10, 0));
+
+        btnMonedero = new JButton("Ver monedero");
+        btnMonedero.setBackground(COLOR_PRIMARY);
+        btnMonedero.setForeground(Color.WHITE);
+        btnMonedero.setFocusPainted(false);
+        btnMonedero.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        contentMonedero.add(lblInfo, BorderLayout.NORTH);
+        contentMonedero.add(btnMonedero, BorderLayout.WEST);
+        cardMonedero.add(contentMonedero, BorderLayout.CENTER);
+
+        add(cardMonedero);
         add(Box.createVerticalGlue());
     }
 
@@ -119,6 +154,10 @@ public class DashUserPanel extends JPanel {
             body = (JPanel) center;
         }
         body.add(row);
+    }
+
+    public JButton getBtnMonedero() {
+        return btnMonedero;
     }
 
 }
