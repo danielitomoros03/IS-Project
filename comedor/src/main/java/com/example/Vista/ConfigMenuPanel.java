@@ -156,4 +156,19 @@ public class ConfigMenuPanel extends JPanel {
 
     public JButton getBtnCrear() { return btnCrear; }
     
+    //Para simular la consulta desde el código o desde el test
+    public void realizarConsulta(String texto) {
+        if (texto.trim().length() == 0){
+            sorter.setRowFilter(null);
+        } 
+        else{
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto));
+        }
+    }
+
+    // Getter para acceder a la tabla y verificar sus filas en la prueba
+    public JTable getTabla(){ 
+        return tabla; 
+    }
+
 }
