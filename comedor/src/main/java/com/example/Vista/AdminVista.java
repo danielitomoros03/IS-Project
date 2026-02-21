@@ -18,7 +18,7 @@ public class AdminVista extends JFrame {
     private JButton btnLogout;
 
     // Botones específicos para Administrador
-    private JButton btnDashboard, btnReporte, btnGestionInsumo, btnGestionMenu, btnPerfil;
+    private JButton btnDashboard, btnReporte, btnGestionInsumo, btnGestionMenu, btnPerfil, btnConfigCcb;
 
     public AdminVista(String usuario, String rol) {
         setTitle("Panel de Administración - UCV Comedor");
@@ -57,6 +57,11 @@ public class AdminVista extends JFrame {
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(btnReporte);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+        sidebar.add(btnPerfil);
+
+        sidebar.add(btnConfigCcb);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+
         sidebar.add(btnPerfil);
 
         sidebar.add(Box.createVerticalGlue());
@@ -98,12 +103,15 @@ public class AdminVista extends JFrame {
         DashAdminVista dashAdmin = new DashAdminVista();
         vistaConfig = new ConfigMenuPanel();
         ReportePanel vistaReporte = new ReportePanel();
-        // Aqui van las otras vistas
+        
+        //Instanciar la vista de CCB
+        ConfiguracionCCBPanel vistaCcb = new ConfiguracionCCBPanel();
 
         // Las añadimos al contenedor principal
         mainContainer.add(dashAdmin, "DASH_VISTA");
         mainContainer.add(vistaConfig, "MENU_VISTA");
         mainContainer.add(vistaReporte, "REPORTE_VISTA");
+        mainContainer.add(vistaCcb, "CCB_VISTA");
 
         add(mainContainer, BorderLayout.CENTER);
     }
@@ -141,7 +149,7 @@ public class AdminVista extends JFrame {
 
     public void marcarBotonActivo(JButton botonActivo) {
         // Lista de todos los botones de la sidebar
-        JButton[] botones = {btnDashboard, btnGestionMenu, btnGestionInsumo, btnReporte, btnPerfil};
+        JButton[] botones = {btnDashboard, btnGestionMenu, btnGestionInsumo, btnReporte, btnPerfil, btnConfigCcb};
 
         for (JButton b : botones) {
             if (b == botonActivo) {

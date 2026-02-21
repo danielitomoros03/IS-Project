@@ -21,6 +21,8 @@ public class AdminControl implements ActionListener{
         this.vista.getBtnPerfil().addActionListener(this);
         this.vista.getBtnLogout().addActionListener(this);
 
+        this.vista.getBtnConfigCcb().addActionListener(this);
+
         this.vista.getConfigMenuPanel().getBtnCrear().addActionListener(this);
         
         this.vista.changeView("DASH_VISTA");

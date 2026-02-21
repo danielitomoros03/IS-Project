@@ -82,7 +82,7 @@ public class Login extends JFrame {
         btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnRegistrar = new JButton("Resgistrarse");
+        btnRegistrar = new JButton("Registrarse");
         btnRegistrar.setBackground(new Color(34, 120, 64));
         btnRegistrar.setForeground(Color.WHITE);
         btnRegistrar.setFocusPainted(false);
