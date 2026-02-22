@@ -55,6 +55,17 @@ public class MonederoModel {
     }
 
     public void registrarRecarga(String email, BigDecimal monto) throws IOException {
+        registrarMovimiento(email, monto);
+    }
+
+    public void registrarCobro(String email, BigDecimal monto) throws IOException {
+        if (monto == null) {
+            throw new IllegalArgumentException("Monto invalido.");
+        }
+        registrarMovimiento(email, monto.negate());
+    }
+
+    private void registrarMovimiento(String email, BigDecimal monto) throws IOException {
         File archivo = new File(nombreArchivo);
         if (!archivo.exists()) {
             archivo.createNewFile();
