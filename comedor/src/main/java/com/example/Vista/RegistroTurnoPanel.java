@@ -150,7 +150,7 @@ public class RegistroTurnoPanel extends JPanel {
                         return;
                     }
 
-                    BigDecimal tarifa = obtenerTarifaUsuario();
+                    BigDecimal tarifa = obtenerTarifaUsuario(turno.getTipo());
                     if (!verificarSaldoDisponible(tarifa)) {
                         return;
                     }
@@ -185,17 +185,14 @@ public class RegistroTurnoPanel extends JPanel {
         List<Turno> lista = new ArrayList<>();
         // ID, Nombre, Capacidad, Ocupados, HoraLimite (Formato 24h)
         
-        // Turno 1: Casi lleno
-        lista.add(new Turno("T1", "11:00 AM - 12:00 PM", 50, 48, "10:30")); 
-        
-        // Turno 2: Lleno (Para probar Escenario 2)
-        lista.add(new Turno("T2", "12:00 PM - 01:00 PM", 50, 50, "11:30")); 
-        
-        // Turno 3: Disponible
-        lista.add(new Turno("T3", "01:00 PM - 02:00 PM", 50, 10, "12:30"));
-        
-        // Turno 4: Cena (Para probar Escenario 3 dependiendo de tu hora actual)
-        lista.add(new Turno("T4", "06:00 PM - 07:00 PM", 50, 5, "17:30"));
+        // Turno 1: Desayuno
+        lista.add(new Turno("T1", "08:00 AM - 09:00 AM", "Desayuno", 50, 10, "07:30"));
+
+        // Turno 2: Almuerzo (Para probar Escenario 2)
+        lista.add(new Turno("T2", "12:00 PM - 01:00 PM", "Almuerzo", 50, 50, "11:30"));
+
+        // Turno 3: Almuerzo Disponible
+        lista.add(new Turno("T3", "01:00 PM - 02:00 PM", "Almuerzo", 50, 10, "12:30"));
         
         return lista;
     }
@@ -246,7 +243,7 @@ public class RegistroTurnoPanel extends JPanel {
         return nombre.endsWith(".jpg") || nombre.endsWith(".jpeg") || nombre.endsWith(".png");
     }
 
-    private BigDecimal obtenerTarifaUsuario() {
+    private BigDecimal obtenerTarifaUsuario(String tipoTurno) {
         List<CcbRecord> registros = ccbModel.obtenerRegistros();
         if (registros == null || registros.isEmpty()) {
             return TARIFA_FALLBACK;
@@ -255,17 +252,19 @@ public class RegistroTurnoPanel extends JPanel {
         CcbRecord ultimo = registros.get(registros.size() - 1);
         String rol = usuarioRol == null ? "" : usuarioRol.toLowerCase();
 
+        boolean esDesayuno = tipoTurno != null && tipoTurno.toLowerCase().contains("desayuno");
+
         if (rol.contains("estudiante")) {
-            return ultimo.getTarifaEst();
+            return esDesayuno ? ultimo.getTarifaEstDesayuno() : ultimo.getTarifaEstAlmuerzo();
         }
         if (rol.contains("profesor")) {
-            return ultimo.getTarifaProf();
+            return esDesayuno ? ultimo.getTarifaProfDesayuno() : ultimo.getTarifaProfAlmuerzo();
         }
         if (rol.contains("empleado")) {
-            return ultimo.getTarifaEmp();
+            return esDesayuno ? ultimo.getTarifaEmpDesayuno() : ultimo.getTarifaEmpAlmuerzo();
         }
 
-        return ultimo.getTarifaEmp();
+        return esDesayuno ? ultimo.getTarifaEmpDesayuno() : ultimo.getTarifaEmpAlmuerzo();
     }
 
     private boolean verificarSaldoDisponible(BigDecimal tarifa) {

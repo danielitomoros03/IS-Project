@@ -50,11 +50,19 @@ public class ConfiguracionCCBPanel extends JPanel {
     private JTextField txtNbProf;
     private JTextField txtNbEmp;
     private JTextField txtPctConcesionario;
+    private JTextField txtPctDesayuno;
+    private JTextField txtPctAlmuerzo;
 
     private JLabel lblResultadoCCB;
     private JLabel lblTarifaEst;
     private JLabel lblTarifaProf;
     private JLabel lblTarifaEmp;
+    private JLabel lblTarifaEstDes;
+    private JLabel lblTarifaEstAlm;
+    private JLabel lblTarifaProfDes;
+    private JLabel lblTarifaProfAlm;
+    private JLabel lblTarifaEmpDes;
+    private JLabel lblTarifaEmpAlm;
     private JLabel lblIngresoTotal;
     private JLabel lblSubsidioEst;
     private JLabel lblIngresoConcesionario;
@@ -179,6 +187,19 @@ public class ConfiguracionCCBPanel extends JPanel {
 
         row++;
         gbc.gridx = 0; gbc.gridy = row;
+        formPanel.add(crearLabel("Factor Desayuno (% sobre tarifa base):"), gbc);
+        gbc.gridx = 1;
+        txtPctDesayuno = crearInput();
+        formPanel.add(txtPctDesayuno, gbc);
+
+        gbc.gridx = 2; gbc.gridy = row;
+        formPanel.add(crearLabel("Factor Almuerzo (% sobre tarifa base):"), gbc);
+        gbc.gridx = 3;
+        txtPctAlmuerzo = crearInput();
+        formPanel.add(txtPctAlmuerzo, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row;
         formPanel.add(crearLabel("NB Estudiantes:"), gbc);
         gbc.gridx = 1;
         txtNbEst = crearInput();
@@ -216,12 +237,18 @@ public class ConfiguracionCCBPanel extends JPanel {
 
         row++;
         gbc.gridy = row;
-        JPanel resultados = new JPanel(new GridLayout(3, 3, 10, 8));
+        JPanel resultados = new JPanel(new GridLayout(5, 3, 10, 8));
         resultados.setBackground(Color.WHITE);
         lblResultadoCCB = crearValor("CCB: -");
         lblTarifaEst = crearValor("Tarifa Estudiante: -");
         lblTarifaProf = crearValor("Tarifa Profesor: -");
         lblTarifaEmp = crearValor("Tarifa Empleado: -");
+        lblTarifaEstDes = crearValor("Est. Desayuno: -");
+        lblTarifaEstAlm = crearValor("Est. Almuerzo: -");
+        lblTarifaProfDes = crearValor("Prof. Desayuno: -");
+        lblTarifaProfAlm = crearValor("Prof. Almuerzo: -");
+        lblTarifaEmpDes = crearValor("Emp. Desayuno: -");
+        lblTarifaEmpAlm = crearValor("Emp. Almuerzo: -");
         lblIngresoTotal = crearValor("Ingreso Total: -");
         lblSubsidioEst = crearValor("Subsidio Estudiante: -");
         lblIngresoConcesionario = crearValor("Concesionario: -");
@@ -231,6 +258,12 @@ public class ConfiguracionCCBPanel extends JPanel {
         resultados.add(lblTarifaEst);
         resultados.add(lblTarifaProf);
         resultados.add(lblTarifaEmp);
+        resultados.add(lblTarifaEstDes);
+        resultados.add(lblTarifaEstAlm);
+        resultados.add(lblTarifaProfDes);
+        resultados.add(lblTarifaProfAlm);
+        resultados.add(lblTarifaEmpDes);
+        resultados.add(lblTarifaEmpAlm);
         resultados.add(lblIngresoTotal);
         resultados.add(lblSubsidioEst);
         resultados.add(lblIngresoConcesionario);
@@ -274,6 +307,12 @@ public class ConfiguracionCCBPanel extends JPanel {
             lblTarifaEst.setText("Tarifa Estudiante: Bs " + formatear(record.getTarifaEst()));
             lblTarifaProf.setText("Tarifa Profesor: Bs " + formatear(record.getTarifaProf()));
             lblTarifaEmp.setText("Tarifa Empleado: Bs " + formatear(record.getTarifaEmp()));
+            lblTarifaEstDes.setText("Est. Desayuno: Bs " + formatear(record.getTarifaEstDesayuno()));
+            lblTarifaEstAlm.setText("Est. Almuerzo: Bs " + formatear(record.getTarifaEstAlmuerzo()));
+            lblTarifaProfDes.setText("Prof. Desayuno: Bs " + formatear(record.getTarifaProfDesayuno()));
+            lblTarifaProfAlm.setText("Prof. Almuerzo: Bs " + formatear(record.getTarifaProfAlmuerzo()));
+            lblTarifaEmpDes.setText("Emp. Desayuno: Bs " + formatear(record.getTarifaEmpDesayuno()));
+            lblTarifaEmpAlm.setText("Emp. Almuerzo: Bs " + formatear(record.getTarifaEmpAlmuerzo()));
             lblIngresoTotal.setText("Ingreso Total: Bs " + formatear(record.getIngresoTotal()));
             lblSubsidioEst.setText("Subsidio Estudiante: Bs " + formatear(record.getSubsidioEst()));
             lblIngresoConcesionario.setText("Concesionario: Bs " + formatear(record.getIngresoConcesionario()));
@@ -312,6 +351,12 @@ public class ConfiguracionCCBPanel extends JPanel {
                 "Bs " + formatear(r.getTarifaEst()),
                 "Bs " + formatear(r.getTarifaProf()),
                 "Bs " + formatear(r.getTarifaEmp()),
+                "Bs " + formatear(r.getTarifaEstDesayuno()),
+                "Bs " + formatear(r.getTarifaEstAlmuerzo()),
+                "Bs " + formatear(r.getTarifaProfDesayuno()),
+                "Bs " + formatear(r.getTarifaProfAlmuerzo()),
+                "Bs " + formatear(r.getTarifaEmpDesayuno()),
+                "Bs " + formatear(r.getTarifaEmpAlmuerzo()),
                 "Bs " + formatear(r.getIngresoTotal()),
                 "Bs " + formatear(r.getSubsidioEst()),
                 "Bs " + formatear(r.getIngresoConcesionario()),
@@ -323,6 +368,7 @@ public class ConfiguracionCCBPanel extends JPanel {
     private JScrollPane crearTablaHistorico() {
         String[] columnas = {
             "Periodo", "CCB", "Tarifa Est", "Tarifa Prof", "Tarifa Emp",
+            "Est Des", "Est Alm", "Prof Des", "Prof Alm", "Emp Des", "Emp Alm",
             "Ingreso Total", "Subsidio Est", "Concesionario", "Ingreso Propio"
         };
         modeloTabla = new DefaultTableModel(columnas, 0) {
@@ -372,6 +418,8 @@ public class ConfiguracionCCBPanel extends JPanel {
         BigDecimal pctProf = parsePorcentaje(txtPctProf.getText(), "% Profesores", new BigDecimal("70"), new BigDecimal("90"));
         BigDecimal pctEmp = parsePorcentaje(txtPctEmp.getText(), "% Empleados", new BigDecimal("90"), new BigDecimal("110"));
         BigDecimal pctConces = parsePorcentaje(txtPctConcesionario.getText(), "% Concesionario", new BigDecimal("25"), new BigDecimal("30"));
+        BigDecimal pctDesayuno = parsePorcentaje(txtPctDesayuno.getText(), "Factor Desayuno", new BigDecimal("50"), new BigDecimal("150"));
+        BigDecimal pctAlmuerzo = parsePorcentaje(txtPctAlmuerzo.getText(), "Factor Almuerzo", new BigDecimal("50"), new BigDecimal("150"));
 
         BigDecimal nbEst = parseMonto(txtNbEst.getText(), "NB Estudiantes");
         BigDecimal nbProf = parseMonto(txtNbProf.getText(), "NB Profesores");
@@ -389,6 +437,13 @@ public class ConfiguracionCCBPanel extends JPanel {
         BigDecimal tarifaEst = ccb.multiply(pctEst).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
         BigDecimal tarifaProf = ccb.multiply(pctProf).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
         BigDecimal tarifaEmp = ccb.multiply(pctEmp).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+
+        BigDecimal tarifaEstDes = tarifaEst.multiply(pctDesayuno).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal tarifaEstAlm = tarifaEst.multiply(pctAlmuerzo).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal tarifaProfDes = tarifaProf.multiply(pctDesayuno).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal tarifaProfAlm = tarifaProf.multiply(pctAlmuerzo).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal tarifaEmpDes = tarifaEmp.multiply(pctDesayuno).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal tarifaEmpAlm = tarifaEmp.multiply(pctAlmuerzo).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 
         BigDecimal ingresoTotal = tarifaEst.multiply(nbEst)
             .add(tarifaProf.multiply(nbProf))
@@ -411,7 +466,11 @@ public class ConfiguracionCCBPanel extends JPanel {
             pctEst, pctProf, pctEmp,
             nbEst, nbProf, nbEmp, pctConces,
             ccb, tarifaEst, tarifaProf, tarifaEmp,
-            ingresoTotal, subsidioEst, ingresoConcesionario, ingresoPropio, excedente
+            ingresoTotal, subsidioEst, ingresoConcesionario, ingresoPropio, excedente,
+            pctDesayuno, pctAlmuerzo,
+            tarifaEstDes, tarifaEstAlm,
+            tarifaProfDes, tarifaProfAlm,
+            tarifaEmpDes, tarifaEmpAlm
         );
     }
 

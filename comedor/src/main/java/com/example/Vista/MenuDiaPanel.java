@@ -1,11 +1,24 @@
 package com.example.Vista;
 
-import com.example.Modelo.Plato;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.util.ArrayList;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.time.LocalDate;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import com.example.Modelo.MenuModel;
+import com.example.Modelo.MenuRecord;
 
 public class MenuDiaPanel extends JPanel {
 
@@ -24,8 +37,9 @@ public class MenuDiaPanel extends JPanel {
         panelPlatos.setLayout(new BoxLayout(panelPlatos, BoxLayout.Y_AXIS));
         panelPlatos.setBackground(Color.WHITE);
 
-        // --- LÓGICA DE NEGOCIO SIMULADA ---
-        List<Plato> menuDelDia = obtenerMenuBackend(); 
+        // --- LÓGICA DE NEGOCIO ---
+        MenuModel menuModel = new MenuModel();
+        List<MenuRecord> menuDelDia = menuModel.obtenerMenusPorFecha(LocalDate.now());
 
         // --- VALIDACIÓN DE CRITERIOS DE ACEPTACIÓN ---
         
@@ -39,9 +53,9 @@ public class MenuDiaPanel extends JPanel {
         } 
         // ESCENARIO: Consulta con éxito
         else {
-            for (Plato plato : menuDelDia) {
-                panelPlatos.add(crearTarjetaPlato(plato));
-                panelPlatos.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio entre platos
+            for (MenuRecord menu : menuDelDia) {
+                panelPlatos.add(crearTarjetaMenu(menu));
+                panelPlatos.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio entre menus
             }
         }
 
@@ -51,8 +65,8 @@ public class MenuDiaPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    // Método auxiliar para crear una tarjeta visual de cada plato
-    private JPanel crearTarjetaPlato(Plato plato) {
+    // Método auxiliar para crear una tarjeta visual de cada menu
+    private JPanel crearTarjetaMenu(MenuRecord menu) {
         JPanel tarjeta = new JPanel();
         tarjeta.setLayout(new BorderLayout());
         tarjeta.setBorder(BorderFactory.createCompoundBorder(
@@ -62,25 +76,14 @@ public class MenuDiaPanel extends JPanel {
         tarjeta.setBackground(Color.WHITE);
         tarjeta.setMaximumSize(new Dimension(600, 180)); // Tamaño fijo para uniformidad
 
-        // Nombre del plato
-        JLabel lblNombre = new JLabel(plato.getNombre());
+        // Nombre del turno
+        JLabel lblNombre = new JLabel("Turno: " + menu.getTurno());
         lblNombre.setFont(new Font("Arial", Font.BOLD, 18));
         lblNombre.setForeground(new Color(50, 50, 50));
 
-        // Descripción
-        JLabel lblDesc = new JLabel("<html><i>" + plato.getDescripcion() + "</i></html>");
+        // Listado de platos
+        JLabel lblDesc = new JLabel("<html><i>" + menu.getPlatosTexto() + "</i></html>");
         lblDesc.setFont(new Font("Arial", Font.PLAIN, 14));
-        
-        // Panel de información nutricional
-        JPanel panelInfo = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
-        panelInfo.setBackground(Color.WHITE);
-        panelInfo.setBorder(new EmptyBorder(10, 0, 0, 0));
-
-        // Usamos HTML en JLabels para formateo rápido de negritas
-        panelInfo.add(new JLabel("<html><b>Calorías:</b> " + plato.getCalorias() + " kcal</html>"));
-        panelInfo.add(new JLabel("<html><b>Proteínas:</b> " + plato.getProteinas() + "g</html>"));
-        panelInfo.add(new JLabel("<html><b>Grasas:</b> " + plato.getGrasas() + "g</html>"));
-        panelInfo.add(new JLabel("<html><b>Carbos:</b> " + plato.getCarbohidratos() + "g</html>"));
 
         // Armado de la tarjeta
         JPanel panelTexto = new JPanel(new GridLayout(2, 1));
@@ -88,27 +91,8 @@ public class MenuDiaPanel extends JPanel {
         panelTexto.add(lblNombre);
         panelTexto.add(lblDesc);
 
-        tarjeta.add(panelTexto, BorderLayout.NORTH);
-        tarjeta.add(panelInfo, BorderLayout.CENTER);
+        tarjeta.add(panelTexto, BorderLayout.CENTER);
 
         return tarjeta;
-    }
-
-    /**
-     * Método simulado que representa la conexión a la base de datos.
-     * Para probar el escenario de "No hay menú", simplemente retorna una lista vacía.
-     */
-    private List<Plato> obtenerMenuBackend() {
-        List<Plato> lista = new ArrayList<>();
-        
-        // COMENTEN ESTAS LÍNEAS PARA PROBAR EL ESCENARIO DE SI NO HAY MENÚ
-        lista.add(new Plato("Pollo al Horno con Papas", "Cuarto de pollo marinado en finas hierbas", 
-                            450, 35.5, 12.0, 40.0));
-        lista.add(new Plato("Ensalada César", "Lechuga, crutones, queso parmesano y aderezo", 
-                            320, 15.0, 18.5, 10.0));
-        lista.add(new Plato("Lentejas con Arroz", "Estofado casero de lentejas", 
-                            500, 25.0, 8.0, 60.0));
-        
-        return lista;
     }
 }

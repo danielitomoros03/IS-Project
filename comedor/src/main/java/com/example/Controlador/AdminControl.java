@@ -47,7 +47,7 @@ public class AdminControl implements ActionListener{
             vista.marcarBotonActivo(vista.getBtnGestionMenu());
         }         
         else if ("+ Crear Nuevo Menú".equals(comando)) {
-            abrirFormularioMenu();
+            vista.getConfigMenuPanel().abrirDialogoCrear(vista);
         }
         else if ("Gestión de Insumos".equals(comando)) {
             vista.changeView("INSUMOS_VISTA");
@@ -69,21 +69,6 @@ public class AdminControl implements ActionListener{
             }
         }
 
-    }
-
-    private void abrirFormularioMenu() {
-        CrearMenuDialog dialogo = new CrearMenuDialog(vista);
-    
-        // Aquí se puede añadir un listener al botón de guardar del diálogo
-        // para que el controlador maneje la inserción a la Base de Datos
-        dialogo.getBtnSave().addActionListener(saveEvt -> {
-        // Lógica para capturar datos y enviarlos al MODELO
-        System.out.println("Enviando datos al modelo de base de datos.");
-        dialogo.dispose();
-        JOptionPane.showMessageDialog(vista, "¡Menú creado exitosamente!");
-        });
-
-        dialogo.setVisible(true);
     }
 
 }

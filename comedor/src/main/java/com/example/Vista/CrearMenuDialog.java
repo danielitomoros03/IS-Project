@@ -3,6 +3,14 @@ package com.example.Vista;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.example.Modelo.MenuRecord;
 
 
 public class CrearMenuDialog extends JDialog {
@@ -11,9 +19,22 @@ public class CrearMenuDialog extends JDialog {
     private JButton btnSave;
     private JLabel lblCounter;
     private int seleccionados = 0;
+    private JTextField txtFecha;
+    private JComboBox<String> comboTurno;
+    private final Map<String, JCheckBox> platosMap = new HashMap<>();
 
     public CrearMenuDialog(JFrame parent) {
         super(parent, "Crear Nuevo Menú", true);
+        construirUI();
+    }
+
+    public CrearMenuDialog(JFrame parent, MenuRecord existente) {
+        super(parent, "Editar Menú", true);
+        construirUI();
+        precargar(existente);
+    }
+
+    private void construirUI() {
         setSize(500, 700); // Un poco más alto para el contador
         setLocationRelativeTo(parent);
         setUndecorated(true); 
@@ -42,13 +63,14 @@ public class CrearMenuDialog extends JDialog {
         body.setBackground(Color.WHITE);
         body.setBorder(new EmptyBorder(10, 25, 10, 25));
 
-        body.add(crearLabel("Fecha"));
-        body.add(new JTextField("  8 de febrero, 2026"));
+        body.add(crearLabel("Fecha (YYYY-MM-DD)"));
+        txtFecha = new JTextField("  ");
+        body.add(txtFecha);
         body.add(Box.createVerticalStrut(15));
 
         body.add(crearLabel("Turno"));
-        String[] turnos = {"Selecciona un turno", "Desayuno", "Almuerzo", "Cena"};
-        JComboBox<String> comboTurno = new JComboBox<>(turnos);
+        String[] turnos = {"Selecciona un turno", "Desayuno", "Almuerzo"};
+        comboTurno = new JComboBox<>(turnos);
         body.add(comboTurno);
         body.add(Box.createVerticalStrut(15));
 
@@ -76,6 +98,7 @@ public class CrearMenuDialog extends JDialog {
                 lblCounter.setText(seleccionados + " platos seleccionados");
             });
             gridPlatos.add(cb);
+            platosMap.put(plato, cb);
         }
 
         JScrollPane scrollPlatos = new JScrollPane(gridPlatos);
@@ -107,12 +130,6 @@ public class CrearMenuDialog extends JDialog {
         btnSave.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         btnSave.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Lintener
-        btnSave.addActionListener(e -> {
-            System.out.println("Menú creado con " + seleccionados + " platos.");
-            dispose(); 
-        });
-
         footer.add(btnCancel);
         footer.add(btnSave);
 
@@ -132,4 +149,64 @@ public class CrearMenuDialog extends JDialog {
 
     //Para el controlador
     public JButton getBtnSave() { return btnSave; }
+
+    public MenuRecord construirMenu() {
+        LocalDate fecha = parseFecha(txtFecha.getText());
+        String turno = (String) comboTurno.getSelectedItem();
+        if (turno == null || "Selecciona un turno".equals(turno)) {
+            throw new IllegalArgumentException("Selecciona un turno valido.");
+        }
+        List<String> platos = obtenerPlatosSeleccionados();
+        if (platos.isEmpty()) {
+            throw new IllegalArgumentException("Selecciona al menos un plato.");
+        }
+        return new MenuRecord(fecha, turno, platos);
+    }
+
+    public MenuRecord construirMenuConId(String id) {
+        MenuRecord base = construirMenu();
+        return new MenuRecord(id, base.getFecha(), base.getTurno(), base.getPlatos());
+    }
+
+    private LocalDate parseFecha(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("Completa la fecha del menu.");
+        }
+        try {
+            LocalDate fecha = LocalDate.parse(texto.trim());
+            if (fecha.isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("La fecha del menu no puede ser anterior a hoy.");
+            }
+            return fecha;
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("Formato de fecha invalido. Usa YYYY-MM-DD.");
+        }
+    }
+
+    private List<String> obtenerPlatosSeleccionados() {
+        List<String> seleccion = new ArrayList<>();
+        for (Map.Entry<String, JCheckBox> entry : platosMap.entrySet()) {
+            if (entry.getValue().isSelected()) {
+                seleccion.add(entry.getKey());
+            }
+        }
+        return seleccion;
+    }
+
+    private void precargar(MenuRecord existente) {
+        if (existente == null) {
+            return;
+        }
+        txtFecha.setText(existente.getFecha().toString());
+        comboTurno.setSelectedItem(existente.getTurno());
+        seleccionados = 0;
+        for (String plato : existente.getPlatos()) {
+            JCheckBox cb = platosMap.get(plato);
+            if (cb != null) {
+                cb.setSelected(true);
+                seleccionados++;
+            }
+        }
+        lblCounter.setText(seleccionados + " platos seleccionados");
+    }
 }

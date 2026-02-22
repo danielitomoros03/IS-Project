@@ -7,6 +7,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import com.example.Modelo.MenuModel;
+import com.example.Modelo.MenuRecord;
 
 public class DashUserPanel extends JPanel {
     private final Color COLOR_BG = new Color(245, 247, 250);
@@ -48,8 +53,9 @@ public class DashUserPanel extends JPanel {
         cardsContainer.setMaximumSize(new Dimension(2000, 300));
 
         // Tarjeta Menú
-        JPanel cardMenu = crearTarjetaBase("Menú de Hoy", "(Fecha de hoy)");
-        agregarFilaMenu(cardMenu, "Entrada", "Ensalada César", "Plato Principal", "Pollo al horno");
+        String hoyTexto = LocalDate.now().toString();
+        JPanel cardMenu = crearTarjetaBase("Menú de Hoy", hoyTexto);
+        cargarResumenMenu(cardMenu);
         
         // Tarjeta Turno
         JPanel cardTurno = crearTarjetaBase("Tu Turno Registrado", "Hoy");
@@ -154,6 +160,18 @@ public class DashUserPanel extends JPanel {
             body = (JPanel) center;
         }
         body.add(row);
+    }
+
+    private void cargarResumenMenu(JPanel cardMenu) {
+        MenuModel menuModel = new MenuModel();
+        List<MenuRecord> menus = menuModel.obtenerMenusPorFecha(LocalDate.now());
+        if (menus == null || menus.isEmpty()) {
+            agregarFilaMenu(cardMenu, "Estado", "No hay menú", "", "");
+            return;
+        }
+        for (MenuRecord menu : menus) {
+            agregarFilaMenu(cardMenu, menu.getTurno(), menu.getPlatosTexto(), "", "");
+        }
     }
 
     public JButton getBtnMonedero() {
