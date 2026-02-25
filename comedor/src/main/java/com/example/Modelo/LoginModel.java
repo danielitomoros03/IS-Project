@@ -10,6 +10,7 @@ public class LoginModel {
     private final int MaxIntentos = 5;
     private boolean bloqueado = false;
     private final String nombreArchivo = "Usuarios.txt";
+    private static final String DEMO_ADMIN_EMAIL = "admin@ucv.ve";
 
     public String autenticar(String email, String password) throws Exception {
 
@@ -26,6 +27,12 @@ public class LoginModel {
         // Validación de dominio
         if (!email.toLowerCase().endsWith("@ucv.ve")) {
             throw new Exception("Solo se permiten correos del dominio @ucv.ve");
+        }
+
+        String emailNormalizado = email.trim().toLowerCase();
+
+        if (esCredencialDemoAdmin(emailNormalizado)) {
+            return "Administrador";
         }
 
         // Búsqueda en el "archivo"
@@ -64,6 +71,10 @@ public class LoginModel {
             // Si el archivo no existe (nadie se ha registrado aun)
             throw new Exception("No hay usuarios registrados en el sistema.");
         }
+    }
+
+    private boolean esCredencialDemoAdmin(String emailNormalizado) {
+        return DEMO_ADMIN_EMAIL.equals(emailNormalizado);
     }
 
     // Extraemos la lógica de fallos para que el código sea más limpio
