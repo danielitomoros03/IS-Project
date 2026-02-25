@@ -1,15 +1,13 @@
 package com.example.Modelo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.math.BigDecimal;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.nio.file.Path;
 
 public class MonederoModelTest {
 
@@ -20,6 +18,7 @@ public class MonederoModelTest {
     private MonederoModel model;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         originalUserDir = System.getProperty("user.dir");
         System.setProperty("user.dir", tempDir.toString());
@@ -27,6 +26,7 @@ public class MonederoModelTest {
     }
 
     @AfterEach
+    @SuppressWarnings("unused")
     void tearDown() {
         System.setProperty("user.dir", originalUserDir);
     }

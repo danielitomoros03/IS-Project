@@ -1,18 +1,16 @@
 package com.example.Modelo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.nio.file.Path;
 
 public class CcbModelTest {
 
@@ -23,6 +21,7 @@ public class CcbModelTest {
     private CcbModel model;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         originalUserDir = System.getProperty("user.dir");
         System.setProperty("user.dir", tempDir.toString());
@@ -30,6 +29,7 @@ public class CcbModelTest {
     }
 
     @AfterEach
+    @SuppressWarnings("unused")
     void tearDown() {
         System.setProperty("user.dir", originalUserDir);
     }
@@ -81,6 +81,7 @@ public class CcbModelTest {
             new BigDecimal("50.00"),
             new BigDecimal("70.00"),
             new BigDecimal("230.00"),
+            new BigDecimal("0.00"),
             new BigDecimal("100"),
             new BigDecimal("100"),
             new BigDecimal("8.50"),

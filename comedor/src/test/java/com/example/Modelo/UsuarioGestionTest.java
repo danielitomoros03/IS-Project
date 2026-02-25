@@ -1,15 +1,14 @@
 package com.example.Modelo;
 
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.nio.file.Path;
 
 public class UsuarioGestionTest {
 
@@ -19,12 +18,14 @@ public class UsuarioGestionTest {
     private String originalUserDir;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         originalUserDir = System.getProperty("user.dir");
         System.setProperty("user.dir", tempDir.toString());
     }
 
     @AfterEach
+    @SuppressWarnings("unused")
     void tearDown() {
         System.setProperty("user.dir", originalUserDir);
     }
