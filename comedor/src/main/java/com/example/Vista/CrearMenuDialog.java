@@ -1,8 +1,12 @@
 package com.example.Vista;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -10,12 +14,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
 import com.example.Modelo.MenuRecord;
 
 
 public class CrearMenuDialog extends JDialog {
 
     private final Color COLOR_PRIMARY = new Color(33, 115, 70);
+    private final JFrame owner;
     private JButton btnSave;
     private JLabel lblCounter;
     private int seleccionados = 0;
@@ -25,18 +44,20 @@ public class CrearMenuDialog extends JDialog {
 
     public CrearMenuDialog(JFrame parent) {
         super(parent, "Crear Nuevo Menú", true);
+        this.owner = parent;
         construirUI();
     }
 
     public CrearMenuDialog(JFrame parent, MenuRecord existente) {
         super(parent, "Editar Menú", true);
+        this.owner = parent;
         construirUI();
         precargar(existente);
     }
 
     private void construirUI() {
         setSize(500, 700); // Un poco más alto para el contador
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(owner);
         setUndecorated(true); 
         
         JPanel mainPanel = new JPanel(new BorderLayout());

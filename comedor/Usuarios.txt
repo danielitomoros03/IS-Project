@@ -1,3 +1,4 @@
 Estudiante Demo,estudiante1@ucv.ve,123456,Estudiante,111111
 Empleado Demo,empleado1@ucv.ve,123456,Empleado,qqqq
 s,empleado1@ucv.ve,123456,Empleado,q
+Estudiante Demo,daniel@ucv.ve,123123,Estudiante,N/A

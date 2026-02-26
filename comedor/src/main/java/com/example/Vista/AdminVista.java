@@ -1,9 +1,23 @@
 package com.example.Vista;
 
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 public class AdminVista extends JFrame {
 
@@ -48,6 +62,7 @@ public class AdminVista extends JFrame {
         btnGestionInsumo = crearBotonMenu("Gestión de Insumos");
         btnReporte = crearBotonMenu("Reportes");
         btnPerfil = crearBotonMenu("Mi Perfil");
+        btnConfigCcb = crearBotonMenu("Configurar CCB");
 
         sidebar.add(btnDashboard);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -58,11 +73,9 @@ public class AdminVista extends JFrame {
         sidebar.add(btnReporte);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(btnPerfil);
-
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(btnConfigCcb);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        sidebar.add(btnPerfil);
 
         sidebar.add(Box.createVerticalGlue());
         JLabel version = new JLabel("Panel Administrativo v1.0");
@@ -170,6 +183,7 @@ public class AdminVista extends JFrame {
     public JButton getBtnReporte() { return btnReporte; }
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
+    public JButton getBtnConfigCcb() { return btnConfigCcb; }
     //Para el panel de menus
     public ConfigMenuPanel getConfigMenuPanel() { return vistaConfig; }
 

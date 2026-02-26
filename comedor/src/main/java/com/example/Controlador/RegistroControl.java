@@ -11,6 +11,11 @@ import com.example.Vista.RegistroVista;
 public class RegistroControl {
     private RegistroVista vista;
     private RegUsuarioModelo modelo;
+    private boolean correoValidado = false;
+    private String correoValidadoValor;
+    private String nombreDesdeSecretaria;
+    private String rolDesdeSecretaria;
+    private boolean pasoContrasena = false;
 
     public RegistroControl(RegistroVista vista, RegUsuarioModelo modelo) {
         this.vista = vista;
@@ -18,6 +23,9 @@ public class RegistroControl {
 
         // Listener del boton registrar
         this.vista.btnRegistrar.addActionListener(e -> guardarDatos());
+        this.vista.btnRegistrar.setText("Continuar");
+        this.vista.txtPassword.setEnabled(true);
+        this.vista.chkMostrarPassword.setEnabled(true);
 
         this.vista.chkMostrarPassword.addActionListener(e -> {
             if (this.vista.chkMostrarPassword.isSelected()) {
@@ -28,38 +36,62 @@ public class RegistroControl {
         });
     }
 
-    private void guardarDatos() {
-        
-        // Extraer datos de la vista
-        String nombre = vista.txtNombre.getText();
-        String password = new String(vista.txtPassword.getPassword());
-        String telf = vista.txtTelefono.getText();
+    private void validarCorreo() {
         String email = vista.txtEmail.getText();
+        if (email == null || email.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(vista, "Debe ingresar un correo");
+            marcarCorreoInvalido("Correo requerido");
+            return;
+        }
+        email = email.trim();
 
-        if (!esEmailValido(email)) {
-            JOptionPane.showMessageDialog(vista, "Correo invalido. Debe ser @ucv.ve o @gmail.com");
+        if (modelo.existeEnUsuarios(email)) {
+            JOptionPane.showMessageDialog(vista, "Este correo ya esta registrado");
+            marcarCorreoInvalido("Correo ya registrado");
             return;
         }
 
+        String[] datos = modelo.obtenerNombreYRolDesdeArchivo(email);
+        if (datos == null || datos.length < 2) {
+            JOptionPane.showMessageDialog(vista, "Correo no registrado en el listado de Secretaria (Usuarios_UCV.txt)");
+            marcarCorreoInvalido("Correo no encontrado");
+            return;
+        }
+
+        correoValidado = true;
+        correoValidadoValor = email;
+        nombreDesdeSecretaria = datos[0];
+        rolDesdeSecretaria = datos[1];
+
+        vista.lblEstadoCorreo.setForeground(new java.awt.Color(34, 120, 64));
+        vista.lblEstadoCorreo.setText("Correo valido");
+        vista.mostrarPasoContrasena();
+        vista.btnRegistrar.setText("Registrar");
+        pasoContrasena = true;
+    }
+
+    private void guardarDatos() {
+        if (!pasoContrasena) {
+            validarCorreo();
+            return;
+        }
+
+        String password = new String(vista.txtPassword.getPassword());
         if (password.length() < 6) {
             JOptionPane.showMessageDialog(vista, "La contraseña debe tener al menos 6 caracteres");
             return;
         }
 
-        String rol = modelo.obtenerRolDesdeArchivo(email);
-        if (rol == null || rol.isEmpty()) {
-            JOptionPane.showMessageDialog(vista, "Correo no registrado en Usuarios_UCV.txt");
-            return;
-        }
+        String nombre = nombreDesdeSecretaria;
+        String rol = rolDesdeSecretaria;
+        String email = correoValidadoValor;
 
-        // Llamar al modelo para guardar
-        boolean exito = modelo.registrarUsuario(nombre, email, password, rol, telf);
+        boolean exito = modelo.registrarUsuario(nombre, email, password, rol, "N/A");
 
         if (exito) {
             JOptionPane.showMessageDialog(vista, "Usuario registrado con éxito en Usuarios.txt");
             limpiarCampos();
             vista.dispose();
-            // Iniciamos un nuevo controlador de Login (esto abrirá la ventana de Login)
             new LoginControl();
 
         } else {
@@ -68,17 +100,29 @@ public class RegistroControl {
     }
 
     private void limpiarCampos() {
-        vista.txtNombre.setText("");
         vista.txtPassword.setText("");
-        vista.txtTelefono.setText("");
         vista.txtEmail.setText("");
+        correoValidado = false;
+        correoValidadoValor = null;
+        nombreDesdeSecretaria = null;
+        rolDesdeSecretaria = null;
+        vista.lblEstadoCorreo.setForeground(java.awt.Color.GRAY);
+        vista.lblEstadoCorreo.setText(" ");
+        vista.mostrarPasoCorreo();
+        vista.btnRegistrar.setText("Continuar");
+        pasoContrasena = false;
     }
 
-    private boolean esEmailValido(String email) {
-        if (email == null || email.isEmpty()) {
-            return false;
-        }
-
-        return email.matches("^[^@\\s]+@(ucv\\.ve|gmail\\.com)$");
+    private void marcarCorreoInvalido(String mensajeEstado) {
+        correoValidado = false;
+        correoValidadoValor = null;
+        nombreDesdeSecretaria = null;
+        rolDesdeSecretaria = null;
+        vista.lblEstadoCorreo.setForeground(java.awt.Color.RED);
+        vista.lblEstadoCorreo.setText(mensajeEstado);
+        vista.mostrarPasoCorreo();
+        vista.btnRegistrar.setText("Continuar");
+        pasoContrasena = false;
     }
+
 }

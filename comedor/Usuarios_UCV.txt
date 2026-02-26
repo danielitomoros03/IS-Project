@@ -1,2 +1,3 @@
 estudiante1@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion
 empleado1@ucv.ve,Empleado Demo,Empleado,N/A,N/A
+daniel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion

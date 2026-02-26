@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.CardLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -22,14 +25,18 @@ import javax.swing.SwingConstants;
 
 public class RegistroVista extends JFrame {
     // Definición de componentes
-    public JTextField txtNombre, txtTelefono, txtEmail;
+    public JTextField txtEmail;
     public JPasswordField txtPassword; 
     public JButton btnRegistrar;
     public JCheckBox chkMostrarPassword;
+    public JLabel lblEstadoCorreo;
+
+    private CardLayout cardLayout;
+    private JPanel panelForm;
 
     public RegistroVista() {
         setTitle("Sistema de Comedor - Registro UCV");
-        setSize(450, 750); 
+        setSize(450, 420); 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
@@ -57,34 +64,21 @@ public class RegistroVista extends JFrame {
         panelHeader.add(lblTitulo);
 
         // PANEL CENTRAL (Formulario)
-        JPanel panelForm = new JPanel(new GridLayout(8, 1, 2, 2)); 
+        cardLayout = new CardLayout();
+        panelForm = new JPanel(cardLayout);
         panelForm.setBackground(Color.WHITE);
         panelForm.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
 
         // Inicialización de campos
-        txtNombre = crearCampo();
         txtPassword = new JPasswordField();
         estilizarComponente(txtPassword); // Aplicamos el estilo manualmente
-        
-        txtTelefono = crearCampo();
         txtEmail = crearCampo();
 
-        // Agregamos en el orden solicitado
-        panelForm.add(new JLabel("Nombre Completo:"));
-        panelForm.add(txtNombre);
-        
-        panelForm.add(new JLabel("Contraseña:"));
-        panelForm.add(txtPassword);
-
-        chkMostrarPassword = new JCheckBox("Mostrar contraseña");
-        chkMostrarPassword.setBackground(Color.WHITE);
-        panelForm.add(chkMostrarPassword);
-        
-        panelForm.add(new JLabel("Teléfono:"));
-        panelForm.add(txtTelefono);
-
-        panelForm.add(new JLabel("Correo Electrónico:"));
-        panelForm.add(txtEmail);
+        JPanel panelCorreo = crearPanelCorreo();
+        JPanel panelContrasena = crearPanelContrasena();
+        panelForm.add(panelCorreo, "PASO_CORREO");
+        panelForm.add(panelContrasena, "PASO_PASSWORD");
+        cardLayout.show(panelForm, "PASO_CORREO");
 
         // Panel inferior para el boton
         JPanel panelFooter = new JPanel();
@@ -119,5 +113,80 @@ public class RegistroVista extends JFrame {
             BorderFactory.createLineBorder(new Color(220, 220, 220)),
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
+    }
+
+    private void addLabeledField(JPanel panel, GridBagConstraints gbc, int row, String labelText, JComponent field) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(6, 0, 2, 0);
+        panel.add(new JLabel(labelText), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(2, 0, 8, 0);
+        panel.add(field, gbc);
+    }
+
+    private void addCheckboxRow(JPanel panel, GridBagConstraints gbc, int row, JCheckBox checkbox) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 0, 8, 0);
+        panel.add(checkbox, gbc);
+    }
+
+    private void addFullRow(JPanel panel, GridBagConstraints gbc, int row, JComponent component) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 0, 8, 0);
+        panel.add(component, gbc);
+    }
+
+    private JPanel crearPanelCorreo() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.WHITE);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        addLabeledField(panel, gbc, 0, "Correo Electrónico:", txtEmail);
+
+        lblEstadoCorreo = new JLabel(" ");
+        lblEstadoCorreo.setForeground(Color.GRAY);
+        addFullRow(panel, gbc, 1, lblEstadoCorreo);
+
+        return panel;
+    }
+
+    private JPanel crearPanelContrasena() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.WHITE);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        addLabeledField(panel, gbc, 0, "Contraseña:", txtPassword);
+
+        chkMostrarPassword = new JCheckBox("Mostrar contraseña");
+        chkMostrarPassword.setBackground(Color.WHITE);
+        addCheckboxRow(panel, gbc, 1, chkMostrarPassword);
+
+        return panel;
+    }
+
+    public void mostrarPasoCorreo() {
+        cardLayout.show(panelForm, "PASO_CORREO");
+    }
+
+    public void mostrarPasoContrasena() {
+        cardLayout.show(panelForm, "PASO_PASSWORD");
     }
 }
