@@ -21,7 +21,7 @@ public class ConfigMenuPanelTest {
 
         assertEquals(1, panelConfigMenu.getTabla().getRowCount(), "La consulta deberia retornar exactamente 1 menu para 'Desayuno'");
 
-        String turnoVisible = panelConfigMenu.getTabla().getValueAt(0, 1).toString();
+        String turnoVisible = panelConfigMenu.getTabla().getValueAt(0, 2).toString();
         assertEquals("Desayuno", turnoVisible, "El turno en la tabla debe coincidir con la consulta");
     }
 
