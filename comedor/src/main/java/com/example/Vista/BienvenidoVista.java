@@ -34,8 +34,6 @@ public class BienvenidoVista extends JFrame {
     // Botones del menu
     private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil, btnMonedero;
     
-    // Boton para admin
-    private JButton btnConfigCCB; 
 
     private DashUserPanel dashPanel;
 
@@ -83,11 +81,6 @@ public class BienvenidoVista extends JFrame {
         sidebar.add(btnMonedero);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        if (rol != null && rol.equalsIgnoreCase("Administrador")) {
-            btnConfigCCB = crearBotonMenu("Configuración CCB");
-            sidebar.add(btnConfigCCB);
-            sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        }
 
         btnPerfil = crearBotonMenu("Perfil"); 
         sidebar.add(btnPerfil);
@@ -149,10 +142,6 @@ public class BienvenidoVista extends JFrame {
         mainContainer.add(regTurnoPanel, "TURNO_VISTA");
         mainContainer.add(perfilPanel, "PERFIL_VISTA");
 
-        if (rol != null && rol.equalsIgnoreCase("Administrador")) {
-            ConfiguracionCCBPanel configPanel = new ConfiguracionCCBPanel();
-            mainContainer.add(configPanel, "CONFIG_CCB_VISTA");
-        }
 
         add(mainContainer, BorderLayout.CENTER);
     }
@@ -188,11 +177,9 @@ public class BienvenidoVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnMonedero, btnPerfil, btnConfigCCB};
+        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnMonedero, btnPerfil};
 
         for (JButton b : botones) {
-            if (b == null) continue; // Si no es admin, btnConfigCCB es null
-
             if (b == botonActivo) {
                 b.setBackground(COLOR_PRIMARY); 
                 b.setForeground(Color.WHITE);   
@@ -210,7 +197,6 @@ public class BienvenidoVista extends JFrame {
     public JButton getBtnHistorial() { return btnHistorial; }
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
-    public JButton getBtnConfigCCB() { return btnConfigCCB; }
     public JButton getBtnMonederoSidebar() { return btnMonedero; }
     public JButton getBtnMonedero() {
         return dashPanel != null ? dashPanel.getBtnMonedero() : null;

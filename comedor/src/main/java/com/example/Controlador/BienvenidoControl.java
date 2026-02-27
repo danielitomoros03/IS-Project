@@ -28,9 +28,6 @@ public class BienvenidoControl implements ActionListener {
             this.vista.getBtnMonedero().addActionListener(this);
         }
 
-        if (this.vista.getBtnConfigCCB() != null) {
-            this.vista.getBtnConfigCCB().addActionListener(this);
-        }
 
         // Estado inicial
         this.vista.marcarBotonActivo(this.vista.getBtnDashboard());
@@ -64,11 +61,6 @@ public class BienvenidoControl implements ActionListener {
         else if ("Monedero".equals(comando)) {
             vista.marcarBotonActivo(vista.getBtnMonederoSidebar());
             new MonederoControl(vista, usuarioEmail);
-        }
-        // --- CASO NUEVO ---
-        else if ("Configuración CCB".equals(comando)) {
-            vista.changeView("CONFIG_CCB_VISTA");
-            vista.marcarBotonActivo(vista.getBtnConfigCCB());
         }
         // Logout
         else if (e.getSource() == vista.getBtnLogout()) {

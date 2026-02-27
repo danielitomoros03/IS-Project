@@ -59,6 +59,10 @@ public class AdminControl implements ActionListener{
             vista.changeView("INSUMOS_VISTA");
             vista.marcarBotonActivo(vista.getBtnGestionInsumo());
         }
+        else if ("Configurar CCB".equals(comando)) {
+            vista.changeView("CCB_VISTA");
+            vista.marcarBotonActivo(vista.getBtnConfigCcb());
+        }
         else if ("Reportes".equals(comando)) {
             vista.changeView("REPORTE_VISTA");
             vista.marcarBotonActivo(vista.getBtnReporte());
