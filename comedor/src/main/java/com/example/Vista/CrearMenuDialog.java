@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.example.Modelo.MenuRecord;
@@ -38,7 +36,7 @@ public class CrearMenuDialog extends JDialog {
     private JButton btnSave;
     private JLabel lblCounter;
     private int seleccionados = 0;
-    private JTextField txtFecha;
+    private JComboBox<LocalDate> comboFecha;
     private JComboBox<String> comboTurno;
     private final Map<String, JCheckBox> platosMap = new HashMap<>();
 
@@ -84,9 +82,9 @@ public class CrearMenuDialog extends JDialog {
         body.setBackground(Color.WHITE);
         body.setBorder(new EmptyBorder(10, 25, 10, 25));
 
-        body.add(crearLabel("Fecha (YYYY-MM-DD)"));
-        txtFecha = new JTextField("  ");
-        body.add(txtFecha);
+        body.add(crearLabel("Fecha (hoy y siguientes 15 dias)"));
+        comboFecha = new JComboBox<>(crearOpcionesFecha().toArray(new LocalDate[0]));
+        body.add(comboFecha);
         body.add(Box.createVerticalStrut(15));
 
         body.add(crearLabel("Turno"));
@@ -172,7 +170,7 @@ public class CrearMenuDialog extends JDialog {
     public JButton getBtnSave() { return btnSave; }
 
     public MenuRecord construirMenu() {
-        LocalDate fecha = parseFecha(txtFecha.getText());
+        LocalDate fecha = obtenerFechaSeleccionada();
         String turno = (String) comboTurno.getSelectedItem();
         if (turno == null || "Selecciona un turno".equals(turno)) {
             throw new IllegalArgumentException("Selecciona un turno valido.");
@@ -189,19 +187,21 @@ public class CrearMenuDialog extends JDialog {
         return new MenuRecord(id, base.getFecha(), base.getTurno(), base.getPlatos());
     }
 
-    private LocalDate parseFecha(String texto) {
-        if (texto == null || texto.trim().isEmpty()) {
-            throw new IllegalArgumentException("Completa la fecha del menu.");
+    private LocalDate obtenerFechaSeleccionada() {
+        LocalDate fecha = (LocalDate) comboFecha.getSelectedItem();
+        if (fecha == null) {
+            throw new IllegalArgumentException("Selecciona una fecha valida.");
         }
-        try {
-            LocalDate fecha = LocalDate.parse(texto.trim());
-            if (fecha.isBefore(LocalDate.now())) {
-                throw new IllegalArgumentException("La fecha del menu no puede ser anterior a hoy.");
-            }
-            return fecha;
-        } catch (DateTimeParseException ex) {
-            throw new IllegalArgumentException("Formato de fecha invalido. Usa YYYY-MM-DD.");
+        return fecha;
+    }
+
+    private List<LocalDate> crearOpcionesFecha() {
+        List<LocalDate> opciones = new ArrayList<>();
+        LocalDate hoy = LocalDate.now();
+        for (int i = 0; i <= 15; i++) {
+            opciones.add(hoy.plusDays(i));
         }
+        return opciones;
     }
 
     private List<String> obtenerPlatosSeleccionados() {
@@ -218,7 +218,18 @@ public class CrearMenuDialog extends JDialog {
         if (existente == null) {
             return;
         }
-        txtFecha.setText(existente.getFecha().toString());
+        LocalDate fechaExistente = existente.getFecha();
+        boolean fechaEnLista = false;
+        for (int i = 0; i < comboFecha.getItemCount(); i++) {
+            if (fechaExistente.equals(comboFecha.getItemAt(i))) {
+                fechaEnLista = true;
+                break;
+            }
+        }
+        if (!fechaEnLista) {
+            comboFecha.addItem(fechaExistente);
+        }
+        comboFecha.setSelectedItem(fechaExistente);
         comboTurno.setSelectedItem(existente.getTurno());
         seleccionados = 0;
         for (String plato : existente.getPlatos()) {

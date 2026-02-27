@@ -72,7 +72,12 @@ public class AdminControl implements ActionListener{
             vista.marcarBotonActivo(vista.getBtnPerfil());
         }
         else if (e.getSource() == vista.getBtnLogout()) {
-            int confirm = JOptionPane.showConfirmDialog(vista, "¿Estás seguro de cerrar sesión?");
+            int confirm = JOptionPane.showConfirmDialog(
+                vista,
+                "¿Estás seguro de cerrar sesión?",
+                "Cerrar sesión",
+                JOptionPane.YES_NO_OPTION
+            );
             if (confirm == JOptionPane.YES_OPTION) {
                 vista.dispose();
                 new LoginControl();
