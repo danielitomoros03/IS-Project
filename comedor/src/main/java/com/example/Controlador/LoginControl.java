@@ -55,7 +55,6 @@ public class LoginControl implements ActionListener{
             } else {
                 new BienvenidoControl(email, role);
             }
-            vista.dispose();
 
         } catch (Exception ex) {
             vista.showErrorMessage(ex.getMessage());

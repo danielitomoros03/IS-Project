@@ -23,6 +23,7 @@ public class RegistroControl {
 
         // Listener del boton registrar
         this.vista.btnRegistrar.addActionListener(e -> guardarDatos());
+        this.vista.btnVolverLogin.addActionListener(e -> volverALogin());
         this.vista.btnRegistrar.setText("Continuar");
         this.vista.txtPassword.setEnabled(true);
         this.vista.chkMostrarPassword.setEnabled(true);
@@ -123,6 +124,12 @@ public class RegistroControl {
         vista.mostrarPasoCorreo();
         vista.btnRegistrar.setText("Continuar");
         pasoContrasena = false;
+    }
+
+    private void volverALogin() {
+        limpiarCampos();
+        vista.dispose();
+        new LoginControl();
     }
 
 }

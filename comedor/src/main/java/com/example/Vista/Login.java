@@ -1,23 +1,43 @@
 package com.example.Vista;
 
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
 
     private JTextField txtEmail;
     private JPasswordField txtPassword;
     private JButton btnLogin, btnRegistrar;
+    private JCheckBox chkMostrarPassword;
     private JLabel lblError;
     private JPanel card; 
+    private char defaultEchoChar;
 
     public Login() {
         // Configuración básica de la ventana
         setTitle("Sistema de Comedor - UCV");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //setSize(1200, 750);
         //setMinimumSize(new Dimension(1200, 750)); 
@@ -74,6 +94,18 @@ public class Login extends JFrame {
         
         txtPassword = new JPasswordField();
         txtPassword.setBorder(BorderFactory.createTitledBorder("Contraseña"));
+        defaultEchoChar = txtPassword.getEchoChar();
+
+        chkMostrarPassword = new JCheckBox("Mostrar contraseña");
+        chkMostrarPassword.setBackground(Color.WHITE);
+        chkMostrarPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
+        chkMostrarPassword.addActionListener(e -> {
+            if (chkMostrarPassword.isSelected()) {
+                txtPassword.setEchoChar((char) 0);
+            } else {
+                txtPassword.setEchoChar(defaultEchoChar);
+            }
+        });
 
         btnLogin = new JButton("Iniciar Sesión");
         btnLogin.setBackground(new Color(34, 120, 64));
@@ -114,6 +146,7 @@ public class Login extends JFrame {
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(txtEmail);
         card.add(txtPassword);
+        card.add(chkMostrarPassword);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(btnLogin);
         card.add(Box.createRigidArea(new Dimension(0, 20)));

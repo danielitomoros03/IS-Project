@@ -28,6 +28,7 @@ public class RegistroVista extends JFrame {
     public JTextField txtEmail;
     public JPasswordField txtPassword; 
     public JButton btnRegistrar;
+    public JButton btnVolverLogin;
     public JCheckBox chkMostrarPassword;
     public JLabel lblEstadoCorreo;
 
@@ -80,10 +81,11 @@ public class RegistroVista extends JFrame {
         panelForm.add(panelContrasena, "PASO_PASSWORD");
         cardLayout.show(panelForm, "PASO_CORREO");
 
-        // Panel inferior para el boton
+        // Panel inferior para los botones
         JPanel panelFooter = new JPanel();
         panelFooter.setBackground(Color.WHITE);
         panelFooter.setBorder(BorderFactory.createEmptyBorder(10, 40, 30, 40));
+        panelFooter.setLayout(new BoxLayout(panelFooter, BoxLayout.Y_AXIS));
 
         btnRegistrar = new JButton("Registrar Usuario");
         btnRegistrar.setBackground(new Color(34, 120, 64));
@@ -91,8 +93,18 @@ public class RegistroVista extends JFrame {
         btnRegistrar.setFocusPainted(false);
         btnRegistrar.setFont(new Font("SansSerif", Font.BOLD, 16));
         btnRegistrar.setPreferredSize(new Dimension(300, 45));
+        btnRegistrar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        btnVolverLogin = new JButton("Volver a Iniciar Sesion");
+        btnVolverLogin.setBackground(Color.WHITE);
+        btnVolverLogin.setForeground(new Color(34, 120, 64));
+        btnVolverLogin.setFocusPainted(false);
+        btnVolverLogin.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        btnVolverLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panelFooter.add(btnRegistrar);
+        panelFooter.add(Box.createRigidArea(new Dimension(0, 10)));
+        panelFooter.add(btnVolverLogin);
 
         add(panelHeader, BorderLayout.NORTH);
         add(panelForm, BorderLayout.CENTER);
