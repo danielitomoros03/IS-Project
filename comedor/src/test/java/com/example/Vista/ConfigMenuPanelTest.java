@@ -1,16 +1,48 @@
 package com.example.Vista;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Arrays;
+
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.example.Modelo.MenuRecord;
+
 public class ConfigMenuPanelTest {
 
     private ConfigMenuPanel panelConfigMenu;
+    private Path menusPath;
+    private byte[] backup;
+    private boolean hadBackup;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
+        menusPath = Paths.get("").toAbsolutePath().resolve("Menus.txt");
+        if (Files.exists(menusPath)) {
+            backup = Files.readAllBytes(menusPath);
+            hadBackup = true;
+        }
+
+        LocalDate hoy = LocalDate.now();
+        MenuRecord almuerzo = new MenuRecord("id1", hoy, "Almuerzo", Arrays.asList("Pollo al horno", "Arroz blanco"));
+        MenuRecord desayuno = new MenuRecord("id2", hoy, "Desayuno", Arrays.asList("Arepa con queso", "Jugo natural"));
+        Files.writeString(menusPath, almuerzo.toCsvLine() + System.lineSeparator() + desayuno.toCsvLine());
+
         panelConfigMenu = new ConfigMenuPanel();
+    }
+
+    @AfterEach
+    public void tearDown() throws IOException {
+        Files.deleteIfExists(menusPath);
+        if (hadBackup) {
+            Files.write(menusPath, backup);
+        }
     }
 
     @Test
