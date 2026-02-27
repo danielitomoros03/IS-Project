@@ -78,8 +78,8 @@ public class RegistroControl {
         }
 
         String password = new String(vista.txtPassword.getPassword());
-        if (password.length() < 6) {
-            JOptionPane.showMessageDialog(vista, "La contraseña debe tener al menos 6 caracteres");
+        if (password.length() < 6 || password.length() > 10) {
+            JOptionPane.showMessageDialog(vista, "La contraseña debe tener entre 6 y 10 caracteres");
             return;
         }
 
