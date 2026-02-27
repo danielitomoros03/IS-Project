@@ -27,6 +27,7 @@ public class AdminVista extends JFrame {
     private final Color COLOR_GO = new Color(220, 220, 220); //Gris oscurito
 
     ConfigMenuPanel vistaConfig;
+    private DashAdminVista dashAdmin;
     private CardLayout cardLayout;
     private JPanel mainContainer;
     private JButton btnLogout;
@@ -113,7 +114,7 @@ public class AdminVista extends JFrame {
         mainContainer = new JPanel(cardLayout);
 
         // Instanciamos las clases externas
-        DashAdminVista dashAdmin = new DashAdminVista();
+        dashAdmin = new DashAdminVista();
         vistaConfig = new ConfigMenuPanel();
         ReportePanel vistaReporte = new ReportePanel();
         
@@ -186,6 +187,7 @@ public class AdminVista extends JFrame {
     public JButton getBtnConfigCcb() { return btnConfigCcb; }
     //Para el panel de menus
     public ConfigMenuPanel getConfigMenuPanel() { return vistaConfig; }
+    public DashAdminVista getDashAdminVista() { return dashAdmin; }
 
 
     public void changeView(String nombreVista) {

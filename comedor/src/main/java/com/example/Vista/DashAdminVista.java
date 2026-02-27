@@ -10,6 +10,8 @@ public class DashAdminVista extends JPanel {
     private final Color COLOR_PRIMARY = new Color(34, 120, 64); // Verde UCV
     private final Color COLOR_ACCENT = new Color(59, 130, 246); // Azul Insumos
 
+    private JButton btnCrearMenu;
+
     public DashAdminVista() {
         setLayout(new BorderLayout(20, 20));
         setBackground(COLOR_BG);
@@ -71,7 +73,8 @@ public class DashAdminVista extends JPanel {
         JLabel lblAccesos = new JLabel("Accesos Rápidos");
         lblAccesos.setFont(new Font("SansSerif", Font.BOLD, 16));
         panelAccesos.add(lblAccesos);
-        panelAccesos.add(crearBotonAcceso("Gestionar Menús", COLOR_PRIMARY));
+        btnCrearMenu = crearBotonAcceso("Crear Menú", COLOR_PRIMARY);
+        panelAccesos.add(btnCrearMenu);
         panelAccesos.add(crearBotonAcceso("Gestionar Insumos", COLOR_ACCENT));
         panelAccesos.add(crearBotonAcceso("Generar Reportes", Color.WHITE));
 
@@ -133,5 +136,9 @@ public class DashAdminVista extends JPanel {
         btn.setBorder(new LineBorder(new Color(220, 220, 220)));
         btn.setPreferredSize(new Dimension(200, 45));
         return btn;
+    }
+
+    public JButton getBtnCrearMenu() {
+        return btnCrearMenu;
     }
 }

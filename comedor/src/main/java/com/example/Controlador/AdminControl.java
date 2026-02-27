@@ -24,6 +24,7 @@ public class AdminControl implements ActionListener{
         this.vista.getBtnConfigCcb().addActionListener(this);
 
         this.vista.getConfigMenuPanel().getBtnCrear().addActionListener(this);
+        this.vista.getDashAdminVista().getBtnCrearMenu().addActionListener(this);
         
         this.vista.changeView("DASH_VISTA");
         this.vista.marcarBotonActivo(this.vista.getBtnDasboard());
@@ -47,6 +48,11 @@ public class AdminControl implements ActionListener{
             vista.marcarBotonActivo(vista.getBtnGestionMenu());
         }         
         else if ("+ Crear Nuevo Menú".equals(comando)) {
+            vista.getConfigMenuPanel().abrirDialogoCrear(vista);
+        }
+        else if ("Crear Menú".equals(comando)) {
+            vista.changeView("MENU_VISTA");
+            vista.marcarBotonActivo(vista.getBtnGestionMenu());
             vista.getConfigMenuPanel().abrirDialogoCrear(vista);
         }
         else if ("Gestión de Insumos".equals(comando)) {

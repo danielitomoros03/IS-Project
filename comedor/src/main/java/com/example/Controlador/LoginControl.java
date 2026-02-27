@@ -49,8 +49,12 @@ public class LoginControl implements ActionListener{
 
             String role = modelo.autenticar(email, pass);  //Llamar al modelo para autenticar
 
-            //Esta instancia hace que al presionnar "Iniciar Sesion", cambie la vista a Bienvenida
-            new BienvenidoControl(email, role);
+            // Redirigir segun rol
+            if (role != null && role.equalsIgnoreCase("Administrador")) {
+                new AdminControl(email, role);
+            } else {
+                new BienvenidoControl(email, role);
+            }
             vista.dispose();
 
         } catch (Exception ex) {
