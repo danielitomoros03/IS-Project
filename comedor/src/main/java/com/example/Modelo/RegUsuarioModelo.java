@@ -125,6 +125,121 @@ public class RegUsuarioModelo{
         return false;
     }
 
+    public String obtenerCiPorEmailDesdeArchivo(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return null;
+        }
+
+        String emailNormalizado = email.trim();
+        File archivo = resolveArchivo(nombreArchivoFacultad);
+        if (archivo == null || !archivo.exists()) {
+            return null;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length < 2) {
+                    continue;
+                }
+
+                String emailArchivo = datos[0].trim();
+                if (!emailArchivo.equalsIgnoreCase(emailNormalizado)) {
+                    continue;
+                }
+
+                return extraerCi(datos);
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer Usuarios_UCV.txt: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public String obtenerEmailPorCiDesdeArchivo(String ci) {
+        String ciNormalizada = normalizarCi(ci);
+        if (ciNormalizada.isEmpty()) {
+            return null;
+        }
+
+        File archivo = resolveArchivo(nombreArchivoFacultad);
+        if (archivo == null || !archivo.exists()) {
+            return null;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length < 2) {
+                    continue;
+                }
+
+                String ciArchivo = extraerCi(datos);
+                if (ciNormalizada.equals(ciArchivo)) {
+                    return datos[0].trim();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer Usuarios_UCV.txt: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public String[] obtenerDatosPorCiDesdeArchivo(String ci) {
+        String ciNormalizada = normalizarCi(ci);
+        if (ciNormalizada.isEmpty()) {
+            return null;
+        }
+
+        File archivo = resolveArchivo(nombreArchivoFacultad);
+        if (archivo == null || !archivo.exists()) {
+            return null;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length < 3) {
+                    continue;
+                }
+
+                String ciArchivo = extraerCi(datos);
+                if (ciNormalizada.equals(ciArchivo)) {
+                    return new String[] { datos[0].trim(), datos[1].trim(), datos[2].trim(), ciArchivo };
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer Usuarios_UCV.txt: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    private String extraerCi(String[] datos) {
+        if (datos == null) {
+            return "";
+        }
+
+        // Formato esperado: email,nombre,rol,facultad,escuela,ci
+        if (datos.length >= 6) {
+            return normalizarCi(datos[5]);
+        }
+
+        return "";
+    }
+
+    private String normalizarCi(String ci) {
+        if (ci == null) {
+            return "";
+        }
+        return ci.replaceAll("[^0-9]", "").trim();
+    }
+
     private File resolveArchivo(String nombre) {
         Path base = Paths.get("").toAbsolutePath();
 

@@ -7,8 +7,11 @@ Sistema de gestion del Comedor de la UCV desarrollado como aplicacion de escrito
 - Registro de usuarios con validacion contra el listado de Secretaria.
 - Gestion de menus (creacion, edicion y eliminacion).
 - Monedero con recargas, historial y cobros por turno.
+- Saldo Pana: transferencia de saldo entre estudiantes usando CI destino.
 - Reserva de turnos con verificacion de cupos, horario limite y reconocimiento facial basico.
+- Cobro por tipo de estudiante: regular, becario (porcentaje configurable) y exonerado.
 - Configuracion de CCB y tarifas para desayuno/almuerzo.
+- Reporte administrativo por servicio (desayuno/almuerzo) con desglose de comensales.
 
 ## Requisitos
 - Java 17 (JDK 17).
@@ -39,7 +42,7 @@ mvn -q test
 Los archivos viven en la carpeta [comedor/](comedor/) y se usan como base de datos local:
 
 - [comedor/Usuarios_UCV.txt](comedor/Usuarios_UCV.txt)
-	- Formato: `email,nombre,rol,facultad,escuela`
+	- Formato: `email,nombre,rol,facultad,escuela,ci`
 	- Se usa para validar el correo en el registro.
 - [comedor/Usuarios.txt](comedor/Usuarios.txt)
 	- Formato: `nombre,email,password,rol,telefono`
@@ -49,6 +52,11 @@ Los archivos viven en la carpeta [comedor/](comedor/) y se usan como base de dat
 	- Si no existe, se generan menus iniciales.
 - [comedor/Monedero.txt](comedor/Monedero.txt)
 	- Formato: `email,fecha_iso,monto` (monto positivo = recarga, negativo = cobro).
+- [comedor/Beneficios_Comensal.txt](comedor/Beneficios_Comensal.txt)
+	- Formato: `ci,tipo,porcentaje_cobro,fecha_iso`.
+	- Tipo: `EXONERADO` o `BECARIO`.
+- [comedor/Asistencias_Comedor.txt](comedor/Asistencias_Comedor.txt)
+	- Formato: `fecha_iso,servicio,email,ci,tipo_comensal,monto_cobrado`.
 - [comedor/CCB.txt](comedor/CCB.txt)
 	- Registros de costos y tarifas para el calculo del CCB.
 - [comedor/Fotos_Secretaria.txt](comedor/Fotos_Secretaria.txt)

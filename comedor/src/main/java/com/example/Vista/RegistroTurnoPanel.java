@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +27,15 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import com.example.Modelo.AsistenciaComedorModel;
+import com.example.Modelo.AsistenciaRecord;
+import com.example.Modelo.BeneficioComensal;
+import com.example.Modelo.BeneficioComensalModel;
 import com.example.Modelo.CcbModel;
 import com.example.Modelo.CcbRecord;
 import com.example.Modelo.FaceRecognitionModel;
 import com.example.Modelo.MonederoModel;
+import com.example.Modelo.RegUsuarioModelo;
 import com.example.Modelo.SecretariaModel;
 import com.example.Modelo.Turno;
 
@@ -48,6 +55,9 @@ public class RegistroTurnoPanel extends JPanel {
     private final CcbModel ccbModel = new CcbModel();
     private final SecretariaModel secretariaModel = new SecretariaModel();
     private final FaceRecognitionModel faceModel = new FaceRecognitionModel();
+    private final BeneficioComensalModel beneficioModel = new BeneficioComensalModel();
+    private final RegUsuarioModelo regUsuarioModelo = new RegUsuarioModelo();
+    private final AsistenciaComedorModel asistenciaModel = new AsistenciaComedorModel();
 
     public RegistroTurnoPanel(String usuarioEmail, String usuarioRol) {
         this.usuarioEmail = usuarioEmail;
@@ -150,21 +160,23 @@ public class RegistroTurnoPanel extends JPanel {
                         return;
                     }
 
-                    BigDecimal tarifa = obtenerTarifaUsuario(turno.getTipo());
-                    if (!verificarSaldoDisponible(tarifa)) {
+                    TarifaAplicada tarifaAplicada = calcularTarifaAplicada(turno.getTipo());
+                    if (!verificarSaldoDisponible(tarifaAplicada.getMontoCobro())) {
                         return;
                     }
 
                     // Lógica de confirmación
                     int confirm = JOptionPane.showConfirmDialog(this, 
-                        "¿Confirmar reserva para el turno " + turno.getRangoHorario() + "?\n"
-                            + "Se cobrara Bs " + tarifa.toPlainString(),
+                        construirMensajeConfirmacion(turno, tarifaAplicada),
                         "Confirmar Turno", JOptionPane.YES_NO_OPTION);
                     
                     if (confirm == JOptionPane.YES_OPTION) {
-                        if (!registrarCobro(tarifa)) {
+                        if (!registrarCobro(tarifaAplicada.getMontoCobro())) {
                             return;
                         }
+
+                        registrarAsistencia(turno.getTipo(), tarifaAplicada);
+
                         turno.registrarCupo(); // Actualizar modelo
                         usuarioYaRegistrado = true; // Flag de usuario
                         JOptionPane.showMessageDialog(this, "Registrado exitosamente");
@@ -267,7 +279,46 @@ public class RegistroTurnoPanel extends JPanel {
         return esDesayuno ? ultimo.getTarifaEmpDesayuno() : ultimo.getTarifaEmpAlmuerzo();
     }
 
+    private TarifaAplicada calcularTarifaAplicada(String tipoTurno) {
+        BigDecimal tarifaBase = obtenerTarifaUsuario(tipoTurno);
+        String rol = usuarioRol == null ? "" : usuarioRol.toLowerCase();
+
+        if (!rol.contains("estudiante")) {
+            if (rol.contains("profesor")) {
+                return new TarifaAplicada(tarifaBase, "Profesor", "");
+            }
+            if (rol.contains("empleado")) {
+                return new TarifaAplicada(tarifaBase, "Empleado", "");
+            }
+            return new TarifaAplicada(tarifaBase, "Otro", "");
+        }
+
+        String ci = regUsuarioModelo.obtenerCiPorEmailDesdeArchivo(usuarioEmail);
+        BeneficioComensal beneficio = beneficioModel.obtenerBeneficioPorCi(ci);
+        if (beneficio == null || beneficio.esRegular()) {
+            return new TarifaAplicada(tarifaBase, "Estudiante Regular", ci == null ? "" : ci);
+        }
+
+        if (beneficio.esExonerado()) {
+            return new TarifaAplicada(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), "Estudiante Exonerado", beneficio.getCi());
+        }
+
+        if (beneficio.esBecario()) {
+            BigDecimal porcentaje = beneficio.getPorcentajeCobro();
+            BigDecimal monto = tarifaBase
+                .multiply(porcentaje)
+                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+            return new TarifaAplicada(monto, "Estudiante Becario", beneficio.getCi());
+        }
+
+        return new TarifaAplicada(tarifaBase, "Estudiante Regular", ci == null ? "" : ci);
+    }
+
     private boolean verificarSaldoDisponible(BigDecimal tarifa) {
+        if (tarifa == null || tarifa.compareTo(BigDecimal.ZERO) <= 0) {
+            return true;
+        }
+
         BigDecimal saldo = monederoModel.obtenerSaldo(usuarioEmail);
         if (saldo.compareTo(tarifa) < 0) {
             JOptionPane.showMessageDialog(this, "Saldo insuficiente. Saldo actual: Bs " + saldo.toPlainString());
@@ -277,12 +328,77 @@ public class RegistroTurnoPanel extends JPanel {
     }
 
     private boolean registrarCobro(BigDecimal tarifa) {
+        if (tarifa == null || tarifa.compareTo(BigDecimal.ZERO) <= 0) {
+            return true;
+        }
+
         try {
             monederoModel.registrarCobro(usuarioEmail, tarifa);
             return true;
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "No se pudo registrar el cobro.");
             return false;
+        }
+    }
+
+    private String construirMensajeConfirmacion(Turno turno, TarifaAplicada tarifaAplicada) {
+        StringBuilder mensaje = new StringBuilder();
+        mensaje
+            .append("¿Confirmar reserva para el turno ")
+            .append(turno.getRangoHorario())
+            .append("?\n")
+            .append("Tipo de comensal: ")
+            .append(tarifaAplicada.getTipoComensal())
+            .append("\n");
+
+        if (tarifaAplicada.getMontoCobro().compareTo(BigDecimal.ZERO) <= 0) {
+            mensaje.append("No se descontara tarifa para este acceso.");
+        } else {
+            mensaje.append("Se cobrara Bs ").append(tarifaAplicada.getMontoCobro().toPlainString());
+        }
+
+        return mensaje.toString();
+    }
+
+    private void registrarAsistencia(String servicio, TarifaAplicada tarifaAplicada) {
+        AsistenciaRecord record = new AsistenciaRecord(
+            LocalDateTime.now(),
+            servicio,
+            usuarioEmail,
+            tarifaAplicada.getCi(),
+            tarifaAplicada.getTipoComensal(),
+            tarifaAplicada.getMontoCobro()
+        );
+
+        boolean guardado = asistenciaModel.registrarAsistencia(record);
+        if (!guardado) {
+            JOptionPane.showMessageDialog(this, "No se pudo guardar la asistencia del turno.");
+        }
+    }
+
+    private static class TarifaAplicada {
+        private final BigDecimal montoCobro;
+        private final String tipoComensal;
+        private final String ci;
+
+        TarifaAplicada(BigDecimal montoCobro, String tipoComensal, String ci) {
+            this.montoCobro = montoCobro == null
+                ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)
+                : montoCobro.setScale(2, RoundingMode.HALF_UP);
+            this.tipoComensal = tipoComensal == null ? "Otro" : tipoComensal;
+            this.ci = ci == null ? "" : ci;
+        }
+
+        public BigDecimal getMontoCobro() {
+            return montoCobro;
+        }
+
+        public String getTipoComensal() {
+            return tipoComensal;
+        }
+
+        public String getCi() {
+            return ci;
         }
     }
 }

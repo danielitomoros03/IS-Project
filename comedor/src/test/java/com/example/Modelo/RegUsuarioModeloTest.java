@@ -90,4 +90,20 @@ public class RegUsuarioModeloTest {
         RegUsuarioModelo model = new RegUsuarioModelo();
         assertNull(model.obtenerNombreYRolDesdeArchivo("no@ucv.ve"));
     }
+
+    @Test
+    void obtenerDatosPorCi_y_ciPorEmail() throws IOException {
+        Files.writeString(usuariosUcvPath, "ana@ucv.ve,Ana,Estudiante,Faces,Escuela,12345678\n");
+
+        RegUsuarioModelo model = new RegUsuarioModelo();
+
+        assertEquals("12345678", model.obtenerCiPorEmailDesdeArchivo("ana@ucv.ve"));
+        assertEquals("ana@ucv.ve", model.obtenerEmailPorCiDesdeArchivo("V-12.345.678"));
+
+        String[] datos = model.obtenerDatosPorCiDesdeArchivo("12345678");
+        assertNotNull(datos);
+        assertEquals("ana@ucv.ve", datos[0]);
+        assertEquals("Ana", datos[1]);
+        assertEquals("Estudiante", datos[2]);
+    }
 }

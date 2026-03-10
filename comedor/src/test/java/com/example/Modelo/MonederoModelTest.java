@@ -77,4 +77,26 @@ public class MonederoModelTest {
         model.registrarRecarga("user@ucv.ve", new BigDecimal("10.00"));
         assertEquals(true, Files.exists(monederoPath));
     }
+
+    @Test
+    void registrarSaldoPana_transfiereSaldoEntreEstudiantes() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("300.00"));
+
+        model.registrarSaldoPana("origen@ucv.ve", "destino@ucv.ve", new BigDecimal("50.00"));
+
+        assertEquals(new BigDecimal("250.00"), model.obtenerSaldo("origen@ucv.ve"));
+        assertEquals(new BigDecimal("50.00"), model.obtenerSaldo("destino@ucv.ve"));
+    }
+
+    @Test
+    void registrarSaldoPana_saldoInsuficiente_lanzaError() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("10.00"));
+
+        assertThrows(
+            IllegalStateException.class,
+            () -> model.registrarSaldoPana("origen@ucv.ve", "destino@ucv.ve", new BigDecimal("50.00"))
+        );
+    }
 }

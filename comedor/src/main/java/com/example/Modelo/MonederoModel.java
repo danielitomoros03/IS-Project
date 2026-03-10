@@ -65,6 +65,30 @@ public class MonederoModel {
         registrarMovimiento(email, monto.negate());
     }
 
+    public void registrarSaldoPana(String emailOrigen, String emailDestino, BigDecimal monto) throws IOException {
+        if (emailOrigen == null || emailOrigen.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email de origen invalido.");
+        }
+        if (emailDestino == null || emailDestino.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email destino invalido.");
+        }
+        if (emailOrigen.equalsIgnoreCase(emailDestino)) {
+            throw new IllegalArgumentException("No puedes transferirte saldo a ti mismo.");
+        }
+        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Monto invalido.");
+        }
+
+        BigDecimal montoNormalizado = monto.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal saldoOrigen = obtenerSaldo(emailOrigen);
+        if (saldoOrigen.compareTo(montoNormalizado) < 0) {
+            throw new IllegalStateException("Saldo insuficiente para realizar Saldo Pana.");
+        }
+
+        registrarMovimiento(emailOrigen, montoNormalizado.negate());
+        registrarMovimiento(emailDestino, montoNormalizado);
+    }
+
     private void registrarMovimiento(String email, BigDecimal monto) throws IOException {
         File archivo = new File(nombreArchivo);
         if (!archivo.exists()) {

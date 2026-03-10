@@ -1,7 +1,7 @@
-estudiante1@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion
-empleado1@ucv.ve,Empleado Demo,Empleado,N/A,N/A
-daniel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion
-marcel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion
-thibisay@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion
-donander@ucv.ve,Empleado Demo,Empleado,N/A,N/A
-jesus@ucv.ve,Empleado Demo,Empleado,N/A,N/A
+estudiante1@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,28765431
+empleado1@ucv.ve,Empleado Demo,Empleado,N/A,N/A,17654321
+daniel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,25432111
+marcel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,26333888
+thibisay@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,27111222
+donander@ucv.ve,Empleado Demo,Empleado,N/A,N/A,19888777
+jesus@ucv.ve,Empleado Demo,Empleado,N/A,N/A,20777111

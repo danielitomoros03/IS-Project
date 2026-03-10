@@ -1,16 +1,29 @@
 package com.example.Vista;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridLayout;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class MonederoDialog extends JDialog {
     private JLabel lblSaldo;
     private JTable tablaHistorial;
     private DefaultTableModel modeloTabla;
     private JTextField txtMonto;
+    private JTextField txtCiDestino;
     private JButton btnRecargar;
+    private JButton btnSaldoPana;
 
     public MonederoDialog(Frame owner) {
         super(owner, "Monedero Digital", true);
@@ -44,17 +57,36 @@ public class MonederoDialog extends JDialog {
         JPanel footer = new JPanel(new BorderLayout());
         footer.setBorder(new EmptyBorder(10, 20, 20, 20));
 
-        JPanel form = new JPanel(new BorderLayout(10, 0));
-        JLabel lblMonto = new JLabel("Monto a recargar (Bs)");
+        JPanel formContainer = new JPanel();
+        formContainer.setLayout(new BoxLayout(formContainer, BoxLayout.Y_AXIS));
+
+        JPanel formMonto = new JPanel(new BorderLayout(10, 0));
+        JLabel lblMonto = new JLabel("Monto (Bs)");
         txtMonto = new JTextField();
-        form.add(lblMonto, BorderLayout.WEST);
-        form.add(txtMonto, BorderLayout.CENTER);
+        formMonto.add(lblMonto, BorderLayout.WEST);
+        formMonto.add(txtMonto, BorderLayout.CENTER);
+
+        JPanel formCi = new JPanel(new BorderLayout(10, 0));
+        formCi.setBorder(new EmptyBorder(8, 0, 0, 0));
+        JLabel lblCi = new JLabel("CI destino (Saldo Pana)");
+        txtCiDestino = new JTextField();
+        formCi.add(lblCi, BorderLayout.WEST);
+        formCi.add(txtCiDestino, BorderLayout.CENTER);
+
+        formContainer.add(formMonto);
+        formContainer.add(formCi);
 
         btnRecargar = new JButton("Recargar");
         btnRecargar.setFocusPainted(false);
+        btnSaldoPana = new JButton("Saldo Pana");
+        btnSaldoPana.setFocusPainted(false);
 
-        footer.add(form, BorderLayout.CENTER);
-        footer.add(btnRecargar, BorderLayout.EAST);
+        JPanel actions = new JPanel(new GridLayout(2, 1, 0, 8));
+        actions.add(btnRecargar);
+        actions.add(btnSaldoPana);
+
+        footer.add(formContainer, BorderLayout.CENTER);
+        footer.add(actions, BorderLayout.EAST);
 
         add(footer, BorderLayout.SOUTH);
     }
@@ -79,7 +111,19 @@ public class MonederoDialog extends JDialog {
         txtMonto.setText("");
     }
 
+    public String getCiDestinoText() {
+        return txtCiDestino.getText();
+    }
+
+    public void limpiarCiDestino() {
+        txtCiDestino.setText("");
+    }
+
     public JButton getBtnRecargar() {
         return btnRecargar;
+    }
+
+    public JButton getBtnSaldoPana() {
+        return btnSaldoPana;
     }
 }
