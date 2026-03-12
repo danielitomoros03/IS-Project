@@ -115,7 +115,7 @@ public class ReportePanel extends JPanel {
 
         gbc.gridy = 2;
         gbc.gridx = 0;
-        panel.add(new JLabel("Porcentaje Becario (%)"), gbc);
+        panel.add(new JLabel("Descuento Becario (%)"), gbc);
 
         txtPorcentaje = new JTextField("5", 12);
         txtPorcentaje.setEnabled(false);
@@ -201,6 +201,7 @@ public class ReportePanel extends JPanel {
 
         panel.add(tablas, BorderLayout.CENTER);
 
+        comboServicio.addActionListener(e -> cargarReporteServicio());
         btnActualizar.addActionListener(e -> cargarReporteServicio());
 
         return panel;
@@ -234,13 +235,13 @@ public class ReportePanel extends JPanel {
             } else {
                 BigDecimal porcentaje = parsePorcentaje(txtPorcentaje.getText());
                 if (porcentaje.compareTo(PORCENTAJE_REGULAR) >= 0) {
-                    mostrarError("El porcentaje del Becario debe ser menor al de un estudiante regular (100%).");
+                    mostrarError("El porcentaje de descuento del Becario debe ser menor a 100%.");
                     return;
                 }
                 beneficioModel.registrarBecario(ci, porcentaje);
                 lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                 lblEstadoBeneficio.setText(
-                    "CI " + ci + " clasificada como Becario con cobro de "
+                    "CI " + ci + " clasificada como Becario con descuento de "
                         + porcentaje.setScale(2, RoundingMode.HALF_UP).toPlainString() + "% ."
                 );
             }
@@ -251,7 +252,7 @@ public class ReportePanel extends JPanel {
 
     private BigDecimal parsePorcentaje(String valor) {
         if (valor == null || valor.trim().isEmpty()) {
-            throw new IllegalArgumentException("Debes indicar el porcentaje del Becario.");
+            throw new IllegalArgumentException("Debes indicar el porcentaje de descuento del Becario.");
         }
 
         String normalizado = valor.trim().replace(',', '.');
@@ -259,11 +260,11 @@ public class ReportePanel extends JPanel {
         try {
             porcentaje = new BigDecimal(normalizado);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("El porcentaje del Becario es invalido.");
+            throw new IllegalArgumentException("El porcentaje de descuento del Becario es invalido.");
         }
 
         if (porcentaje.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("El porcentaje del Becario debe ser mayor a 0.");
+            throw new IllegalArgumentException("El porcentaje de descuento del Becario debe ser mayor a 0.");
         }
 
         return porcentaje.setScale(2, RoundingMode.HALF_UP);
@@ -298,5 +299,17 @@ public class ReportePanel extends JPanel {
         lblEstadoBeneficio.setForeground(Color.RED);
         lblEstadoBeneficio.setText(mensaje);
         JOptionPane.showMessageDialog(this, mensaje, "Validacion", JOptionPane.ERROR_MESSAGE);
+    }
+
+    DefaultTableModel getDetalleModel() {
+        return detalleModel;
+    }
+
+    DefaultTableModel getResumenModel() {
+        return resumenModel;
+    }
+
+    JComboBox<String> getComboServicio() {
+        return comboServicio;
     }
 }

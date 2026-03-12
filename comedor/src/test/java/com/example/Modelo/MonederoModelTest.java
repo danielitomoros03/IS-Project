@@ -1,5 +1,6 @@
 package com.example.Modelo;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -20,7 +21,7 @@ public class MonederoModelTest {
     private boolean hadBackup;
 
     @BeforeEach
-    void setUp() throws IOException {
+    public void setUp() throws IOException {
         monederoPath = Paths.get("").toAbsolutePath().resolve("Monedero.txt");
         if (Files.exists(monederoPath)) {
             backup = Files.readAllBytes(monederoPath);
@@ -30,7 +31,7 @@ public class MonederoModelTest {
     }
 
     @AfterEach
-    void tearDown() throws IOException {
+    public void tearDown() throws IOException {
         Files.deleteIfExists(monederoPath);
         if (hadBackup) {
             Files.write(monederoPath, backup);
@@ -68,7 +69,11 @@ public class MonederoModelTest {
     @Test
     void registrarCobro_montoNulo_lanzaError() {
         MonederoModel model = new MonederoModel();
-        assertThrows(IllegalArgumentException.class, () -> model.registrarCobro("user@ucv.ve", null));
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarCobro("user@ucv.ve", null)
+        );
+        assertEquals("Monto invalido.", ex.getMessage());
     }
 
     @Test
@@ -94,9 +99,78 @@ public class MonederoModelTest {
         MonederoModel model = new MonederoModel();
         model.registrarRecarga("origen@ucv.ve", new BigDecimal("10.00"));
 
-        assertThrows(
+        IllegalStateException ex = assertThrows(
             IllegalStateException.class,
             () -> model.registrarSaldoPana("origen@ucv.ve", "destino@ucv.ve", new BigDecimal("50.00"))
         );
+        assertEquals("Saldo insuficiente para realizar Saldo Pana.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_mismoEmail_lanzaError() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("100.00"));
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarSaldoPana("origen@ucv.ve", "origen@ucv.ve", new BigDecimal("10.00"))
+        );
+        assertEquals("No puedes transferirte saldo a ti mismo.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_montoNoPositivo_lanzaError() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("100.00"));
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarSaldoPana("origen@ucv.ve", "destino@ucv.ve", BigDecimal.ZERO)
+        );
+        assertEquals("Monto invalido.", ex.getMessage());
+    }
+
+    @Test
+    void registrarRecarga_montoNoPositivo_lanzaError() {
+        MonederoModel model = new MonederoModel();
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarRecarga("origen@ucv.ve", new BigDecimal("-1.00"))
+        );
+        assertEquals("Monto invalido.", ex.getMessage());
+    }
+
+    @Test
+    void registrarCobro_montoNoPositivo_lanzaError() {
+        MonederoModel model = new MonederoModel();
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarCobro("origen@ucv.ve", BigDecimal.ZERO)
+        );
+        assertEquals("Monto invalido.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_falloDeEscritura_noDejaDebitoParcial() throws IOException {
+        MonederoModel base = new MonederoModel();
+        base.registrarRecarga("origen@ucv.ve", new BigDecimal("300.00"));
+
+        MonederoModel modelFallido = new MonederoModel() {
+            @Override
+            protected void registrarMovimientosAtomicos(File archivo, List<String> lineasNuevas) throws IOException {
+                throw new IOException("Fallo simulado");
+            }
+        };
+
+        IOException ex = assertThrows(
+            IOException.class,
+            () -> modelFallido.registrarSaldoPana("origen@ucv.ve", "destino@ucv.ve", new BigDecimal("50.00"))
+        );
+        assertEquals("Fallo simulado", ex.getMessage());
+
+        assertEquals(new BigDecimal("300.00"), base.obtenerSaldo("origen@ucv.ve"));
+        assertEquals(new BigDecimal("0.00"), base.obtenerSaldo("destino@ucv.ve"));
     }
 }

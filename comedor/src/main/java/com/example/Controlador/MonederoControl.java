@@ -84,6 +84,28 @@ public class MonederoControl {
     }
 
     private void procesarSaldoPana() {
+        String[] datosOrigen = regUsuarioModelo.obtenerNombreYRolDesdeArchivo(email);
+        if (datosOrigen == null || datosOrigen.length < 2) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "No se pudo validar tu rol en Secretaria para usar Saldo Pana.",
+                "Operacion no permitida",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        String rolOrigen = datosOrigen[1] == null ? "" : datosOrigen[1].toLowerCase();
+        if (!rolOrigen.contains("estudiante")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Saldo Pana solo se permite entre estudiantes.",
+                "Operacion no permitida",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
         String ciDestino = vista.getCiDestinoText();
         if (ciDestino == null || ciDestino.trim().isEmpty()) {
             JOptionPane.showMessageDialog(vista, "Debes indicar la CI del estudiante destino.", "CI invalida", JOptionPane.ERROR_MESSAGE);
@@ -103,6 +125,10 @@ public class MonederoControl {
         }
 
         String emailDestino = datosDestino[0];
+        if (emailDestino == null || emailDestino.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(vista, "No se pudo determinar el correo del destino.", "Datos invalidos", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         BigDecimal monto;
         try {

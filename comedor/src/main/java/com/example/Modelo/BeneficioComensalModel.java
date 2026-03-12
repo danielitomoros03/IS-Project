@@ -27,13 +27,13 @@ public class BeneficioComensalModel {
 
     public void registrarBecario(String ci, BigDecimal porcentajeCobro) throws IOException {
         if (porcentajeCobro == null) {
-            throw new IllegalArgumentException("Debes indicar el porcentaje de cobro para becario.");
+            throw new IllegalArgumentException("Debes indicar el porcentaje de descuento para becario.");
         }
 
         BigDecimal porcentajeNormalizado = porcentajeCobro.setScale(2, RoundingMode.HALF_UP);
         if (porcentajeNormalizado.compareTo(BigDecimal.ZERO) <= 0
             || porcentajeNormalizado.compareTo(PORCENTAJE_REGULAR) >= 0) {
-            throw new IllegalArgumentException("El porcentaje del becario debe ser mayor a 0 y menor a 100.");
+            throw new IllegalArgumentException("El porcentaje de descuento del becario debe ser mayor a 0 y menor a 100.");
         }
 
         registrarBeneficio(ci, BeneficioComensal.TIPO_BECARIO, porcentajeNormalizado);

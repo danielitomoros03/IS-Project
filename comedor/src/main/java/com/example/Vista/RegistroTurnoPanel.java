@@ -304,14 +304,31 @@ public class RegistroTurnoPanel extends JPanel {
         }
 
         if (beneficio.esBecario()) {
-            BigDecimal porcentaje = beneficio.getPorcentajeCobro();
-            BigDecimal monto = tarifaBase
-                .multiply(porcentaje)
-                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+            BigDecimal porcentajeDescuento = beneficio.getPorcentajeCobro();
+            BigDecimal monto = calcularMontoBecarioConDescuento(tarifaBase, porcentajeDescuento);
             return new TarifaAplicada(monto, "Estudiante Becario", beneficio.getCi());
         }
 
         return new TarifaAplicada(tarifaBase, "Estudiante Regular", ci == null ? "" : ci);
+    }
+
+    static BigDecimal calcularMontoBecarioConDescuento(BigDecimal tarifaBase, BigDecimal porcentajeDescuento) {
+        BigDecimal base = tarifaBase == null
+            ? BigDecimal.ZERO
+            : tarifaBase.setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal descuento = porcentajeDescuento == null
+            ? BigDecimal.ZERO
+            : porcentajeDescuento.setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal porcentajeCobro = new BigDecimal("100.00").subtract(descuento);
+        if (porcentajeCobro.compareTo(BigDecimal.ZERO) < 0) {
+            porcentajeCobro = BigDecimal.ZERO;
+        }
+
+        return base
+            .multiply(porcentajeCobro)
+            .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
     }
 
     private boolean verificarSaldoDisponible(BigDecimal tarifa) {
