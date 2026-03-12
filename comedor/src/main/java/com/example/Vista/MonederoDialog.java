@@ -68,7 +68,7 @@ public class MonederoDialog extends JDialog {
 
         JPanel formCi = new JPanel(new BorderLayout(10, 0));
         formCi.setBorder(new EmptyBorder(8, 0, 0, 0));
-        JLabel lblCi = new JLabel("CI destino (Saldo Pana)");
+        JLabel lblCi = new JLabel("CI o correo destino (Saldo Pana)");
         txtCiDestino = new JTextField();
         formCi.add(lblCi, BorderLayout.WEST);
         formCi.add(txtCiDestino, BorderLayout.CENTER);

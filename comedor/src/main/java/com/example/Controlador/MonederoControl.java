@@ -84,49 +84,15 @@ public class MonederoControl {
     }
 
     private void procesarSaldoPana() {
-        String[] datosOrigen = regUsuarioModelo.obtenerNombreYRolDesdeArchivo(email);
-        if (datosOrigen == null || datosOrigen.length < 2) {
-            JOptionPane.showMessageDialog(
-                vista,
-                "No se pudo validar tu rol en Secretaria para usar Saldo Pana.",
-                "Operacion no permitida",
-                JOptionPane.ERROR_MESSAGE
-            );
+        String destino = vista.getCiDestinoText();
+        if (destino == null || destino.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(vista, "Debes indicar CI o correo del destino.", "Destino invalido", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        String rolOrigen = datosOrigen[1] == null ? "" : datosOrigen[1].toLowerCase();
-        if (!rolOrigen.contains("estudiante")) {
-            JOptionPane.showMessageDialog(
-                vista,
-                "Saldo Pana solo se permite entre estudiantes.",
-                "Operacion no permitida",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        String ciDestino = vista.getCiDestinoText();
-        if (ciDestino == null || ciDestino.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(vista, "Debes indicar la CI del estudiante destino.", "CI invalida", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String[] datosDestino = regUsuarioModelo.obtenerDatosPorCiDesdeArchivo(ciDestino);
-        if (datosDestino == null) {
-            JOptionPane.showMessageDialog(vista, "La CI indicada no esta registrada en Secretaria.", "CI no encontrada", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String rolDestino = datosDestino[2] == null ? "" : datosDestino[2].toLowerCase();
-        if (!rolDestino.contains("estudiante")) {
-            JOptionPane.showMessageDialog(vista, "Saldo Pana solo se permite entre estudiantes.", "Operacion no permitida", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String emailDestino = datosDestino[0];
-        if (emailDestino == null || emailDestino.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(vista, "No se pudo determinar el correo del destino.", "Datos invalidos", JOptionPane.ERROR_MESSAGE);
+        String emailDestino = resolverEmailDestino(destino);
+        if (emailDestino == null) {
+            JOptionPane.showMessageDialog(vista, "Destino no encontrado. Usa CI de Secretaria o correo registrado.", "Destino no encontrado", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -161,6 +127,29 @@ public class MonederoControl {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(vista, "No se pudo completar Saldo Pana.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private String resolverEmailDestino(String destinoRaw) {
+        String destino = destinoRaw == null ? "" : destinoRaw.trim();
+        if (destino.isEmpty()) {
+            return null;
+        }
+
+        if (destino.contains("@")) {
+            return regUsuarioModelo.existeEnUsuarios(destino) ? destino : null;
+        }
+
+        String[] datosDestino = regUsuarioModelo.obtenerDatosPorCiDesdeArchivo(destino);
+        if (datosDestino == null || datosDestino.length == 0) {
+            return null;
+        }
+
+        String emailDestino = datosDestino[0];
+        if (emailDestino == null || emailDestino.trim().isEmpty()) {
+            return null;
+        }
+
+        return emailDestino.trim();
     }
 
     private BigDecimal parseMonto(String texto) {
