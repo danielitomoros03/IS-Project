@@ -1,5 +1,6 @@
 package com.example.Modelo;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +17,8 @@ public class SecretariaModelTest {
     private Path fotosSecretariaPath;
     private Path fotosDir;
     private Path fotoTemporal;
+    private Path fotoOrigen;
+    private Path fotoGuardada;
     private byte[] backup;
     private boolean hadBackup;
 
@@ -34,6 +37,8 @@ public class SecretariaModelTest {
     @AfterEach
     public void tearDown() throws IOException {
         Files.deleteIfExists(fotoTemporal);
+        Files.deleteIfExists(fotoOrigen);
+        Files.deleteIfExists(fotoGuardada);
         Files.deleteIfExists(fotosSecretariaPath);
         if (hadBackup) {
             Files.write(fotosSecretariaPath, backup);
@@ -65,5 +70,23 @@ public class SecretariaModelTest {
         String contenido = Files.readString(fotosSecretariaPath);
         assertTrue(contenido.contains("pruebausuario@ucv.ve"));
         assertTrue(contenido.contains("fotos/pruebausuario_face.png"));
+    }
+
+    @Test
+    public void guardarFotoUsuario_copiaFotoYActualizaFotosSecretaria() throws IOException {
+        Files.writeString(fotosSecretariaPath, "");
+        fotoOrigen = Paths.get("").toAbsolutePath().resolve("origen_foto_prueba.jpg");
+        Files.write(fotoOrigen, new byte[] {9, 8, 7, 6});
+
+        SecretariaModel model = new SecretariaModel();
+        File guardada = model.guardarFotoUsuario("perfiltest@ucv.ve", fotoOrigen.toFile());
+        fotoGuardada = guardada.toPath();
+
+        assertTrue(Files.exists(fotoGuardada));
+        assertTrue(fotoGuardada.getFileName().toString().equalsIgnoreCase("perfiltest_foto.jpg"));
+
+        String contenido = Files.readString(fotosSecretariaPath);
+        assertTrue(contenido.contains("perfiltest@ucv.ve"));
+        assertTrue(contenido.contains("fotos/perfiltest_foto.jpg"));
     }
 }

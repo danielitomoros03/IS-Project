@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -79,6 +81,43 @@ public class SecretariaModel {
         }
 
         return null;
+    }
+
+    public File guardarFotoUsuario(String email, File fotoSeleccionada) throws IOException {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email invalido para guardar la foto.");
+        }
+        if (fotoSeleccionada == null || !fotoSeleccionada.exists() || !fotoSeleccionada.isFile()) {
+            throw new IllegalArgumentException("Debes seleccionar una foto valida.");
+        }
+        if (!esImagenPermitida(fotoSeleccionada.getName())) {
+            throw new IllegalArgumentException("Solo se permiten imagenes JPG o PNG.");
+        }
+
+        File directorioFotos = obtenerDirectorioFotos();
+        if (directorioFotos == null) {
+            directorioFotos = crearDirectorioFotos();
+        }
+
+        String localPart = email.trim();
+        int at = localPart.indexOf('@');
+        if (at >= 0) {
+            localPart = localPart.substring(0, at);
+        }
+
+        String nombreNormalizado = localPart
+            .toLowerCase(Locale.ROOT)
+            .replaceAll("[^a-z0-9_-]", "");
+        if (nombreNormalizado.isEmpty()) {
+            nombreNormalizado = "usuario";
+        }
+
+        String extension = obtenerExtensionNormalizada(fotoSeleccionada.getName());
+        File destino = new File(directorioFotos, nombreNormalizado + "_foto" + extension);
+
+        Files.copy(fotoSeleccionada.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        registrarRutaFoto(email.trim(), destino);
+        return destino;
     }
 
     private String descubrirFotoYRegistrar(String email) {
@@ -155,8 +194,40 @@ public class SecretariaModel {
     }
 
     private boolean esImagenPermitida(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
         String nombre = name.toLowerCase(Locale.ROOT);
         return nombre.endsWith(".jpg") || nombre.endsWith(".jpeg") || nombre.endsWith(".png");
+    }
+
+    private String obtenerExtensionNormalizada(String nombreArchivo) {
+        if (nombreArchivo == null) {
+            return ".jpg";
+        }
+
+        String nombre = nombreArchivo.toLowerCase(Locale.ROOT);
+        if (nombre.endsWith(".jpeg")) {
+            return ".jpeg";
+        }
+        if (nombre.endsWith(".png")) {
+            return ".png";
+        }
+        return ".jpg";
+    }
+
+    private File crearDirectorioFotos() throws IOException {
+        File archivoDatos = resolveArchivoDatos();
+        File base = archivoDatos.getParentFile();
+        if (base == null) {
+            base = Paths.get("").toAbsolutePath().toFile();
+        }
+
+        File directorio = new File(base, "fotos");
+        if (!directorio.exists() && !directorio.mkdirs()) {
+            throw new IOException("No se pudo crear el directorio de fotos.");
+        }
+        return directorio;
     }
 
     private File resolveRutaFoto(String ruta) {
