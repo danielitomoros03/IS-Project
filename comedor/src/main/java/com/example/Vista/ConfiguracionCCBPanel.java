@@ -12,16 +12,12 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,38 +32,12 @@ import com.example.Modelo.CcbRecord;
 
 public class ConfiguracionCCBPanel extends JPanel {
 
-    private JTextField txtFechaInicio;
-    private JTextField txtFechaFin;
     private JTextField txtCostosFijos;
     private JTextField txtCostosVariables;
     private JTextField txtNumBandejas;
     private JTextField txtMerma;
-    private JComboBox<String> cmbTipoNb;
-    private JTextField txtPctEst;
-    private JTextField txtPctProf;
-    private JTextField txtPctEmp;
-    private JTextField txtNbEst;
-    private JTextField txtNbProf;
-    private JTextField txtNbEmp;
-    private JTextField txtPctConcesionario;
-    private JTextField txtPctDesayuno;
-    private JTextField txtPctAlmuerzo;
 
     private JLabel lblResultadoCCB;
-    private JLabel lblTarifaEst;
-    private JLabel lblTarifaProf;
-    private JLabel lblTarifaEmp;
-    private JLabel lblTarifaEstDes;
-    private JLabel lblTarifaEstAlm;
-    private JLabel lblTarifaProfDes;
-    private JLabel lblTarifaProfAlm;
-    private JLabel lblTarifaEmpDes;
-    private JLabel lblTarifaEmpAlm;
-    private JLabel lblIngresoTotal;
-    private JLabel lblSubsidioEst;
-    private JLabel lblIngresoConcesionario;
-    private JLabel lblIngresoPropio;
-    private JLabel lblExcedente;
 
     private JButton btnCalcular;
     private JButton btnGuardar;
@@ -89,10 +59,11 @@ public class ConfiguracionCCBPanel extends JPanel {
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
         header.setBackground(Color.WHITE);
 
-        JLabel title = new JLabel("Configuración del Costo Cubierto de Bandeja (CCB)");
+        JLabel title = new JLabel("Configuracion del Costo Cubierto de Bandeja (CCB)");
         title.setFont(new Font("SansSerif", Font.BOLD, 24));
         title.setForeground(COLOR_PRIMARY);
-        JLabel subtitle = new JLabel("Periodo minimo 2 dias y maximo 31 dias (desde hoy en adelante).");
+
+        JLabel subtitle = new JLabel("Formula: CCB = ((CF + CV) / NB) * (1 + Merma/100)");
         subtitle.setForeground(Color.GRAY);
 
         header.add(title);
@@ -106,7 +77,7 @@ public class ConfiguracionCCBPanel extends JPanel {
 
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
-        formPanel.setBorder(BorderFactory.createTitledBorder("Datos del periodo"));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Datos para el calculo"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -114,112 +85,38 @@ public class ConfiguracionCCBPanel extends JPanel {
 
         int row = 0;
 
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("Fecha inicio (YYYY-MM-DD):"), gbc);
-        gbc.gridx = 1;
-        txtFechaInicio = crearInput();
-        formPanel.add(txtFechaInicio, gbc);
-
-        gbc.gridx = 2; gbc.gridy = row;
-        formPanel.add(crearLabel("Fecha fin (YYYY-MM-DD):"), gbc);
-        gbc.gridx = 3;
-        txtFechaFin = crearInput();
-        formPanel.add(txtFechaFin, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         formPanel.add(crearLabel("Costos Fijos (Bs):"), gbc);
         gbc.gridx = 1;
         txtCostosFijos = crearInput();
         formPanel.add(txtCostosFijos, gbc);
 
-        gbc.gridx = 2; gbc.gridy = row;
+        gbc.gridx = 2;
+        gbc.gridy = row;
         formPanel.add(crearLabel("Costos Variables (Bs):"), gbc);
         gbc.gridx = 3;
         txtCostosVariables = crearInput();
         formPanel.add(txtCostosVariables, gbc);
 
         row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("NB (proyectadas o servidas):"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        formPanel.add(crearLabel("NB (numero de bandejas):"), gbc);
         gbc.gridx = 1;
         txtNumBandejas = crearInput();
         formPanel.add(txtNumBandejas, gbc);
 
-        gbc.gridx = 2; gbc.gridy = row;
-        formPanel.add(crearLabel("Tipo NB:"), gbc);
+        gbc.gridx = 2;
+        gbc.gridy = row;
+        formPanel.add(crearLabel("Merma (%):"), gbc);
         gbc.gridx = 3;
-        cmbTipoNb = new JComboBox<>(new String[] {"Proyectado", "Servido"});
-        formPanel.add(cmbTipoNb, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("Porcentaje de Merma (%):"), gbc);
-        gbc.gridx = 1;
         txtMerma = crearInput();
         formPanel.add(txtMerma, gbc);
 
         row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("% Estudiantes (20-30):"), gbc);
-        gbc.gridx = 1;
-        txtPctEst = crearInput();
-        formPanel.add(txtPctEst, gbc);
-
-        gbc.gridx = 2; gbc.gridy = row;
-        formPanel.add(crearLabel("% Profesores (70-90):"), gbc);
-        gbc.gridx = 3;
-        txtPctProf = crearInput();
-        formPanel.add(txtPctProf, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("% Empleados (90-110):"), gbc);
-        gbc.gridx = 1;
-        txtPctEmp = crearInput();
-        formPanel.add(txtPctEmp, gbc);
-
-        gbc.gridx = 2; gbc.gridy = row;
-        formPanel.add(crearLabel("% Concesionario (25-30):"), gbc);
-        gbc.gridx = 3;
-        txtPctConcesionario = crearInput();
-        formPanel.add(txtPctConcesionario, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("Factor Desayuno (% sobre tarifa base):"), gbc);
-        gbc.gridx = 1;
-        txtPctDesayuno = crearInput();
-        formPanel.add(txtPctDesayuno, gbc);
-
-        gbc.gridx = 2; gbc.gridy = row;
-        formPanel.add(crearLabel("Factor Almuerzo (% sobre tarifa base):"), gbc);
-        gbc.gridx = 3;
-        txtPctAlmuerzo = crearInput();
-        formPanel.add(txtPctAlmuerzo, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("NB Estudiantes:"), gbc);
-        gbc.gridx = 1;
-        txtNbEst = crearInput();
-        formPanel.add(txtNbEst, gbc);
-
-        gbc.gridx = 2; gbc.gridy = row;
-        formPanel.add(crearLabel("NB Profesores:"), gbc);
-        gbc.gridx = 3;
-        txtNbProf = crearInput();
-        formPanel.add(txtNbProf, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        formPanel.add(crearLabel("NB Empleados:"), gbc);
-        gbc.gridx = 1;
-        txtNbEmp = crearInput();
-        formPanel.add(txtNbEmp, gbc);
-
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         gbc.gridwidth = 4;
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.setBackground(Color.WHITE);
@@ -227,7 +124,7 @@ public class ConfiguracionCCBPanel extends JPanel {
         btnCalcular = new JButton("Calcular CCB");
         estilizarBoton(btnCalcular, false);
 
-        btnGuardar = new JButton("Guardar Periodo");
+        btnGuardar = new JButton("Guardar calculo");
         estilizarBoton(btnGuardar, true);
         btnGuardar.setEnabled(false);
 
@@ -237,43 +134,15 @@ public class ConfiguracionCCBPanel extends JPanel {
 
         row++;
         gbc.gridy = row;
-        JPanel resultados = new JPanel(new GridLayout(5, 3, 10, 8));
+        JPanel resultados = new JPanel(new GridLayout(1, 1, 10, 8));
         resultados.setBackground(Color.WHITE);
         lblResultadoCCB = crearValor("CCB: -");
-        lblTarifaEst = crearValor("Tarifa Estudiante: -");
-        lblTarifaProf = crearValor("Tarifa Profesor: -");
-        lblTarifaEmp = crearValor("Tarifa Empleado: -");
-        lblTarifaEstDes = crearValor("Est. Desayuno: -");
-        lblTarifaEstAlm = crearValor("Est. Almuerzo: -");
-        lblTarifaProfDes = crearValor("Prof. Desayuno: -");
-        lblTarifaProfAlm = crearValor("Prof. Almuerzo: -");
-        lblTarifaEmpDes = crearValor("Emp. Desayuno: -");
-        lblTarifaEmpAlm = crearValor("Emp. Almuerzo: -");
-        lblIngresoTotal = crearValor("Ingreso Total: -");
-        lblSubsidioEst = crearValor("Subsidio Estudiante: -");
-        lblIngresoConcesionario = crearValor("Concesionario: -");
-        lblIngresoPropio = crearValor("Ingreso Propio: -");
-        lblExcedente = crearValor("Excedente: -");
         resultados.add(lblResultadoCCB);
-        resultados.add(lblTarifaEst);
-        resultados.add(lblTarifaProf);
-        resultados.add(lblTarifaEmp);
-        resultados.add(lblTarifaEstDes);
-        resultados.add(lblTarifaEstAlm);
-        resultados.add(lblTarifaProfDes);
-        resultados.add(lblTarifaProfAlm);
-        resultados.add(lblTarifaEmpDes);
-        resultados.add(lblTarifaEmpAlm);
-        resultados.add(lblIngresoTotal);
-        resultados.add(lblSubsidioEst);
-        resultados.add(lblIngresoConcesionario);
-        resultados.add(lblIngresoPropio);
-        resultados.add(lblExcedente);
         formPanel.add(resultados, gbc);
 
         JPanel resultadosWrapper = new JPanel(new BorderLayout());
         resultadosWrapper.setBackground(Color.WHITE);
-        resultadosWrapper.setBorder(BorderFactory.createTitledBorder("Resultados"));
+        resultadosWrapper.setBorder(BorderFactory.createTitledBorder("Resultado"));
         resultadosWrapper.add(resultados, BorderLayout.CENTER);
 
         JPanel tablaWrapper = new JPanel(new BorderLayout());
@@ -293,7 +162,7 @@ public class ConfiguracionCCBPanel extends JPanel {
         add(scroll, BorderLayout.CENTER);
 
         btnCalcular.addActionListener(e -> calcularCCB());
-        btnGuardar.addActionListener(e -> guardarPeriodo());
+        btnGuardar.addActionListener(e -> guardarCalculo());
 
         cargarHistorico();
     }
@@ -304,40 +173,25 @@ public class ConfiguracionCCBPanel extends JPanel {
             ultimoCalculo = record;
 
             lblResultadoCCB.setText("CCB: Bs " + formatear(record.getCcb()));
-            lblTarifaEst.setText("Tarifa Estudiante: Bs " + formatear(record.getTarifaEst()));
-            lblTarifaProf.setText("Tarifa Profesor: Bs " + formatear(record.getTarifaProf()));
-            lblTarifaEmp.setText("Tarifa Empleado: Bs " + formatear(record.getTarifaEmp()));
-            lblTarifaEstDes.setText("Est. Desayuno: Bs " + formatear(record.getTarifaEstDesayuno()));
-            lblTarifaEstAlm.setText("Est. Almuerzo: Bs " + formatear(record.getTarifaEstAlmuerzo()));
-            lblTarifaProfDes.setText("Prof. Desayuno: Bs " + formatear(record.getTarifaProfDesayuno()));
-            lblTarifaProfAlm.setText("Prof. Almuerzo: Bs " + formatear(record.getTarifaProfAlmuerzo()));
-            lblTarifaEmpDes.setText("Emp. Desayuno: Bs " + formatear(record.getTarifaEmpDesayuno()));
-            lblTarifaEmpAlm.setText("Emp. Almuerzo: Bs " + formatear(record.getTarifaEmpAlmuerzo()));
-            lblIngresoTotal.setText("Ingreso Total: Bs " + formatear(record.getIngresoTotal()));
-            lblSubsidioEst.setText("Subsidio Estudiante: Bs " + formatear(record.getSubsidioEst()));
-            lblIngresoConcesionario.setText("Concesionario: Bs " + formatear(record.getIngresoConcesionario()));
-            lblIngresoPropio.setText("Ingreso Propio: Bs " + formatear(record.getIngresoPropio()));
-            lblExcedente.setText("Excedente: Bs " + formatear(record.getExcedente()));
-
             btnGuardar.setEnabled(true);
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void guardarPeriodo() {
+    private void guardarCalculo() {
         if (ultimoCalculo == null) {
-            JOptionPane.showMessageDialog(this, "Primero calcula el CCB del periodo.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Primero calcula el CCB.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         boolean ok = modelo.guardar(ultimoCalculo);
         if (ok) {
-            JOptionPane.showMessageDialog(this, "Periodo guardado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Calculo guardado correctamente.", "Exito", JOptionPane.INFORMATION_MESSAGE);
             cargarHistorico();
             btnGuardar.setEnabled(false);
         } else {
-            JOptionPane.showMessageDialog(this, "No se pudo guardar el periodo.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No se pudo guardar el calculo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -346,30 +200,18 @@ public class ConfiguracionCCBPanel extends JPanel {
         List<CcbRecord> registros = modelo.obtenerRegistros();
         for (CcbRecord r : registros) {
             modeloTabla.addRow(new Object[] {
-                r.getPeriodoTexto(),
-                "Bs " + formatear(r.getCcb()),
-                "Bs " + formatear(r.getTarifaEst()),
-                "Bs " + formatear(r.getTarifaProf()),
-                "Bs " + formatear(r.getTarifaEmp()),
-                "Bs " + formatear(r.getTarifaEstDesayuno()),
-                "Bs " + formatear(r.getTarifaEstAlmuerzo()),
-                "Bs " + formatear(r.getTarifaProfDesayuno()),
-                "Bs " + formatear(r.getTarifaProfAlmuerzo()),
-                "Bs " + formatear(r.getTarifaEmpDesayuno()),
-                "Bs " + formatear(r.getTarifaEmpAlmuerzo()),
-                "Bs " + formatear(r.getIngresoTotal()),
-                "Bs " + formatear(r.getSubsidioEst()),
-                "Bs " + formatear(r.getIngresoConcesionario()),
-                "Bs " + formatear(r.getIngresoPropio())
+                "Bs " + formatear(r.getCostosFijos()),
+                "Bs " + formatear(r.getCostosVariables()),
+                formatear(r.getNbTotal()),
+                formatear(r.getMerma()) + "%",
+                "Bs " + formatear(r.getCcb())
             });
         }
     }
 
     private JScrollPane crearTablaHistorico() {
         String[] columnas = {
-            "Periodo", "CCB", "Tarifa Est", "Tarifa Prof", "Tarifa Emp",
-            "Est Des", "Est Alm", "Prof Des", "Prof Alm", "Emp Des", "Emp Alm",
-            "Ingreso Total", "Subsidio Est", "Concesionario", "Ingreso Propio"
+            "Costos Fijos", "Costos Variables", "NB", "Merma", "CCB"
         };
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
@@ -386,109 +228,24 @@ public class ConfiguracionCCBPanel extends JPanel {
     }
 
     private CcbRecord construirRegistro() {
-        LocalDate inicio = parseFecha(txtFechaInicio.getText(), "Fecha inicio");
-        LocalDate fin = parseFecha(txtFechaFin.getText(), "Fecha fin");
-        if (fin.isBefore(inicio)) {
-            throw new IllegalArgumentException("La fecha fin no puede ser anterior a la fecha inicio.");
-        }
-
-        LocalDate hoy = LocalDate.now();
-        if (inicio.isBefore(hoy)) {
-            throw new IllegalArgumentException("La fecha inicio debe ser hoy o una fecha futura.");
-        }
-
-        String tipoNb = (String) cmbTipoNb.getSelectedItem();
-        if ("Servido".equalsIgnoreCase(tipoNb) && !inicio.equals(hoy)) {
-            throw new IllegalArgumentException("Si el periodo es Servido, la fecha inicio debe ser hoy.");
-        }
-
-        long dias = ChronoUnit.DAYS.between(inicio, fin) + 1;
-        if (dias < 2 || dias > 31) {
-            throw new IllegalArgumentException("El periodo debe ser entre 2 y 31 dias.");
-        }
-
-        validarSolapamiento(inicio, fin);
-
         BigDecimal cf = parseMonto(txtCostosFijos.getText(), "Costos Fijos");
         BigDecimal cv = parseMonto(txtCostosVariables.getText(), "Costos Variables");
         BigDecimal nb = parseMonto(txtNumBandejas.getText(), "NB");
-        BigDecimal merma = parsePorcentaje(txtMerma.getText(), "Merma", new BigDecimal("0"), new BigDecimal("100"));
+        BigDecimal merma = parsePorcentaje(txtMerma.getText(), "Merma", BigDecimal.ZERO, new BigDecimal("100"));
 
-        BigDecimal pctEst = parsePorcentaje(txtPctEst.getText(), "% Estudiantes", new BigDecimal("20"), new BigDecimal("30"));
-        BigDecimal pctProf = parsePorcentaje(txtPctProf.getText(), "% Profesores", new BigDecimal("70"), new BigDecimal("90"));
-        BigDecimal pctEmp = parsePorcentaje(txtPctEmp.getText(), "% Empleados", new BigDecimal("90"), new BigDecimal("110"));
-        BigDecimal pctConces = parsePorcentaje(txtPctConcesionario.getText(), "% Concesionario", new BigDecimal("25"), new BigDecimal("30"));
-        BigDecimal pctDesayuno = parsePorcentaje(txtPctDesayuno.getText(), "Factor Desayuno", new BigDecimal("50"), new BigDecimal("150"));
-        BigDecimal pctAlmuerzo = parsePorcentaje(txtPctAlmuerzo.getText(), "Factor Almuerzo", new BigDecimal("50"), new BigDecimal("150"));
-
-        BigDecimal nbEst = parseMonto(txtNbEst.getText(), "NB Estudiantes");
-        BigDecimal nbProf = parseMonto(txtNbProf.getText(), "NB Profesores");
-        BigDecimal nbEmp = parseMonto(txtNbEmp.getText(), "NB Empleados");
-
-        BigDecimal suma = nbEst.add(nbProf).add(nbEmp);
-        if (suma.compareTo(nb) != 0) {
-            throw new IllegalArgumentException("La suma de NB por rol debe ser igual al NB total.");
-        }
-
-        BigDecimal ccb = cf.add(cv).divide(nb, 4, RoundingMode.HALF_UP)
+        BigDecimal ccb = cf.add(cv)
+            .divide(nb, 4, RoundingMode.HALF_UP)
             .multiply(BigDecimal.ONE.add(merma.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)))
             .setScale(2, RoundingMode.HALF_UP);
 
-        BigDecimal tarifaEst = ccb.multiply(pctEst).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaProf = ccb.multiply(pctProf).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaEmp = ccb.multiply(pctEmp).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-
-        BigDecimal tarifaEstDes = tarifaEst.multiply(pctDesayuno).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaEstAlm = tarifaEst.multiply(pctAlmuerzo).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaProfDes = tarifaProf.multiply(pctDesayuno).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaProfAlm = tarifaProf.multiply(pctAlmuerzo).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaEmpDes = tarifaEmp.multiply(pctDesayuno).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal tarifaEmpAlm = tarifaEmp.multiply(pctAlmuerzo).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-
-        BigDecimal ingresoTotal = tarifaEst.multiply(nbEst)
-            .add(tarifaProf.multiply(nbProf))
-            .add(tarifaEmp.multiply(nbEmp))
-            .setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal subsidioEst = ccb.subtract(tarifaEst).max(BigDecimal.ZERO)
-            .multiply(nbEst).setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal excedente = tarifaProf.subtract(ccb).multiply(nbProf)
-            .add(tarifaEmp.subtract(ccb).multiply(nbEmp))
-            .setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal ingresoConcesionario = ingresoTotal.multiply(pctConces)
-            .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal ingresoPropio = ingresoTotal.subtract(ingresoConcesionario).setScale(2, RoundingMode.HALF_UP);
-
-        return new CcbRecord(
-            inicio, fin, cf, cv, nb, merma,
-            pctEst, pctProf, pctEmp,
-            nbEst, nbProf, nbEmp, pctConces,
-            ccb, tarifaEst, tarifaProf, tarifaEmp,
-            ingresoTotal, subsidioEst, ingresoConcesionario, ingresoPropio, excedente,
-            pctDesayuno, pctAlmuerzo,
-            tarifaEstDes, tarifaEstAlm,
-            tarifaProfDes, tarifaProfAlm,
-            tarifaEmpDes, tarifaEmpAlm
-        );
-    }
-
-    private LocalDate parseFecha(String texto, String campo) {
-        if (texto == null || texto.trim().isEmpty()) {
-            throw new IllegalArgumentException("Completa el campo: " + campo + ".");
-        }
-        try {
-            return LocalDate.parse(texto.trim());
-        } catch (DateTimeParseException ex) {
-            throw new IllegalArgumentException("Formato invalido en " + campo + ". Usa YYYY-MM-DD.");
-        }
+        return new CcbRecord(cf, cv, nb, merma, ccb);
     }
 
     private BigDecimal parseMonto(String texto, String campo) {
         if (texto == null || texto.trim().isEmpty()) {
             throw new IllegalArgumentException("Completa el campo: " + campo + ".");
         }
+
         String normalizado = texto.trim().replace(',', '.');
         BigDecimal valor;
         try {
@@ -496,6 +253,7 @@ public class ConfiguracionCCBPanel extends JPanel {
         } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("Valor invalido en " + campo + ".");
         }
+
         if (valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(campo + " debe ser mayor a 0.");
         }
@@ -503,23 +261,22 @@ public class ConfiguracionCCBPanel extends JPanel {
     }
 
     private BigDecimal parsePorcentaje(String texto, String campo, BigDecimal min, BigDecimal max) {
-        BigDecimal valor = parseMonto(texto, campo);
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("Completa el campo: " + campo + ".");
+        }
+
+        String normalizado = texto.trim().replace(',', '.');
+        BigDecimal valor;
+        try {
+            valor = new BigDecimal(normalizado);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Valor invalido en " + campo + ".");
+        }
+
         if (valor.compareTo(min) < 0 || valor.compareTo(max) > 0) {
             throw new IllegalArgumentException(campo + " debe estar entre " + min + " y " + max + ".");
         }
         return valor.setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private void validarSolapamiento(LocalDate inicio, LocalDate fin) {
-        List<CcbRecord> registros = modelo.obtenerRegistros();
-        for (CcbRecord r : registros) {
-            LocalDate rInicio = r.getFechaInicio();
-            LocalDate rFin = r.getFechaFin();
-            boolean solapa = !fin.isBefore(rInicio) && !inicio.isAfter(rFin);
-            if (solapa) {
-                throw new IllegalArgumentException("El periodo se solapa con uno ya registrado.");
-            }
-        }
     }
 
     private JLabel crearLabel(String texto) {
@@ -536,7 +293,7 @@ public class ConfiguracionCCBPanel extends JPanel {
 
     private JLabel crearValor(String texto) {
         JLabel lbl = new JLabel(texto);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
         lbl.setForeground(COLOR_TEXT_DARK);
         return lbl;
     }

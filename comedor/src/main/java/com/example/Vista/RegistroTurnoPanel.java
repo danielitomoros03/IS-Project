@@ -160,7 +160,7 @@ public class RegistroTurnoPanel extends JPanel {
                         return;
                     }
 
-                    TarifaAplicada tarifaAplicada = calcularTarifaAplicada(turno.getTipo());
+                    TarifaAplicada tarifaAplicada = calcularTarifaAplicada();
                     if (!verificarSaldoDisponible(tarifaAplicada.getMontoCobro())) {
                         return;
                     }
@@ -286,32 +286,18 @@ public class RegistroTurnoPanel extends JPanel {
             .toPlainString() + "%";
     }
 
-    private BigDecimal obtenerTarifaUsuario(String tipoTurno) {
+    private BigDecimal obtenerTarifaUsuario() {
         List<CcbRecord> registros = ccbModel.obtenerRegistros();
         if (registros == null || registros.isEmpty()) {
             return TARIFA_FALLBACK;
         }
 
         CcbRecord ultimo = registros.get(registros.size() - 1);
-        String rol = usuarioRol == null ? "" : usuarioRol.toLowerCase();
-
-        boolean esDesayuno = tipoTurno != null && tipoTurno.toLowerCase().contains("desayuno");
-
-        if (rol.contains("estudiante")) {
-            return esDesayuno ? ultimo.getTarifaEstDesayuno() : ultimo.getTarifaEstAlmuerzo();
-        }
-        if (rol.contains("profesor")) {
-            return esDesayuno ? ultimo.getTarifaProfDesayuno() : ultimo.getTarifaProfAlmuerzo();
-        }
-        if (rol.contains("empleado")) {
-            return esDesayuno ? ultimo.getTarifaEmpDesayuno() : ultimo.getTarifaEmpAlmuerzo();
-        }
-
-        return esDesayuno ? ultimo.getTarifaEmpDesayuno() : ultimo.getTarifaEmpAlmuerzo();
+        return ultimo.getCcb();
     }
 
-    private TarifaAplicada calcularTarifaAplicada(String tipoTurno) {
-        BigDecimal tarifaBase = obtenerTarifaUsuario(tipoTurno);
+    private TarifaAplicada calcularTarifaAplicada() {
+        BigDecimal tarifaBase = obtenerTarifaUsuario();
         String rol = usuarioRol == null ? "" : usuarioRol.toLowerCase();
 
         if (!rol.contains("estudiante")) {
