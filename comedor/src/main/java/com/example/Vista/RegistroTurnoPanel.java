@@ -44,7 +44,7 @@ public class RegistroTurnoPanel extends JPanel {
     private static final int UMBRAL_DHASH = 10;
     private static final BigDecimal TARIFA_FALLBACK = new BigDecimal("50.00");
 
-    private JPanel panelTurnos;
+    private final JPanel panelTurnos;
     // Simula si el usuario ya tiene un turno hoy (para evitar doble registro)
     private boolean usuarioYaRegistrado = false; 
     private final Color COLOR_PRIMARY = new Color(34, 120, 64);
@@ -210,20 +210,23 @@ public class RegistroTurnoPanel extends JPanel {
     }
 
     private boolean validarReconocimientoFacial() {
-        String rutaBase = secretariaModel.obtenerRutaFoto(usuarioEmail);
-        if (rutaBase == null || rutaBase.trim().isEmpty()) {
+        File fotoBase = secretariaModel.obtenerArchivoFoto(usuarioEmail);
+        if (fotoBase == null) {
             JOptionPane.showMessageDialog(this, "No hay foto registrada en Secretaria para este usuario.");
-            return false;
-        }
-
-        File fotoBase = new File(rutaBase.trim());
-        if (!fotoBase.exists()) {
-            JOptionPane.showMessageDialog(this, "La foto registrada no se encontro en disco.");
             return false;
         }
 
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona tu foto (JPG/PNG)");
+
+        File directorioFotos = secretariaModel.obtenerDirectorioFotos();
+        if (directorioFotos != null && directorioFotos.exists()) {
+            chooser.setCurrentDirectory(directorioFotos);
+        } else if (fotoBase.getParentFile() != null && fotoBase.getParentFile().exists()) {
+            chooser.setCurrentDirectory(fotoBase.getParentFile());
+        }
+        chooser.setSelectedFile(fotoBase);
+
         int result = chooser.showOpenDialog(this);
         if (result != JFileChooser.APPROVE_OPTION) {
             return false;
@@ -236,11 +239,32 @@ public class RegistroTurnoPanel extends JPanel {
         }
 
         try {
-            boolean valido = faceModel.esReconocimientoValido(fotoIngresada, fotoBase, UMBRAL_DHASH);
-            if (!valido) {
-                JOptionPane.showMessageDialog(this, "Reconocimiento facial no valido.");
+            FaceRecognitionModel.ResultadoReconocimiento reconocimiento = faceModel.evaluarReconocimiento(
+                fotoIngresada,
+                fotoBase,
+                UMBRAL_DHASH
+            );
+
+            if (!reconocimiento.esValido()) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Reconocimiento facial no valido. Puntaje: "
+                        + formatearPorcentaje(reconocimiento.getPuntajeFinal())
+                        + " | Distancia: "
+                        + reconocimiento.getDistanciaHash(),
+                    "Reconocimiento facial",
+                    JOptionPane.ERROR_MESSAGE
+                );
+                return false;
             }
-            return valido;
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Reconocimiento facial validado. Puntaje: " + formatearPorcentaje(reconocimiento.getPuntajeFinal()),
+                "Reconocimiento facial",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+            return true;
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "No se pudo leer la imagen seleccionada.");
             return false;
@@ -253,6 +277,13 @@ public class RegistroTurnoPanel extends JPanel {
         }
         String nombre = archivo.getName().toLowerCase();
         return nombre.endsWith(".jpg") || nombre.endsWith(".jpeg") || nombre.endsWith(".png");
+    }
+
+    private String formatearPorcentaje(double valor) {
+        return BigDecimal.valueOf(valor)
+            .multiply(new BigDecimal("100"))
+            .setScale(2, RoundingMode.HALF_UP)
+            .toPlainString() + "%";
     }
 
     private BigDecimal obtenerTarifaUsuario(String tipoTurno) {
