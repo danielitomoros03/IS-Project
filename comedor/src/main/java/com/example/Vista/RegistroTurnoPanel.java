@@ -6,7 +6,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,7 +18,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,15 +31,11 @@ import com.example.Modelo.BeneficioComensal;
 import com.example.Modelo.BeneficioComensalModel;
 import com.example.Modelo.CcbModel;
 import com.example.Modelo.CcbRecord;
-import com.example.Modelo.FaceRecognitionModel;
 import com.example.Modelo.MonederoModel;
 import com.example.Modelo.RegUsuarioModelo;
-import com.example.Modelo.SecretariaModel;
 import com.example.Modelo.Turno;
 
 public class RegistroTurnoPanel extends JPanel {
-
-    private static final int UMBRAL_DHASH = 10;
     private static final BigDecimal TARIFA_FALLBACK = new BigDecimal("50.00");
 
     private final JPanel panelTurnos;
@@ -53,8 +47,6 @@ public class RegistroTurnoPanel extends JPanel {
     private final String usuarioRol;
     private final MonederoModel monederoModel = new MonederoModel();
     private final CcbModel ccbModel = new CcbModel();
-    private final SecretariaModel secretariaModel = new SecretariaModel();
-    private final FaceRecognitionModel faceModel = new FaceRecognitionModel();
     private final BeneficioComensalModel beneficioModel = new BeneficioComensalModel();
     private final RegUsuarioModelo regUsuarioModelo = new RegUsuarioModelo();
     private final AsistenciaComedorModel asistenciaModel = new AsistenciaComedorModel();
@@ -156,9 +148,6 @@ public class RegistroTurnoPanel extends JPanel {
                 btnReservar.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 
                 btnReservar.addActionListener(e -> {
-                    if (!validarReconocimientoFacial()) {
-                        return;
-                    }
 
                     TarifaAplicada tarifaAplicada = calcularTarifaAplicada();
                     if (!verificarSaldoDisponible(tarifaAplicada.getMontoCobro())) {
@@ -207,83 +196,6 @@ public class RegistroTurnoPanel extends JPanel {
         lista.add(new Turno("T3", "01:00 PM - 02:00 PM", "Almuerzo", 50, 10, "12:30"));
         
         return lista;
-    }
-
-    private boolean validarReconocimientoFacial() {
-        File fotoBase = secretariaModel.obtenerArchivoFoto(usuarioEmail);
-        if (fotoBase == null) {
-            JOptionPane.showMessageDialog(this, "No hay foto registrada en Secretaria para este usuario.");
-            return false;
-        }
-
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Selecciona tu foto (JPG/PNG)");
-
-        File directorioFotos = secretariaModel.obtenerDirectorioFotos();
-        if (directorioFotos != null && directorioFotos.exists()) {
-            chooser.setCurrentDirectory(directorioFotos);
-        } else if (fotoBase.getParentFile() != null && fotoBase.getParentFile().exists()) {
-            chooser.setCurrentDirectory(fotoBase.getParentFile());
-        }
-        chooser.setSelectedFile(fotoBase);
-
-        int result = chooser.showOpenDialog(this);
-        if (result != JFileChooser.APPROVE_OPTION) {
-            return false;
-        }
-
-        File fotoIngresada = chooser.getSelectedFile();
-        if (!esImagenPermitida(fotoIngresada)) {
-            JOptionPane.showMessageDialog(this, "Solo se permiten imagenes JPG o PNG.");
-            return false;
-        }
-
-        try {
-            FaceRecognitionModel.ResultadoReconocimiento reconocimiento = faceModel.evaluarReconocimiento(
-                fotoIngresada,
-                fotoBase,
-                UMBRAL_DHASH
-            );
-
-            if (!reconocimiento.esValido()) {
-                JOptionPane.showMessageDialog(
-                    this,
-                    "Reconocimiento facial no valido. Puntaje: "
-                        + formatearPorcentaje(reconocimiento.getPuntajeFinal())
-                        + " | Distancia: "
-                        + reconocimiento.getDistanciaHash(),
-                    "Reconocimiento facial",
-                    JOptionPane.ERROR_MESSAGE
-                );
-                return false;
-            }
-
-            JOptionPane.showMessageDialog(
-                this,
-                "Reconocimiento facial validado. Puntaje: " + formatearPorcentaje(reconocimiento.getPuntajeFinal()),
-                "Reconocimiento facial",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-            return true;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "No se pudo leer la imagen seleccionada.");
-            return false;
-        }
-    }
-
-    private boolean esImagenPermitida(File archivo) {
-        if (archivo == null) {
-            return false;
-        }
-        String nombre = archivo.getName().toLowerCase();
-        return nombre.endsWith(".jpg") || nombre.endsWith(".jpeg") || nombre.endsWith(".png");
-    }
-
-    private String formatearPorcentaje(double valor) {
-        return BigDecimal.valueOf(valor)
-            .multiply(new BigDecimal("100"))
-            .setScale(2, RoundingMode.HALF_UP)
-            .toPlainString() + "%";
     }
 
     private BigDecimal obtenerTarifaUsuario() {

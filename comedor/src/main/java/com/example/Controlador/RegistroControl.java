@@ -1,25 +1,16 @@
 package com.example.Controlador;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import com.example.Modelo.FaceRecognitionModel;
 import com.example.Modelo.RegUsuarioModelo;
-import com.example.Modelo.ValidacionFacialService;
 import com.example.Vista.RegistroVista;
 
 //Controla cuando se presiona el boton registrar para guardar los datos en el txt
 //Tambien en el formulario si el usuario a registrar es Estudiante o Empleado
 
 public class RegistroControl {
-    private static final int UMBRAL_DHASH = 10;
-
     private RegistroVista vista;
     private RegUsuarioModelo modelo;
-    private final ValidacionFacialService validacionFacialService;
     private boolean correoValidado = false;
     private String correoValidadoValor;
     private String nombreDesdeSecretaria;
@@ -29,7 +20,6 @@ public class RegistroControl {
     public RegistroControl(RegistroVista vista, RegUsuarioModelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
-        this.validacionFacialService = new ValidacionFacialService();
 
         // Listener del boton registrar
         this.vista.btnRegistrar.addActionListener(e -> guardarDatos());
@@ -69,75 +59,16 @@ public class RegistroControl {
             return;
         }
 
-        try {
-            validarRostroRegistro(email);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(vista, ex.getMessage());
-            marcarCorreoInvalido("Validacion facial fallida");
-            return;
-        }
-
         correoValidado = true;
         correoValidadoValor = email;
         nombreDesdeSecretaria = datos[0];
         rolDesdeSecretaria = datos[1];
 
         vista.lblEstadoCorreo.setForeground(new java.awt.Color(34, 120, 64));
-        vista.lblEstadoCorreo.setText("Correo y rostro validados");
+        vista.lblEstadoCorreo.setText("Correo valido");
         vista.mostrarPasoContrasena();
         vista.btnRegistrar.setText("Registrar");
         pasoContrasena = true;
-    }
-
-    private void validarRostroRegistro(String email) throws Exception {
-        File fotoBase = validacionFacialService.obtenerFotoBase(email);
-        if (fotoBase == null) {
-            throw new Exception("No hay foto base en Secretaria para este correo.");
-        }
-
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Validacion facial para registro (JPG/PNG)");
-
-        File directorioFotos = validacionFacialService.obtenerDirectorioFotos();
-        if (directorioFotos != null && directorioFotos.exists()) {
-            chooser.setCurrentDirectory(directorioFotos);
-        } else if (fotoBase.getParentFile() != null && fotoBase.getParentFile().exists()) {
-            chooser.setCurrentDirectory(fotoBase.getParentFile());
-        }
-        chooser.setSelectedFile(fotoBase);
-
-        int result = chooser.showOpenDialog(vista);
-        if (result != JFileChooser.APPROVE_OPTION) {
-            throw new Exception("Validacion facial cancelada.");
-        }
-
-        File fotoIngresada = chooser.getSelectedFile();
-        try {
-            FaceRecognitionModel.ResultadoReconocimiento reconocimiento =
-                validacionFacialService.validarContraSecretaria(email, fotoIngresada, UMBRAL_DHASH);
-
-            if (!reconocimiento.esValido()) {
-                throw new Exception(
-                    "No coincide con la foto de Secretaria. Puntaje: "
-                        + formatearPorcentaje(reconocimiento.getPuntajeFinal())
-                        + " | Distancia: "
-                        + reconocimiento.getDistanciaHash()
-                );
-            }
-
-            JOptionPane.showMessageDialog(
-                vista,
-                "Identidad validada por reconocimiento facial.",
-                "Registro",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-        } catch (IllegalArgumentException | IllegalStateException | IOException ex) {
-            throw new Exception(ex.getMessage());
-        }
-    }
-
-    private String formatearPorcentaje(double valor) {
-        return String.format(java.util.Locale.ROOT, "%.2f%%", valor * 100.0);
     }
 
     private void guardarDatos() {
