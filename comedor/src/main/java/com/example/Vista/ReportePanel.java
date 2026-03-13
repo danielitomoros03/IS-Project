@@ -46,6 +46,7 @@ public class ReportePanel extends JPanel {
     private JComboBox<String> comboTipo;
     private JTextField txtPorcentaje;
     private JLabel lblEstadoBeneficio;
+    private JLabel lblEstadoActualBeneficio;
 
     private JComboBox<String> comboServicio;
     private DefaultTableModel detalleModel;
@@ -123,6 +124,10 @@ public class ReportePanel extends JPanel {
         gbc.gridx = 1;
         panel.add(txtPorcentaje, gbc);
 
+        JButton btnConsultar = new JButton("Consultar estado");
+        gbc.gridx = 2;
+        panel.add(btnConsultar, gbc);
+
         JButton btnGuardar = new JButton("Actualizar clasificacion");
         gbc.gridx = 3;
         panel.add(btnGuardar, gbc);
@@ -134,6 +139,11 @@ public class ReportePanel extends JPanel {
         gbc.gridwidth = 4;
         panel.add(lblEstadoBeneficio, gbc);
 
+        lblEstadoActualBeneficio = new JLabel("Estado actual: sin consulta");
+        lblEstadoActualBeneficio.setForeground(new Color(60, 60, 60));
+        gbc.gridy = 4;
+        panel.add(lblEstadoActualBeneficio, gbc);
+
         comboTipo.addActionListener(e -> {
             boolean esBecario = "Becario".equals(comboTipo.getSelectedItem());
             txtPorcentaje.setEnabled(esBecario);
@@ -142,6 +152,7 @@ public class ReportePanel extends JPanel {
             }
         });
 
+        btnConsultar.addActionListener(e -> consultarEstadoBeneficio());
         btnGuardar.addActionListener(e -> guardarBeneficio());
 
         return panel;
@@ -237,6 +248,7 @@ public class ReportePanel extends JPanel {
 
         String tipo = (String) comboTipo.getSelectedItem();
         try {
+            boolean actualizado = false;
             switch (tipo == null ? "" : tipo) {
                 case "Regular" -> {
                     beneficioModel.registrarRegular(ci);
@@ -246,6 +258,7 @@ public class ReportePanel extends JPanel {
                     }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText("CI " + ci + " clasificada como Estudiante Regular.");
+                    actualizado = true;
                 }
                 case "Exonerado" -> {
                     beneficioModel.registrarExonerado(ci);
@@ -255,6 +268,7 @@ public class ReportePanel extends JPanel {
                     }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText("CI " + ci + " clasificada como Exonerado.");
+                    actualizado = true;
                 }
                 case "Becario" -> {
                     BigDecimal porcentaje = parsePorcentaje(txtPorcentaje.getText());
@@ -272,13 +286,47 @@ public class ReportePanel extends JPanel {
                         "CI " + ci + " clasificada como Becario con descuento de "
                             + porcentaje.setScale(2, RoundingMode.HALF_UP).toPlainString() + "% ."
                     );
+                    actualizado = true;
                 }
                 default ->
                     mostrarError("Selecciona un tipo de clasificacion valido.");
             }
+
+            if (actualizado) {
+                actualizarEstadoVisualBeneficio(ci);
+            }
         } catch (IllegalArgumentException | IOException ex) {
             mostrarError(ex.getMessage());
         }
+    }
+
+    private void consultarEstadoBeneficio() {
+        String identificador = txtCi.getText();
+        if (identificador == null || identificador.trim().isEmpty()) {
+            mostrarError("Debes indicar la CI o el correo del estudiante.");
+            return;
+        }
+
+        String ci = resolverCiEstudiante(identificador);
+        if (ci.isEmpty()) {
+            mostrarError("No se pudo identificar al estudiante. Usa CI o correo @ucv.ve valido.");
+            return;
+        }
+
+        String[] datos = regUsuarioModelo.obtenerDatosPorCiDesdeArchivo(ci);
+        if (datos == null) {
+            mostrarError("No existe un estudiante con esa CI en Usuarios_UCV.txt.");
+            return;
+        }
+
+        String rol = datos[2] == null ? "" : datos[2].toLowerCase();
+        if (!rol.contains("estudiante")) {
+            mostrarError("Solo se permite consultar clasificacion de estudiantes.");
+            return;
+        }
+
+        txtCi.setText(ci);
+        actualizarEstadoVisualBeneficio(ci);
     }
 
     private String resolverCiEstudiante(String identificador) {
@@ -337,6 +385,34 @@ public class ReportePanel extends JPanel {
             : porcentajeEsperado.setScale(2, RoundingMode.HALF_UP);
 
         return beneficio.getPorcentajeCobro().compareTo(esperado) == 0;
+    }
+
+    private void actualizarEstadoVisualBeneficio(String ci) {
+        BeneficioComensal beneficio = beneficioModel.obtenerBeneficioPorCi(ci);
+        if (beneficio == null || beneficio.esRegular()) {
+            comboTipo.setSelectedItem("Regular");
+            txtPorcentaje.setText("5");
+            txtPorcentaje.setEnabled(false);
+            lblEstadoActualBeneficio.setText("Estado actual: Estudiante Regular (sin descuento).");
+            return;
+        }
+
+        if (beneficio.esExonerado()) {
+            comboTipo.setSelectedItem("Exonerado");
+            txtPorcentaje.setText("0.00");
+            txtPorcentaje.setEnabled(false);
+            lblEstadoActualBeneficio.setText("Estado actual: Estudiante Exonerado (100% exonerado).");
+            return;
+        }
+
+        comboTipo.setSelectedItem("Becario");
+        txtPorcentaje.setEnabled(true);
+        txtPorcentaje.setText(beneficio.getPorcentajeCobro().setScale(2, RoundingMode.HALF_UP).toPlainString());
+        lblEstadoActualBeneficio.setText(
+            "Estado actual: Estudiante Becario (descuento "
+                + beneficio.getPorcentajeCobro().setScale(2, RoundingMode.HALF_UP).toPlainString()
+                + "%)."
+        );
     }
 
     private void cargarReporteServicio() {
