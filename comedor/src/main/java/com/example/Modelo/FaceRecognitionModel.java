@@ -12,6 +12,8 @@ public class FaceRecognitionModel {
     private static final int HASH_SIZE = 8;
     private static final int COMPARISON_SIZE = 64;
     private static final int HISTOGRAM_BUCKETS = 32;
+    private static final double MIN_SCORE_VALIDACION = 0.55;
+    private static final double MIN_SIMILITUD_PIXELES = 0.45;
 
     public boolean esReconocimientoValido(File fotoIngresada, File fotoBase, int umbral) throws IOException {
         return evaluarReconocimiento(fotoIngresada, fotoBase, umbral).esValido();
@@ -33,7 +35,9 @@ public class FaceRecognitionModel {
         double similitudPixeles = calcularSimilitudPixeles(ingresadaEscalada, baseEscalada);
         double puntajeFinal = (similitudHash * 0.45) + (similitudHistograma * 0.20) + (similitudPixeles * 0.35);
 
-        boolean valido = distancia <= umbral && puntajeFinal >= 0.55;
+        boolean valido = distancia <= umbral
+            && puntajeFinal >= MIN_SCORE_VALIDACION
+            && similitudPixeles >= MIN_SIMILITUD_PIXELES;
         return new ResultadoReconocimiento(valido, distancia, similitudHistograma, similitudPixeles, puntajeFinal);
     }
 

@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,13 @@ public class LoginModel {
             return "Administrador";
         }
 
+        File archivo = resolveArchivoDatos();
+        if (!archivo.exists()) {
+            throw new Exception("No hay usuarios registrados en el sistema.");
+        }
+
         // Búsqueda en el "archivo"
-        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             boolean usuarioEncontrado = false;
             String rolEncontrado = "";
@@ -57,7 +64,7 @@ public class LoginModel {
                     String passArchivo = datos[2].trim();
                     String rolArchivo = datos[3].trim();
 
-                    if (emailArchivo.equalsIgnoreCase(email) && passArchivo.equals(password)) {
+                    if (emailArchivo.equalsIgnoreCase(emailNormalizado) && passArchivo.equals(password)) {
                         usuarioEncontrado = true;
                         rolEncontrado = rolArchivo;
                         break; // Salimos del bucle si lo encontramos
@@ -75,7 +82,6 @@ public class LoginModel {
             }
 
         } catch (IOException e) {
-            // Si el archivo no existe (nadie se ha registrado aun)
             throw new Exception("No hay usuarios registrados en el sistema.");
         }
     }
@@ -103,7 +109,7 @@ public class LoginModel {
             return false;
         }
 
-        File archivo = new File(nombreArchivo);
+        File archivo = resolveArchivoDatos();
         if (!archivo.exists()) {
             return false;
         }
@@ -134,7 +140,7 @@ public class LoginModel {
             throw new IllegalArgumentException("La nueva contraseña no puede estar vacia.");
         }
 
-        File archivo = new File(nombreArchivo);
+        File archivo = resolveArchivoDatos();
         if (!archivo.exists()) {
             return false;
         }
@@ -168,5 +174,45 @@ public class LoginModel {
     public void desbloquearDespuesDeRecuperacion() {
         intentosFallidos = 0;
         bloqueado = false;
+    }
+
+    private File resolveArchivoDatos() {
+        String userDir = System.getProperty("user.dir");
+        if (userDir != null && !userDir.trim().isEmpty()) {
+            Path baseUserDir = Paths.get(userDir);
+            File desdeUserDir = baseUserDir.resolve(nombreArchivo).toFile();
+            if (desdeUserDir.exists()) {
+                return desdeUserDir;
+            }
+
+            File desdeUserDirComedor = baseUserDir.resolve("comedor").resolve(nombreArchivo).toFile();
+            if (desdeUserDirComedor.exists()) {
+                return desdeUserDirComedor;
+            }
+        }
+
+        Path base = Paths.get("").toAbsolutePath();
+        for (int i = 0; i < 4; i++) {
+            File directo = base.resolve(nombreArchivo).toFile();
+            if (directo.exists()) {
+                return directo;
+            }
+
+            File alterno = base.resolve("comedor").resolve(nombreArchivo).toFile();
+            if (alterno.exists()) {
+                return alterno;
+            }
+
+            Path parent = base.getParent();
+            if (parent == null) {
+                break;
+            }
+            base = parent;
+        }
+
+        if (userDir != null && !userDir.trim().isEmpty()) {
+            return Paths.get(userDir).resolve(nombreArchivo).toFile();
+        }
+        return Paths.get(nombreArchivo).toFile();
     }
 }

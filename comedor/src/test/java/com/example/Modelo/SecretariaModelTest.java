@@ -38,12 +38,18 @@ public class SecretariaModelTest {
 
     @AfterEach
     public void tearDown() throws IOException {
-        Files.deleteIfExists(fotoTemporal);
-        Files.deleteIfExists(fotoOrigen);
-        Files.deleteIfExists(fotoGuardada);
+        borrarSiExiste(fotoTemporal);
+        borrarSiExiste(fotoOrigen);
+        borrarSiExiste(fotoGuardada);
         Files.deleteIfExists(fotosSecretariaPath);
         if (hadBackup) {
             Files.write(fotosSecretariaPath, backup);
+        }
+    }
+
+    private void borrarSiExiste(Path ruta) throws IOException {
+        if (ruta != null) {
+            Files.deleteIfExists(ruta);
         }
     }
 
