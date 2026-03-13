@@ -1,7 +1,9 @@
-Estudiante Demo,estudiante1@ucv.ve,123456,Estudiante,111111
-Empleado Demo,empleado1@ucv.ve,123456,Empleado,qqqq
-s,empleado1@ucv.ve,123456,Empleado,q
+Estudiante Demo,estudiante1@ucv.ve,123123,Estudiante,111111
+Empleado Demo,empleado1@ucv.ve,123123,Empleado,qqqq
+s,empleado1@ucv.ve,123123,Empleado,q
 Estudiante Demo,daniel@ucv.ve,123123,Estudiante,N/A
+Estudiante Demo,marcel@ucv.ve,123123,Estudiante,N/A
+Estudiante Demo,thibisay@ucv.ve,123123,Estudiante,N/A
 N/A,user@ucv.ve,clave,Estudiante,N/A
 N/A,user@ucv.ve,clave,Estudiante,N/A
 N/A,user@ucv.ve,clave,Estudiante,N/A
