@@ -188,6 +188,18 @@ public class MonederoModelTest {
     }
 
     @Test
+    void registrarSaldoPana_muestraSaldosFinalesEsperados_enAmbasCuentas() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("envia@ucv.ve", new BigDecimal("200.00"));
+        model.registrarRecarga("recibe@ucv.ve", new BigDecimal("20.00"));
+
+        model.registrarSaldoPana("envia@ucv.ve", "recibe@ucv.ve", new BigDecimal("35.50"));
+
+        assertEquals(new BigDecimal("164.50"), model.obtenerSaldo("envia@ucv.ve"));
+        assertEquals(new BigDecimal("55.50"), model.obtenerSaldo("recibe@ucv.ve"));
+    }
+
+    @Test
     void registrarRecarga_montoNoPositivo_lanzaError() {
         MonederoModel model = new MonederoModel();
 

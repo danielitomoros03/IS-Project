@@ -116,10 +116,17 @@ public class MonederoControl {
 
         try {
             modelo.registrarSaldoPana(email, emailDestino, monto);
+            BigDecimal saldoOrigenActual = modelo.obtenerSaldo(email);
+            BigDecimal saldoDestinoActual = modelo.obtenerSaldo(emailDestino);
             vista.limpiarMonto();
             vista.limpiarCiDestino();
             cargarDatos();
-            JOptionPane.showMessageDialog(vista, "Saldo Pana enviado con exito a " + emailDestino + ".");
+            JOptionPane.showMessageDialog(
+                vista,
+                "Saldo Pana enviado con exito a " + emailDestino + ".\n"
+                    + "Saldo de quien envia: Bs " + formatearMonto(saldoOrigenActual) + "\n"
+                    + "Saldo de quien recibe: Bs " + formatearMonto(saldoDestinoActual) + ""
+            );
         } catch (IllegalStateException e) {
             JOptionPane.showMessageDialog(vista, e.getMessage(), "Saldo insuficiente", JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException e) {
