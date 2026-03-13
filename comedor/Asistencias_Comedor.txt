@@ -1,0 +1,20 @@
+2026-03-10T07:28:12,Desayuno,estudiante1@ucv.ve,28765431,Estudiante Regular,20.00
+2026-03-10T07:33:45,Desayuno,daniel@ucv.ve,25432111,Estudiante Becario,18.00
+2026-03-10T07:41:03,Desayuno,marcel@ucv.ve,26333888,Estudiante Exonerado,0.00
+2026-03-10T07:50:10,Desayuno,empleado1@ucv.ve,17654321,Empleado,20.00
+2026-03-10T08:02:55,Desayuno,profesor1@ucv.ve,14555111,Profesor,22.00
+2026-03-10T12:10:18,Almuerzo,estudiante1@ucv.ve,28765431,Estudiante Regular,25.00
+2026-03-10T12:16:47,Almuerzo,daniel@ucv.ve,25432111,Estudiante Becario,22.50
+2026-03-10T12:24:06,Almuerzo,marcel@ucv.ve,26333888,Estudiante Exonerado,0.00
+2026-03-10T12:30:29,Almuerzo,donander@ucv.ve,19888777,Empleado,25.00
+2026-03-10T12:45:33,Almuerzo,visitante1@externo.ve,99000111,Otro,25.00
+2026-03-11T07:31:00,Desayuno,thibisay@ucv.ve,27111222,Estudiante Regular,20.00
+2026-03-11T07:39:26,Desayuno,jesus@ucv.ve,20777111,Empleado,20.00
+2026-03-11T07:47:11,Desayuno,becario2@ucv.ve,25555333,Estudiante Becario,19.00
+2026-03-11T07:58:44,Desayuno,exonerado2@ucv.ve,26666444,Estudiante Exonerado,0.00
+2026-03-11T12:08:15,Almuerzo,thibisay@ucv.ve,27111222,Estudiante Regular,25.00
+2026-03-11T12:19:52,Almuerzo,becario2@ucv.ve,25555333,Estudiante Becario,21.25
+2026-03-11T12:27:40,Almuerzo,exonerado2@ucv.ve,26666444,Estudiante Exonerado,0.00
+2026-03-11T12:40:07,Almuerzo,profesor1@ucv.ve,14555111,Profesor,27.00
+2026-03-12T07:29:34,Desayuno,estudiante1@ucv.ve,28765431,Estudiante Regular,20.00
+2026-03-12T12:14:22,Almuerzo,daniel@ucv.ve,25432111,Estudiante Becario,22.50
