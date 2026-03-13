@@ -1,8 +1,14 @@
 package com.example.Modelo;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginModel {
 
@@ -11,6 +17,7 @@ public class LoginModel {
     private boolean bloqueado = false;
     private final String nombreArchivo = "Usuarios.txt";
     private static final String DEMO_ADMIN_EMAIL = "admin@ucv.ve";
+    private final SecureRandom random = new SecureRandom();
 
     public String autenticar(String email, String password) throws Exception {
 
@@ -89,5 +96,72 @@ public class LoginModel {
 
     public boolean isBloqueado() {
         return bloqueado;
+    }
+
+    public boolean existeUsuario(String email) throws IOException {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+
+        File archivo = new File(nombreArchivo);
+        if (!archivo.exists()) {
+            return false;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length >= 2 && datos[1].trim().equalsIgnoreCase(email.trim())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public String generarCodigoRecuperacion() {
+        int codigo = 100000 + random.nextInt(900000);
+        return String.valueOf(codigo);
+    }
+
+    public boolean actualizarPassword(String email, String nuevaPassword) throws IOException {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Correo invalido.");
+        }
+        if (nuevaPassword == null || nuevaPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("La nueva contraseña no puede estar vacia.");
+        }
+
+        File archivo = new File(nombreArchivo);
+        if (!archivo.exists()) {
+            return false;
+        }
+
+        List<String> lineas = Files.readAllLines(archivo.toPath());
+        List<String> actualizadas = new ArrayList<>();
+        boolean encontrado = false;
+
+        for (String linea : lineas) {
+            String[] datos = linea.split(",", -1);
+            if (datos.length >= 4 && datos[1].trim().equalsIgnoreCase(email.trim())) {
+                datos[2] = nuevaPassword;
+                encontrado = true;
+            }
+            actualizadas.add(String.join(",", datos));
+        }
+
+        if (!encontrado) {
+            return false;
+        }
+
+        try (FileWriter escritor = new FileWriter(archivo, false)) {
+            for (String lineaActualizada : actualizadas) {
+                escritor.write(lineaActualizada + System.lineSeparator());
+            }
+        }
+
+        return true;
     }
 }

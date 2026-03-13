@@ -2,6 +2,9 @@ package com.example.Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
 
 import com.example.Modelo.LoginModel;
 import com.example.Modelo.RegUsuarioModelo;
@@ -22,6 +25,7 @@ public class LoginControl implements ActionListener{
         // Configurar los listeners para ambos botones
         this.vista.getBtnLogin().addActionListener(this);
         this.vista.getBtnRegistrar().addActionListener(this);
+        this.vista.getBtnRecuperar().addActionListener(this);
         
         this.vista.setVisible(true);
     }
@@ -32,6 +36,8 @@ public class LoginControl implements ActionListener{
             handleLogin();
         } else if (e.getSource() == vista.getBtnRegistrar()) {
             irARegistro();
+        } else if (e.getSource() == vista.getBtnRecuperar()) {
+            recuperarContrasena();
         }
     }
 
@@ -91,5 +97,75 @@ public class LoginControl implements ActionListener{
         vista.getEmail().setEnabled(false);
         vista.getTxtPassword().setEnabled(false);
         vista.getLblError().setText("Usuario bloqueado por seguridad.");
+    }
+
+    private void recuperarContrasena() {
+        String emailBase = vista.getEmail().getText() == null ? "" : vista.getEmail().getText().trim();
+        String email = JOptionPane.showInputDialog(vista, "Ingresa tu correo @ucv.ve", emailBase);
+        if (email == null) {
+            return;
+        }
+
+        email = email.trim();
+        if (email.isEmpty() || !email.toLowerCase().endsWith("@ucv.ve")) {
+            JOptionPane.showMessageDialog(vista, "Debes ingresar un correo valido del dominio @ucv.ve");
+            return;
+        }
+
+        try {
+            if (!modelo.existeUsuario(email)) {
+                JOptionPane.showMessageDialog(vista, "No existe un usuario registrado con ese correo.");
+                return;
+            }
+
+            String codigo = modelo.generarCodigoRecuperacion();
+            JOptionPane.showMessageDialog(
+                vista,
+                "Simulacion activa: codigo enviado por correo.\nCodigo: " + codigo
+            );
+
+            String codigoIngresado = JOptionPane.showInputDialog(vista, "Ingresa el codigo de verificacion");
+            if (codigoIngresado == null) {
+                return;
+            }
+
+            if (!codigo.equals(codigoIngresado.trim())) {
+                JOptionPane.showMessageDialog(vista, "Codigo de verificacion incorrecto.");
+                return;
+            }
+
+            String nueva = JOptionPane.showInputDialog(vista, "Ingresa tu nueva contraseña (6 a 10 caracteres)");
+            if (nueva == null) {
+                return;
+            }
+            nueva = nueva.trim();
+            if (nueva.length() < 6 || nueva.length() > 10) {
+                JOptionPane.showMessageDialog(vista, "La contraseña debe tener entre 6 y 10 caracteres.");
+                return;
+            }
+
+            String confirmar = JOptionPane.showInputDialog(vista, "Confirma tu nueva contraseña");
+            if (confirmar == null) {
+                return;
+            }
+            if (!nueva.equals(confirmar.trim())) {
+                JOptionPane.showMessageDialog(vista, "La confirmacion no coincide.");
+                return;
+            }
+
+            boolean actualizado = modelo.actualizarPassword(email, nueva);
+            if (!actualizado) {
+                JOptionPane.showMessageDialog(vista, "No fue posible actualizar la contraseña.");
+                return;
+            }
+
+            vista.setEmail(email);
+            vista.setTxtPassword("");
+            JOptionPane.showMessageDialog(vista, "Contraseña actualizada con exito. Ya puedes iniciar sesion.");
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(vista, ex.getMessage());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(vista, "Ocurrio un error al recuperar la contraseña.");
+        }
     }
 }

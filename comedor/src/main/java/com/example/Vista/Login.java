@@ -28,7 +28,7 @@ public class Login extends JFrame {
 
     private JTextField txtEmail;
     private JPasswordField txtPassword;
-    private JButton btnLogin, btnRegistrar;
+    private JButton btnLogin, btnRegistrar, btnRecuperar;
     private JCheckBox chkMostrarPassword;
     private JLabel lblError;
     private JPanel card; 
@@ -121,6 +121,14 @@ public class Login extends JFrame {
         btnRegistrar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnRegistrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        btnRecuperar = new JButton("Recuperar contraseña");
+        btnRecuperar.setBackground(Color.WHITE);
+        btnRecuperar.setForeground(new Color(34, 120, 64));
+        btnRecuperar.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        btnRecuperar.setFocusPainted(false);
+        btnRecuperar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnRecuperar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         // --- CREDENCIALES DE PRUEBA ---
         JPanel infoBox = new JPanel();
         infoBox.setBackground(new Color(243, 244, 246));
@@ -149,6 +157,8 @@ public class Login extends JFrame {
         card.add(chkMostrarPassword);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(btnLogin);
+        card.add(Box.createRigidArea(new Dimension(0, 8)));
+        card.add(btnRecuperar);
         card.add(Box.createRigidArea(new Dimension(0, 20)));
         card.add(btnRegistrar);
         card.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -177,6 +187,8 @@ public class Login extends JFrame {
     public JButton getBtnLogin() { return btnLogin; }
 
     public JButton getBtnRegistrar() { return btnRegistrar; }
+
+    public JButton getBtnRecuperar() { return btnRecuperar; }
 
     public JLabel getLblError() { return lblError; }
 
