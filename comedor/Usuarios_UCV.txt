@@ -1,7 +1,18 @@
-estudiante1@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,28765431
-empleado1@ucv.ve,Empleado Demo,Empleado,N/A,N/A,17654321
 daniel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,25432111
 marcel@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,26333888
 thibisay@ucv.ve,Estudiante Demo,Estudiante,Facultad de Ciencias,Escuela de Computacion,27111222
-donander@ucv.ve,Empleado Demo,Empleado,N/A,N/A,19888777
-jesus@ucv.ve,Empleado Demo,Empleado,N/A,N/A,20777111
+ana.mendoza@ucv.ve,Ana Mendoza,Estudiante,Facultad de Ciencias,Escuela de Computacion,28765431
+diego.rivas@ucv.ve,Diego Rivas,Estudiante,Facultad de Ciencias,Escuela de Computacion,25432111
+maria.fernandez@ucv.ve,Maria Fernandez,Estudiante,Facultad de Ciencias,Escuela de Matematica,26333888
+valentina.suarez@ucv.ve,Valentina Suarez,Estudiante,Facultad de Ciencias Economicas y Sociales,Escuela de Administracion,27111222
+carlos.perez@ucv.ve,Carlos Perez,Empleado,N/A,N/A,17654321
+ricardo.gomez@ucv.ve,Ricardo Gomez,Empleado,N/A,N/A,19888777
+jose.ramirez@ucv.ve,Jose Ramirez,Empleado,N/A,N/A,20777111
+laura.castillo@ucv.ve,Laura Castillo,Estudiante,Facultad de Ingenieria,Escuela de Civil,25555333
+gabriel.navarro@ucv.ve,Gabriel Navarro,Estudiante,Facultad de Humanidades y Educacion,Escuela de Psicologia,26666444
+carmen.salcedo@ucv.ve,Carmen Salcedo,Profesor,Facultad de Ciencias,Escuela de Quimica,14555111
+eduardo.mejias@ucv.ve,Eduardo Mejias,Profesor,Facultad de Ingenieria,Escuela de Electrica,15666222
+sofia.morales@ucv.ve,Sofia Morales,Estudiante,Facultad de Farmacia,Escuela de Farmacia,27999111
+miguel.torres@ucv.ve,Miguel Torres,Estudiante,Facultad de Arquitectura y Urbanismo,Escuela de Arquitectura,28111223
+paola.vega@ucv.ve,Paola Vega,Estudiante,Facultad de Medicina,Escuela de Bioanalisis,29333444
+alberto.leon@ucv.ve,Alberto Leon,Empleado,N/A,N/A,21888990
