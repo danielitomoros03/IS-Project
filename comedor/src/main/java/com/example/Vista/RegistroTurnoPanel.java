@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -31,12 +33,15 @@ import com.example.Modelo.BeneficioComensal;
 import com.example.Modelo.BeneficioComensalModel;
 import com.example.Modelo.CcbModel;
 import com.example.Modelo.CcbRecord;
+import com.example.Modelo.FaceRecognitionModel;
 import com.example.Modelo.MonederoModel;
 import com.example.Modelo.RegUsuarioModelo;
 import com.example.Modelo.Turno;
+import com.example.Modelo.ValidacionFacialService;
 
 public class RegistroTurnoPanel extends JPanel {
     private static final BigDecimal TARIFA_FALLBACK = new BigDecimal("50.00");
+    private static final int UMBRAL_DHASH = 10;
 
     private final JPanel panelTurnos;
     // Simula si el usuario ya tiene un turno hoy (para evitar doble registro)
@@ -50,6 +55,7 @@ public class RegistroTurnoPanel extends JPanel {
     private final BeneficioComensalModel beneficioModel = new BeneficioComensalModel();
     private final RegUsuarioModelo regUsuarioModelo = new RegUsuarioModelo();
     private final AsistenciaComedorModel asistenciaModel = new AsistenciaComedorModel();
+    private final ValidacionFacialService validacionFacialService = new ValidacionFacialService();
 
     public RegistroTurnoPanel(String usuarioEmail, String usuarioRol) {
         this.usuarioEmail = usuarioEmail;
@@ -150,9 +156,6 @@ public class RegistroTurnoPanel extends JPanel {
                 btnReservar.addActionListener(e -> {
 
                     TarifaAplicada tarifaAplicada = calcularTarifaAplicada();
-                    if (!verificarSaldoDisponible(tarifaAplicada.getMontoCobro())) {
-                        return;
-                    }
 
                     // Lógica de confirmación
                     int confirm = JOptionPane.showConfirmDialog(this, 
@@ -160,6 +163,14 @@ public class RegistroTurnoPanel extends JPanel {
                         "Confirmar Turno", JOptionPane.YES_NO_OPTION);
                     
                     if (confirm == JOptionPane.YES_OPTION) {
+                        if (!validarIdentidadFacialAntesDeAsignar()) {
+                            return;
+                        }
+
+                        if (!verificarSaldoDisponible(tarifaAplicada.getMontoCobro())) {
+                            return;
+                        }
+
                         if (!registrarCobro(tarifaAplicada.getMontoCobro())) {
                             return;
                         }
@@ -285,6 +296,70 @@ public class RegistroTurnoPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "No se pudo registrar el cobro.");
             return false;
         }
+    }
+
+    private boolean validarIdentidadFacialAntesDeAsignar() {
+        File fotoBase = validacionFacialService.obtenerFotoBase(usuarioEmail);
+        if (fotoBase == null) {
+            JOptionPane.showMessageDialog(
+                this,
+                "No hay identificacion facial registrada en Secretaria para este usuario. "
+                    + "Debes acudir a la oficina de Secretaria para registro o actualizacion.",
+                "Validacion facial",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return false;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Validacion facial para asignar comida (JPG/PNG)");
+
+        File directorioFotos = validacionFacialService.obtenerDirectorioFotos();
+        if (directorioFotos != null && directorioFotos.exists()) {
+            chooser.setCurrentDirectory(directorioFotos);
+        } else if (fotoBase.getParentFile() != null && fotoBase.getParentFile().exists()) {
+            chooser.setCurrentDirectory(fotoBase.getParentFile());
+        }
+        chooser.setSelectedFile(fotoBase);
+
+        int result = chooser.showOpenDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            JOptionPane.showMessageDialog(this, "Validacion facial cancelada.");
+            return false;
+        }
+
+        File fotoIngresada = chooser.getSelectedFile();
+        try {
+            FaceRecognitionModel.ResultadoReconocimiento reconocimiento =
+                validacionFacialService.validarContraSecretaria(usuarioEmail, fotoIngresada, UMBRAL_DHASH);
+
+            if (!reconocimiento.esValido()) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "No coincide con la foto de Secretaria. Puntaje: "
+                        + formatearPorcentaje(reconocimiento.getPuntajeFinal())
+                        + " | Distancia: "
+                        + reconocimiento.getDistanciaHash(),
+                    "Validacion facial",
+                    JOptionPane.ERROR_MESSAGE
+                );
+                return false;
+            }
+
+            return true;
+        } catch (IllegalArgumentException | IllegalStateException | IOException ex) {
+            JOptionPane.showMessageDialog(
+                this,
+                ex.getMessage(),
+                "Validacion facial",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return false;
+        }
+    }
+
+    private String formatearPorcentaje(double valor) {
+        return String.format(java.util.Locale.ROOT, "%.2f%%", valor * 100.0);
     }
 
     private String construirMensajeConfirmacion(Turno turno, TarifaAplicada tarifaAplicada) {
