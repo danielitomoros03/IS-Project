@@ -133,12 +133,12 @@ public class BienvenidoVista extends JFrame {
         dashPanel = new DashUserPanel();
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
         RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(usuario, rol); 
-        JPanel hist = new JPanel(); 
+        HistorialPanel histPanel = new HistorialPanel(); 
         PerfilPanel perfilPanel = new PerfilPanel(usuario);
 
         mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
-        mainContainer.add(hist, "HIST_VISTA");
+        mainContainer.add(histPanel, "HIST_VISTA");
         mainContainer.add(regTurnoPanel, "TURNO_VISTA");
         mainContainer.add(perfilPanel, "PERFIL_VISTA");
 

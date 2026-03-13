@@ -46,41 +46,41 @@ public class BienvenidoControl implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String comando = e.getActionCommand();
+        Object source = e.getSource();
 
-        if (requiereValidacionFacialParaFuncion(e, comando) && !accesoComedorValidado) {
+        if (requiereValidacionFacialParaFuncion(source) && !accesoComedorValidado) {
             if (!validarAccesoFuncionesComedor()) {
                 return;
             }
             accesoComedorValidado = true;
         }
 
-        if ("Dashboard".equals(comando)) {
+        if (source == vista.getBtnDashboard()) {
             vista.changeView("DASH_VISTA");
             vista.marcarBotonActivo(vista.getBtnDashboard());
         } 
-        else if ("Menu del Dia".equals(comando)) {
+        else if (source == vista.getBtnMenuDia()) {
             vista.changeView("MENU_VISTA");
             vista.marcarBotonActivo(vista.getBtnMenuDia());
         }         
-        else if ("Registrar Turno".equals(comando)) {
+        else if (source == vista.getBtnRegTurno()) {
             vista.changeView("TURNO_VISTA");
             vista.marcarBotonActivo(vista.getBtnRegTurno());
         }
-        else if ("Historial".equals(comando)) {
+        else if (source == vista.getBtnHistorial()) {
             vista.changeView("HIST_VISTA");
             vista.marcarBotonActivo(vista.getBtnHistorial());
         }
-        else if ("Perfil".equals(comando)) {
+        else if (source == vista.getBtnPerfil()) {
             vista.changeView("PERFIL_VISTA");
             vista.marcarBotonActivo(vista.getBtnPerfil());
         }
-        else if ("Monedero".equals(comando)) {
+        else if (source == vista.getBtnMonederoSidebar() || source == vista.getBtnMonedero()) {
             vista.marcarBotonActivo(vista.getBtnMonederoSidebar());
             new MonederoControl(vista, usuarioEmail);
         }
         // Logout
-        else if (e.getSource() == vista.getBtnLogout()) {
+        else if (source == vista.getBtnLogout()) {
             int confirm = JOptionPane.showConfirmDialog(
                 vista,
                 "¿Estás seguro de cerrar sesión?",
@@ -91,29 +91,24 @@ public class BienvenidoControl implements ActionListener {
                 vista.dispose();
                 // new LoginControl(); 
             }
-        } else if (e.getSource() == vista.getBtnMonedero()) {
-            new MonederoControl(vista, usuarioEmail);
         }
     }
 
-    private boolean requiereValidacionFacialParaFuncion(ActionEvent e, String comando) {
-        if (e.getSource() == vista.getBtnLogout()) {
+    private boolean requiereValidacionFacialParaFuncion(Object source) {
+        if (source == vista.getBtnLogout()) {
             return false;
         }
 
-        if ("Perfil".equals(comando)) {
+        if (source == vista.getBtnPerfil()) {
             return false;
         }
 
-        if (e.getSource() == vista.getBtnMonedero()) {
-            return true;
-        }
-
-        return "Dashboard".equals(comando)
-            || "Menu del Dia".equals(comando)
-            || "Registrar Turno".equals(comando)
-            || "Historial".equals(comando)
-            || "Monedero".equals(comando);
+        return source == vista.getBtnDashboard()
+            || source == vista.getBtnMenuDia()
+            || source == vista.getBtnRegTurno()
+            || source == vista.getBtnHistorial()
+            || source == vista.getBtnMonederoSidebar()
+            || source == vista.getBtnMonedero();
     }
 
     private boolean validarAccesoFuncionesComedor() {
