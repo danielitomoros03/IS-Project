@@ -2,6 +2,7 @@ package com.example.Vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +53,7 @@ public class ReportePanel extends JPanel {
     private JComboBox<String> comboServicio;
     private DefaultTableModel detalleModel;
     private DefaultTableModel resumenModel;
+    private DefaultTableModel clasificacionModel;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -144,6 +147,23 @@ public class ReportePanel extends JPanel {
         gbc.gridy = 4;
         panel.add(lblEstadoActualBeneficio, gbc);
 
+        JLabel lblListado = new JLabel("Listado de clasificaciones vigentes");
+        lblListado.setFont(new Font("SansSerif", Font.BOLD, 14));
+        gbc.gridy = 5;
+        panel.add(lblListado, gbc);
+
+        clasificacionModel = new DefaultTableModel(new Object[] {"CI", "Tipo", "Descuento (%)"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable tablaClasificacion = new JTable(clasificacionModel);
+        JScrollPane scrollClasificacion = new JScrollPane(tablaClasificacion);
+        scrollClasificacion.setPreferredSize(new Dimension(420, 140));
+        gbc.gridy = 6;
+        panel.add(scrollClasificacion, gbc);
+
         comboTipo.addActionListener(e -> {
             boolean esBecario = "Becario".equals(comboTipo.getSelectedItem());
             txtPorcentaje.setEnabled(esBecario);
@@ -154,6 +174,8 @@ public class ReportePanel extends JPanel {
 
         btnConsultar.addActionListener(e -> consultarEstadoBeneficio());
         btnGuardar.addActionListener(e -> guardarBeneficio());
+
+        cargarListadoClasificaciones();
 
         return panel;
     }
@@ -294,6 +316,7 @@ public class ReportePanel extends JPanel {
 
             if (actualizado) {
                 actualizarEstadoVisualBeneficio(ci);
+                cargarListadoClasificaciones();
             }
         } catch (IllegalArgumentException | IOException ex) {
             mostrarError(ex.getMessage());
@@ -413,6 +436,49 @@ public class ReportePanel extends JPanel {
                 + beneficio.getPorcentajeCobro().setScale(2, RoundingMode.HALF_UP).toPlainString()
                 + "%)."
         );
+    }
+
+    private void cargarListadoClasificaciones() {
+        if (clasificacionModel == null) {
+            return;
+        }
+
+        clasificacionModel.setRowCount(0);
+        Map<String, BeneficioComensal> vigentes = beneficioModel.obtenerBeneficiosVigentes();
+        List<BeneficioComensal> lista = new ArrayList<>(vigentes.values());
+        lista.sort((a, b) -> a.getCi().compareTo(b.getCi()));
+
+        for (BeneficioComensal beneficio : lista) {
+            clasificacionModel.addRow(new Object[] {
+                beneficio.getCi(),
+                formatearTipo(beneficio),
+                calcularDescuentoMostrado(beneficio).setScale(2, RoundingMode.HALF_UP).toPlainString()
+            });
+        }
+    }
+
+    private String formatearTipo(BeneficioComensal beneficio) {
+        if (beneficio == null) {
+            return "Regular";
+        }
+
+        if (beneficio.esExonerado()) {
+            return "Exonerado";
+        }
+        if (beneficio.esBecario()) {
+            return "Becario";
+        }
+        return "Regular";
+    }
+
+    private BigDecimal calcularDescuentoMostrado(BeneficioComensal beneficio) {
+        if (beneficio == null || beneficio.esRegular()) {
+            return BigDecimal.ZERO;
+        }
+        if (beneficio.esExonerado()) {
+            return new BigDecimal("100.00");
+        }
+        return beneficio.getPorcentajeCobro();
     }
 
     private void cargarReporteServicio() {
