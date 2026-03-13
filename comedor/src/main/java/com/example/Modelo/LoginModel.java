@@ -164,4 +164,9 @@ public class LoginModel {
 
         return true;
     }
+
+    public void desbloquearDespuesDeRecuperacion() {
+        intentosFallidos = 0;
+        bloqueado = false;
+    }
 }

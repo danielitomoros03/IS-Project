@@ -159,6 +159,8 @@ public class LoginControl implements ActionListener{
                 return;
             }
 
+            modelo.desbloquearDespuesDeRecuperacion();
+            restaurarInterfazTrasRecuperacion(email);
             vista.setEmail(email);
             vista.setTxtPassword("");
             JOptionPane.showMessageDialog(vista, "Contraseña actualizada con exito. Ya puedes iniciar sesion.");
@@ -167,5 +169,14 @@ public class LoginControl implements ActionListener{
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(vista, "Ocurrio un error al recuperar la contraseña.");
         }
+    }
+
+    private void restaurarInterfazTrasRecuperacion(String email) {
+        vista.getEmail().setEnabled(true);
+        vista.getTxtPassword().setEnabled(true);
+        vista.getBtnLogin().setEnabled(true);
+        vista.getBtnLogin().setText("Iniciar Sesión");
+        vista.setEmail(email);
+        vista.getLblError().setText("Bloqueo levantado. Inicia sesión con tu nueva contraseña.");
     }
 }

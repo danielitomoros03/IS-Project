@@ -115,6 +115,25 @@ public class LoginModelTest {
     }
 
     @Test
+    void recuperarContrasena_despuesDeCincoIntentos_desbloqueaYPermiteEntrar() throws Exception {
+        writeUsuarios("Ana,ana@ucv.ve,ok1234,Estudiante,000");
+        LoginModel model = new LoginModel();
+
+        for (int i = 0; i < 5; i++) {
+            Exception ex = assertThrows(Exception.class, () -> model.autenticar("ana@ucv.ve", "mal"));
+            assertNotNull(ex.getMessage());
+        }
+        assertTrue(model.isBloqueado());
+
+        assertTrue(model.actualizarPassword("ana@ucv.ve", "nueva12"));
+        model.desbloquearDespuesDeRecuperacion();
+
+        assertFalse(model.isBloqueado());
+        String rol = model.autenticar("ana@ucv.ve", "nueva12");
+        assertEquals("Estudiante", rol);
+    }
+
+    @Test
     void actualizarPassword_usuarioNoExiste_retornaFalse() throws IOException {
         writeUsuarios("Juan,user@ucv.ve,clave,Estudiante,000");
         LoginModel model = new LoginModel();
