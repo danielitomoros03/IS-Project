@@ -33,7 +33,7 @@ public class AdminVista extends JFrame {
     private JButton btnLogout;
 
     // Botones específicos para Administrador
-    private JButton btnDashboard, btnReporte, btnGestionInsumo, btnGestionMenu, btnPerfil, btnConfigCcb;
+    private JButton btnDashboard, btnReporte, btnGestionMenu, btnConfigCcb;
 
     public AdminVista(String usuario, String rol) {
         setTitle("Panel de Administración - UCV Comedor");
@@ -60,20 +60,14 @@ public class AdminVista extends JFrame {
         // Inicialización de botones solicitados
         btnDashboard = crearBotonMenu("Dashboard");
         btnGestionMenu = crearBotonMenu("Gestión de Menús");
-        btnGestionInsumo = crearBotonMenu("Gestión de Insumos");
         btnReporte = crearBotonMenu("Reportes");
-        btnPerfil = crearBotonMenu("Mi Perfil");
         btnConfigCcb = crearBotonMenu("Configurar CCB");
 
         sidebar.add(btnDashboard);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(btnGestionMenu);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(btnGestionInsumo);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(btnReporte);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(btnPerfil);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(btnConfigCcb);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -163,7 +157,7 @@ public class AdminVista extends JFrame {
 
     public void marcarBotonActivo(JButton botonActivo) {
         // Lista de todos los botones de la sidebar
-        JButton[] botones = {btnDashboard, btnGestionMenu, btnGestionInsumo, btnReporte, btnPerfil, btnConfigCcb};
+        JButton[] botones = {btnDashboard, btnGestionMenu, btnReporte, btnConfigCcb};
 
         for (JButton b : botones) {
             if (b == botonActivo) {
@@ -180,9 +174,7 @@ public class AdminVista extends JFrame {
     // Getters para el Controlador
     public JButton getBtnDasboard() { return btnDashboard; }
     public JButton getBtnGestionMenu() { return btnGestionMenu; }
-    public JButton getBtnGestionInsumo() { return btnGestionInsumo; }
     public JButton getBtnReporte() { return btnReporte; }
-    public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
     public JButton getBtnConfigCcb() { return btnConfigCcb; }
     //Para el panel de menus

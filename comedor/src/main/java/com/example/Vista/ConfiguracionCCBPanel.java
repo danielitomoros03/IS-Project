@@ -198,7 +198,8 @@ public class ConfiguracionCCBPanel extends JPanel {
     private void cargarHistorico() {
         modeloTabla.setRowCount(0);
         List<CcbRecord> registros = modelo.obtenerRegistros();
-        for (CcbRecord r : registros) {
+        for (int i = registros.size() - 1; i >= 0; i--) {
+            CcbRecord r = registros.get(i);
             modeloTabla.addRow(new Object[] {
                 "Bs " + formatear(r.getCostosFijos()),
                 "Bs " + formatear(r.getCostosVariables()),

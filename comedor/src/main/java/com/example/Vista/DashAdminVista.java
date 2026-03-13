@@ -1,14 +1,24 @@
 package com.example.Vista;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.*;
 
 public class DashAdminVista extends JPanel {
     private final Color COLOR_BG = new Color(245, 247, 250);
     private final Color COLOR_PRIMARY = new Color(34, 120, 64); // Verde UCV
-    private final Color COLOR_ACCENT = new Color(59, 130, 246); // Azul Insumos
 
     private JButton btnCrearMenu;
 
@@ -40,7 +50,7 @@ public class DashAdminVista extends JPanel {
 
         metricsGrid.add(crearTarjetaMetrica("Demanda Hoy", "234", "+12% vs semana pasada", Color.BLACK));
         metricsGrid.add(crearTarjetaMetrica("Ocupación", "78%", "-5% vs ayer", Color.BLACK));
-        metricsGrid.add(crearTarjetaMetrica("Insumos", "42", "5 en alerta", new Color(180, 83, 9))); // Naranja alerta
+        metricsGrid.add(crearTarjetaMetrica("CCB", "Activo", "Configurado para cobros", COLOR_PRIMARY));
         metricsGrid.add(crearTarjetaMetrica("Menús", "15", "Programados este mes", Color.BLACK));
 
         content.add(metricsGrid);
@@ -50,12 +60,12 @@ public class DashAdminVista extends JPanel {
         JPanel bottomSection = new JPanel(new GridLayout(1, 2, 20, 0));
         bottomSection.setBackground(COLOR_BG);
 
-        // Bloque Alertas de Insumos
+        // Bloque de resumen operativo
         JPanel panelAlertas = new JPanel(new BorderLayout());
         panelAlertas.setBackground(Color.WHITE);
         panelAlertas.setBorder(new LineBorder(new Color(230, 230, 230), 1, true));
         
-        JLabel lblAlertas = new JLabel("  Alertas de Insumos");
+        JLabel lblAlertas = new JLabel("  Resumen Operativo");
         lblAlertas.setFont(new Font("SansSerif", Font.BOLD, 16));
         lblAlertas.setBorder(new EmptyBorder(15, 10, 15, 10));
         panelAlertas.add(lblAlertas, BorderLayout.NORTH);
@@ -63,20 +73,18 @@ public class DashAdminVista extends JPanel {
         JPanel listaAlertas = new JPanel();
         listaAlertas.setLayout(new BoxLayout(listaAlertas, BoxLayout.Y_AXIS));
         listaAlertas.setBackground(Color.WHITE);
-        listaAlertas.add(crearItemAlerta("Arroz blanco", "Vence en 2 días", "15 kg", Color.ORANGE));
-        listaAlertas.add(crearItemAlerta("Aceite vegetal", "Stock bajo", "3 L", Color.RED));
+        listaAlertas.add(crearItemAlerta("CCB", "Ultimo calculo disponible", "Vigente", COLOR_PRIMARY));
+        listaAlertas.add(crearItemAlerta("Turnos", "Monitoreo habilitado", "Activo", new Color(31, 41, 55)));
         panelAlertas.add(listaAlertas, BorderLayout.CENTER);
 
         // Bloque Accesos Rápidos
-        JPanel panelAccesos = new JPanel(new GridLayout(4, 1, 0, 10));
+        JPanel panelAccesos = new JPanel(new GridLayout(2, 1, 0, 10));
         panelAccesos.setBackground(COLOR_BG);
         JLabel lblAccesos = new JLabel("Accesos Rápidos");
         lblAccesos.setFont(new Font("SansSerif", Font.BOLD, 16));
         panelAccesos.add(lblAccesos);
         btnCrearMenu = crearBotonAcceso("Crear Menú", COLOR_PRIMARY);
         panelAccesos.add(btnCrearMenu);
-        panelAccesos.add(crearBotonAcceso("Gestionar Insumos", COLOR_ACCENT));
-        panelAccesos.add(crearBotonAcceso("Generar Reportes", Color.WHITE));
 
         bottomSection.add(panelAlertas);
         bottomSection.add(panelAccesos);

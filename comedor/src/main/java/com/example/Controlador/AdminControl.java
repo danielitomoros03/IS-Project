@@ -2,9 +2,10 @@ package com.example.Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JOptionPane;
 
-import com.example.Vista.*;
+import com.example.Vista.AdminVista;
 
 public class AdminControl implements ActionListener{
 
@@ -16,9 +17,7 @@ public class AdminControl implements ActionListener{
         //Para los botones de Menu
         this.vista.getBtnDasboard().addActionListener(this);
         this.vista.getBtnGestionMenu().addActionListener(this);
-        this.vista.getBtnGestionInsumo().addActionListener(this);
         this.vista.getBtnReporte().addActionListener(this);
-        this.vista.getBtnPerfil().addActionListener(this);
         this.vista.getBtnLogout().addActionListener(this);
 
         this.vista.getBtnConfigCcb().addActionListener(this);
@@ -55,10 +54,6 @@ public class AdminControl implements ActionListener{
             vista.marcarBotonActivo(vista.getBtnGestionMenu());
             vista.getConfigMenuPanel().abrirDialogoCrear(vista);
         }
-        else if ("Gestión de Insumos".equals(comando)) {
-            vista.changeView("INSUMOS_VISTA");
-            vista.marcarBotonActivo(vista.getBtnGestionInsumo());
-        }
         else if ("Configurar CCB".equals(comando)) {
             vista.changeView("CCB_VISTA");
             vista.marcarBotonActivo(vista.getBtnConfigCcb());
@@ -66,10 +61,6 @@ public class AdminControl implements ActionListener{
         else if ("Reportes".equals(comando)) {
             vista.changeView("REPORTE_VISTA");
             vista.marcarBotonActivo(vista.getBtnReporte());
-        }
-        else if ("Perfil".equals(comando)) {
-            vista.changeView("PERFIL_VISTA");
-            vista.marcarBotonActivo(vista.getBtnPerfil());
         }
         else if (e.getSource() == vista.getBtnLogout()) {
             int confirm = JOptionPane.showConfirmDialog(
