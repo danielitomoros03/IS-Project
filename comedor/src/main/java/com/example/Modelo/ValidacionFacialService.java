@@ -45,7 +45,10 @@ public class ValidacionFacialService {
 
         File fotoBase = obtenerFotoBase(email);
         if (fotoBase == null) {
-            throw new IllegalStateException("No hay foto base registrada en Secretaria para este correo.");
+            throw new IllegalStateException(
+                "No hay identificacion facial registrada en Secretaria para este correo. "
+                    + "Debes acudir a la oficina de Secretaria para el registro o actualizacion."
+            );
         }
 
         return faceRecognitionModel.evaluarReconocimiento(fotoIngresada, fotoBase, umbral);

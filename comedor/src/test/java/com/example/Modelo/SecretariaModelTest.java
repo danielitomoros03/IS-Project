@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +59,7 @@ public class SecretariaModelTest {
     }
 
     @Test
-    public void obtenerRutaFoto_descubreFotoPorEmailYLaRegistra() throws IOException {
+    public void obtenerRutaFoto_sinRegistroEnSecretaria_devuelveNull() throws IOException {
         Files.writeString(fotosSecretariaPath, "");
         fotoTemporal = fotosDir.resolve("pruebausuario_face.png");
         Files.write(fotoTemporal, new byte[] {1, 2, 3});
@@ -65,11 +67,9 @@ public class SecretariaModelTest {
         SecretariaModel model = new SecretariaModel();
         String ruta = model.obtenerRutaFoto("pruebausuario@ucv.ve");
 
-        assertNotNull(ruta);
-        assertTrue(ruta.toLowerCase().endsWith("pruebausuario_face.png"));
+        assertNull(ruta);
         String contenido = Files.readString(fotosSecretariaPath);
-        assertTrue(contenido.contains("pruebausuario@ucv.ve"));
-        assertTrue(contenido.contains("fotos/pruebausuario_face.png"));
+        assertFalse(contenido.contains("pruebausuario@ucv.ve"));
     }
 
     @Test

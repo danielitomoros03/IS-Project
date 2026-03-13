@@ -96,7 +96,7 @@ public class ValidacionFacialServiceTest {
             IllegalStateException.class,
             () -> service.validarContraSecretaria("sinfoto@ucv.ve", fotoIgual.toFile(), 10)
         );
-        assertTrue(ex.getMessage().contains("No hay foto base"));
+        assertTrue(ex.getMessage().contains("No hay identificacion facial registrada en Secretaria"));
     }
 
     @Test

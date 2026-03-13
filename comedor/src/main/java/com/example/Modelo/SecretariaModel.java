@@ -24,7 +24,7 @@ public class SecretariaModel {
 
         File archivo = resolveArchivoDatos();
         if (!archivo.exists()) {
-            return descubrirFotoYRegistrar(email);
+            return null;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
@@ -46,7 +46,7 @@ public class SecretariaModel {
             System.err.println("Error al leer Fotos_Secretaria.txt: " + e.getMessage());
         }
 
-        return descubrirFotoYRegistrar(email);
+        return null;
     }
 
     public File obtenerArchivoFoto(String email) {
@@ -118,79 +118,6 @@ public class SecretariaModel {
         Files.copy(fotoSeleccionada.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
         registrarRutaFoto(email.trim(), destino);
         return destino;
-    }
-
-    private String descubrirFotoYRegistrar(String email) {
-        File foto = descubrirFotoPorEmail(email);
-        if (foto == null) {
-            return null;
-        }
-
-        try {
-            registrarRutaFoto(email, foto);
-        } catch (IOException e) {
-            System.err.println("Error al registrar ruta de foto en Secretaria: " + e.getMessage());
-        }
-        return foto.getAbsolutePath();
-    }
-
-    private File descubrirFotoPorEmail(String email) {
-        if (email == null || email.trim().isEmpty()) {
-            return null;
-        }
-
-        File directorioFotos = obtenerDirectorioFotos();
-        if (directorioFotos == null) {
-            return null;
-        }
-
-        File[] archivos = directorioFotos.listFiles((dir, name) -> esImagenPermitida(name));
-        if (archivos == null || archivos.length == 0) {
-            return null;
-        }
-
-        String localPart = email.trim();
-        int at = localPart.indexOf('@');
-        if (at >= 0) {
-            localPart = localPart.substring(0, at);
-        }
-
-        List<String> tokens = extraerTokens(localPart);
-        if (tokens.isEmpty()) {
-            return null;
-        }
-
-        for (File archivo : archivos) {
-            String nombreNormalizado = normalizarTexto(archivo.getName());
-            for (String token : tokens) {
-                if (nombreNormalizado.contains(token)) {
-                    return archivo;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private List<String> extraerTokens(String valor) {
-        List<String> tokens = new ArrayList<>();
-        String[] partes = normalizarTexto(valor).split("\\s+");
-        for (String parte : partes) {
-            if (parte.length() >= 3) {
-                tokens.add(parte);
-            }
-        }
-        return tokens;
-    }
-
-    private String normalizarTexto(String valor) {
-        if (valor == null) {
-            return "";
-        }
-        return valor
-            .toLowerCase(Locale.ROOT)
-            .replaceAll("[^a-z0-9]", " ")
-            .trim();
     }
 
     private boolean esImagenPermitida(String name) {

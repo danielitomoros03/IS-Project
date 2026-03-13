@@ -9,6 +9,7 @@ Sistema de gestion del Comedor de la UCV desarrollado como aplicacion de escrito
 - Monedero con recargas, historial y cobros por turno.
 - Saldo Pana: transferencia de saldo entre estudiantes usando CI destino.
 - Reserva de turnos con verificacion de cupos, horario limite y reconocimiento facial basico.
+- La identificacion facial de acceso se valida contra Secretaria; el registro/actualizacion de foto se gestiona en Secretaria.
 - Cobro por tipo de estudiante: regular, becario (porcentaje configurable) y exonerado.
 - Configuracion de CCB y tarifas para desayuno/almuerzo.
 - Reporte administrativo por servicio (desayuno/almuerzo) con desglose de comensales.
@@ -62,6 +63,7 @@ Los archivos viven en la carpeta [comedor/](comedor/) y se usan como base de dat
 - [comedor/Fotos_Secretaria.txt](comedor/Fotos_Secretaria.txt)
 	- Formato: `email,ruta_foto`.
 	- Las fotos base viven en [comedor/fotos/](comedor/fotos/).
+	- Si el usuario no tiene foto registrada, debe acudir a Secretaria para registro o actualizacion.
 
 ## Credenciales y flujo de registro
 - Administrador demo: usar el correo `admin@ucv.ve` con cualquier contrasena no vacia.

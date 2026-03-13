@@ -116,7 +116,8 @@ public class BienvenidoControl implements ActionListener {
         if (fotoBase == null) {
             JOptionPane.showMessageDialog(
                 vista,
-                "No hay foto base registrada en Secretaria para este usuario.",
+                "No hay identificacion facial registrada en Secretaria para este usuario. "
+                    + "Debes acudir a la oficina de Secretaria para registro o actualizacion.",
                 "Validacion facial",
                 JOptionPane.ERROR_MESSAGE
             );
