@@ -79,4 +79,72 @@ public class AsistenciaComedorModelTest {
         assertEquals(0, resumen.get("Estudiante Exonerado"));
         assertEquals(2, resumen.get("Total"));
     }
+
+    @Test
+    void obtenerResumenPorServicio_clasificaTodasLasCategorias() {
+        AsistenciaComedorModel model = new AsistenciaComedorModel();
+
+        assertTrue(model.registrarAsistencia(new AsistenciaRecord(
+            LocalDateTime.now(),
+            "Desayuno",
+            "regular@ucv.ve",
+            "11111111",
+            "estudiante regular",
+            new BigDecimal("20.00")
+        )));
+
+        assertTrue(model.registrarAsistencia(new AsistenciaRecord(
+            LocalDateTime.now(),
+            "Desayuno",
+            "becario@ucv.ve",
+            "22222222",
+            "ESTUDIANTE BECARIO",
+            new BigDecimal("15.00")
+        )));
+
+        assertTrue(model.registrarAsistencia(new AsistenciaRecord(
+            LocalDateTime.now(),
+            "Desayuno",
+            "exonerado@ucv.ve",
+            "33333333",
+            "Estudiante Exonerado",
+            BigDecimal.ZERO
+        )));
+
+        assertTrue(model.registrarAsistencia(new AsistenciaRecord(
+            LocalDateTime.now(),
+            "Desayuno",
+            "profesor@ucv.ve",
+            "",
+            "Profesor",
+            new BigDecimal("20.00")
+        )));
+
+        assertTrue(model.registrarAsistencia(new AsistenciaRecord(
+            LocalDateTime.now(),
+            "Desayuno",
+            "empleado@ucv.ve",
+            "",
+            "Empleado administrativo",
+            new BigDecimal("20.00")
+        )));
+
+        assertTrue(model.registrarAsistencia(new AsistenciaRecord(
+            LocalDateTime.now(),
+            "Desayuno",
+            "invitado@ucv.ve",
+            "",
+            "Invitado",
+            new BigDecimal("20.00")
+        )));
+
+        Map<String, Integer> resumen = model.obtenerResumenPorServicio("Desayuno");
+        assertEquals(1, resumen.get("Estudiante Regular"));
+        assertEquals(1, resumen.get("Estudiante Becario"));
+        assertEquals(1, resumen.get("Estudiante Exonerado"));
+        assertEquals(1, resumen.get("Profesor"));
+        assertEquals(1, resumen.get("Empleado"));
+        assertEquals(1, resumen.get("Otro"));
+        assertEquals(6, resumen.get("Total"));
+    }
 }

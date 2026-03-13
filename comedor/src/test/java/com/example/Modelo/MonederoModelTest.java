@@ -131,6 +131,63 @@ public class MonederoModelTest {
     }
 
     @Test
+    void registrarSaldoPana_montoNegativo_lanzaError() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("100.00"));
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarSaldoPana("origen@ucv.ve", "destino@ucv.ve", new BigDecimal("-1.00"))
+        );
+        assertEquals("Monto invalido.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_origenInvalido_lanzaError() {
+        MonederoModel model = new MonederoModel();
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarSaldoPana("   ", "destino@ucv.ve", new BigDecimal("10.00"))
+        );
+        assertEquals("Email de origen invalido.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_destinoInvalido_lanzaError() {
+        MonederoModel model = new MonederoModel();
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarSaldoPana("origen@ucv.ve", "", new BigDecimal("10.00"))
+        );
+        assertEquals("Email destino invalido.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_mismoEmail_conMayusculasYEspacios_lanzaError() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("100.00"));
+
+        IllegalArgumentException ex = assertThrows(
+            IllegalArgumentException.class,
+            () -> model.registrarSaldoPana(" ORIGEN@ucv.ve ", "origen@ucv.ve", new BigDecimal("10.00"))
+        );
+        assertEquals("No puedes transferirte saldo a ti mismo.", ex.getMessage());
+    }
+
+    @Test
+    void registrarSaldoPana_emailesConEspacios_transfiereCorrectamente() throws IOException {
+        MonederoModel model = new MonederoModel();
+        model.registrarRecarga("origen@ucv.ve", new BigDecimal("100.00"));
+
+        model.registrarSaldoPana(" origen@ucv.ve ", " destino@ucv.ve ", new BigDecimal("10.00"));
+
+        assertEquals(new BigDecimal("90.00"), model.obtenerSaldo("ORIGEN@ucv.ve"));
+        assertEquals(new BigDecimal("10.00"), model.obtenerSaldo("destino@ucv.ve"));
+    }
+
+    @Test
     void registrarRecarga_montoNoPositivo_lanzaError() {
         MonederoModel model = new MonederoModel();
 
