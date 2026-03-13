@@ -27,6 +27,10 @@ public class BeneficioComensalModel {
         registrarBeneficio(ci, BeneficioComensal.TIPO_EXONERADO, BigDecimal.ZERO);
     }
 
+    public void registrarRegular(String ci) throws IOException {
+        registrarBeneficio(ci, BeneficioComensal.TIPO_REGULAR, PORCENTAJE_REGULAR);
+    }
+
     public void registrarBecario(String ci, BigDecimal porcentajeCobro) throws IOException {
         if (porcentajeCobro == null) {
             throw new IllegalArgumentException("Debes indicar el porcentaje de descuento para becario.");

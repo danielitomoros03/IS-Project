@@ -136,6 +136,23 @@ public class BeneficioComensalModelTest {
     }
 
     @Test
+    void registrarRegular_quitaBeneficioPrevioSinDuplicarCi() throws IOException {
+        BeneficioComensalModel model = new BeneficioComensalModel();
+
+        model.registrarBecario("12345678", new BigDecimal("10"));
+        model.registrarRegular("12345678");
+
+        BeneficioComensal beneficio = model.obtenerBeneficioPorCi("12345678");
+        List<String> lineas = Files.readAllLines(beneficiosPath);
+
+        assertNotNull(beneficio);
+        assertTrue(beneficio.esRegular());
+        assertEquals(new BigDecimal("100.00"), beneficio.getPorcentajeCobro());
+        assertEquals(1, lineas.size());
+        assertTrue(lineas.get(0).startsWith("12345678,REGULAR,100.00,"));
+    }
+
+    @Test
     void obtenerBeneficioPorCi_lineasInvalidas_y_ultimoRegistroValido() throws IOException {
         Files.writeString(
             beneficiosPath,

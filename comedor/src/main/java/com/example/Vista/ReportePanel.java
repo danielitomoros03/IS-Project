@@ -90,7 +90,7 @@ public class ReportePanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel subtitulo = new JLabel("Gestion de Estudiante Exonerado/Becario por CI");
+        JLabel subtitulo = new JLabel("Gestion de Estudiante Regular/Exonerado/Becario por CI");
         subtitulo.setFont(new Font("SansSerif", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -109,7 +109,7 @@ public class ReportePanel extends JPanel {
         gbc.gridx = 2;
         panel.add(new JLabel("Tipo"), gbc);
 
-        comboTipo = new JComboBox<>(new String[] {"Exonerado", "Becario"});
+        comboTipo = new JComboBox<>(new String[] {"Regular", "Exonerado", "Becario"});
         gbc.gridx = 3;
         panel.add(comboTipo, gbc);
 
@@ -222,28 +222,39 @@ public class ReportePanel extends JPanel {
 
         String rol = datos[2] == null ? "" : datos[2].toLowerCase();
         if (!rol.contains("estudiante")) {
-            mostrarError("Solo se permite clasificar estudiantes como Exonerado o Becario.");
+            mostrarError("Solo se permite clasificar estudiantes como Regular, Exonerado o Becario.");
             return;
         }
 
         String tipo = (String) comboTipo.getSelectedItem();
         try {
-            if ("Exonerado".equals(tipo)) {
-                beneficioModel.registrarExonerado(ci);
-                lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
-                lblEstadoBeneficio.setText("CI " + ci + " clasificada como Exonerado.");
-            } else {
-                BigDecimal porcentaje = parsePorcentaje(txtPorcentaje.getText());
-                if (porcentaje.compareTo(PORCENTAJE_REGULAR) >= 0) {
-                    mostrarError("El porcentaje de descuento del Becario debe ser menor a 100%.");
-                    return;
-                }
-                beneficioModel.registrarBecario(ci, porcentaje);
-                lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
-                lblEstadoBeneficio.setText(
-                    "CI " + ci + " clasificada como Becario con descuento de "
-                        + porcentaje.setScale(2, RoundingMode.HALF_UP).toPlainString() + "% ."
-                );
+            switch (tipo == null ? "" : tipo) {
+                case "Regular":
+                    beneficioModel.registrarRegular(ci);
+                    lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
+                    lblEstadoBeneficio.setText("CI " + ci + " clasificada como Estudiante Regular.");
+                    break;
+                case "Exonerado":
+                    beneficioModel.registrarExonerado(ci);
+                    lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
+                    lblEstadoBeneficio.setText("CI " + ci + " clasificada como Exonerado.");
+                    break;
+                case "Becario":
+                    BigDecimal porcentaje = parsePorcentaje(txtPorcentaje.getText());
+                    if (porcentaje.compareTo(PORCENTAJE_REGULAR) >= 0) {
+                        mostrarError("El porcentaje de descuento del Becario debe ser menor a 100%.");
+                        return;
+                    }
+                    beneficioModel.registrarBecario(ci, porcentaje);
+                    lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
+                    lblEstadoBeneficio.setText(
+                        "CI " + ci + " clasificada como Becario con descuento de "
+                            + porcentaje.setScale(2, RoundingMode.HALF_UP).toPlainString() + "% ."
+                    );
+                    break;
+                default:
+                    mostrarError("Selecciona un tipo de clasificacion valido.");
+                    break;
             }
         } catch (IllegalArgumentException | IOException ex) {
             mostrarError(ex.getMessage());
