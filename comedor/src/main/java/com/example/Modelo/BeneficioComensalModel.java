@@ -12,7 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BeneficioComensalModel {
@@ -157,10 +159,40 @@ public class BeneficioComensalModel {
             formatter.format(LocalDateTime.now())
         );
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo, true))) {
-            bw.write(linea);
-            bw.newLine();
+        List<String> lineasActualizadas = new ArrayList<>();
+        if (archivo.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+                String lineaActual;
+                while ((lineaActual = br.readLine()) != null) {
+                    if (esLineaDeLaMismaCi(lineaActual, ciNormalizada)) {
+                        continue;
+                    }
+                    lineasActualizadas.add(lineaActual);
+                }
+            }
         }
+
+        lineasActualizadas.add(linea);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo, false))) {
+            for (String lineaActualizada : lineasActualizadas) {
+                bw.write(lineaActualizada);
+                bw.newLine();
+            }
+        }
+    }
+
+    private boolean esLineaDeLaMismaCi(String linea, String ciNormalizada) {
+        if (linea == null || linea.isBlank()) {
+            return false;
+        }
+
+        String[] datos = linea.split(",", 2);
+        if (datos.length == 0) {
+            return false;
+        }
+
+        return ciNormalizada.equals(normalizarCi(datos[0]));
     }
 
     private File resolveArchivo() {

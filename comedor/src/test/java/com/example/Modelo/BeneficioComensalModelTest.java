@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
@@ -98,6 +99,40 @@ public class BeneficioComensalModelTest {
         assertNotNull(beneficio);
         assertTrue(beneficio.esBecario());
         assertEquals(new BigDecimal("5.00"), beneficio.getPorcentajeCobro());
+    }
+
+    @Test
+    void registrarBecario_actualizaPorcentajeSinDuplicarCi() throws IOException {
+        BeneficioComensalModel model = new BeneficioComensalModel();
+
+        model.registrarBecario("12345678", new BigDecimal("5"));
+        model.registrarBecario("V-12.345.678", new BigDecimal("12.5"));
+
+        BeneficioComensal beneficio = model.obtenerBeneficioPorCi("12345678");
+        List<String> lineas = Files.readAllLines(beneficiosPath);
+
+        assertNotNull(beneficio);
+        assertTrue(beneficio.esBecario());
+        assertEquals(new BigDecimal("12.50"), beneficio.getPorcentajeCobro());
+        assertEquals(1, lineas.size());
+        assertTrue(lineas.get(0).startsWith("12345678,BECARIO,12.50,"));
+    }
+
+    @Test
+    void registrarExonerado_reemplazaBeneficioPrevioSinDuplicarCi() throws IOException {
+        BeneficioComensalModel model = new BeneficioComensalModel();
+
+        model.registrarBecario("12345678", new BigDecimal("8"));
+        model.registrarExonerado("12345678");
+
+        BeneficioComensal beneficio = model.obtenerBeneficioPorCi("12345678");
+        List<String> lineas = Files.readAllLines(beneficiosPath);
+
+        assertNotNull(beneficio);
+        assertTrue(beneficio.esExonerado());
+        assertEquals(new BigDecimal("0.00"), beneficio.getPorcentajeCobro());
+        assertEquals(1, lineas.size());
+        assertTrue(lineas.get(0).startsWith("12345678,EXONERADO,0.00,"));
     }
 
     @Test
