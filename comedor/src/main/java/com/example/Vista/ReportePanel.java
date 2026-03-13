@@ -31,6 +31,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.example.Modelo.AsistenciaComedorModel;
 import com.example.Modelo.AsistenciaRecord;
+import com.example.Modelo.BeneficioComensal;
 import com.example.Modelo.BeneficioComensalModel;
 import com.example.Modelo.RegUsuarioModelo;
 
@@ -122,7 +123,7 @@ public class ReportePanel extends JPanel {
         gbc.gridx = 1;
         panel.add(txtPorcentaje, gbc);
 
-        JButton btnGuardar = new JButton("Guardar clasificacion");
+        JButton btnGuardar = new JButton("Actualizar clasificacion");
         gbc.gridx = 3;
         panel.add(btnGuardar, gbc);
 
@@ -231,11 +232,19 @@ public class ReportePanel extends JPanel {
             switch (tipo == null ? "" : tipo) {
                 case "Regular":
                     beneficioModel.registrarRegular(ci);
+                    if (!validarPersistenciaBeneficio(ci, BeneficioComensal.TIPO_REGULAR, PORCENTAJE_REGULAR)) {
+                        mostrarError("No se pudo actualizar la clasificacion a Regular. Intenta nuevamente.");
+                        return;
+                    }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText("CI " + ci + " clasificada como Estudiante Regular.");
                     break;
                 case "Exonerado":
                     beneficioModel.registrarExonerado(ci);
+                    if (!validarPersistenciaBeneficio(ci, BeneficioComensal.TIPO_EXONERADO, BigDecimal.ZERO)) {
+                        mostrarError("No se pudo actualizar la clasificacion a Exonerado. Intenta nuevamente.");
+                        return;
+                    }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText("CI " + ci + " clasificada como Exonerado.");
                     break;
@@ -246,6 +255,10 @@ public class ReportePanel extends JPanel {
                         return;
                     }
                     beneficioModel.registrarBecario(ci, porcentaje);
+                    if (!validarPersistenciaBeneficio(ci, BeneficioComensal.TIPO_BECARIO, porcentaje)) {
+                        mostrarError("No se pudo actualizar la clasificacion a Becario. Intenta nuevamente.");
+                        return;
+                    }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText(
                         "CI " + ci + " clasificada como Becario con descuento de "
@@ -279,6 +292,23 @@ public class ReportePanel extends JPanel {
         }
 
         return porcentaje.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private boolean validarPersistenciaBeneficio(String ci, String tipoEsperado, BigDecimal porcentajeEsperado) {
+        BeneficioComensal beneficio = beneficioModel.obtenerBeneficioPorCi(ci);
+        if (beneficio == null) {
+            return false;
+        }
+
+        if (!tipoEsperado.equalsIgnoreCase(beneficio.getTipo())) {
+            return false;
+        }
+
+        BigDecimal esperado = porcentajeEsperado == null
+            ? PORCENTAJE_REGULAR
+            : porcentajeEsperado.setScale(2, RoundingMode.HALF_UP);
+
+        return beneficio.getPorcentajeCobro().compareTo(esperado) == 0;
     }
 
     private void cargarReporteServicio() {

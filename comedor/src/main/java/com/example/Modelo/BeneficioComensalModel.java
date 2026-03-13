@@ -201,6 +201,7 @@ public class BeneficioComensalModel {
 
     private File resolveArchivo() {
         Path base = Paths.get("").toAbsolutePath();
+        Path baseInicial = base;
 
         for (int i = 0; i < 4; i++) {
             Path directo = base.resolve(nombreArchivo);
@@ -222,6 +223,11 @@ public class BeneficioComensalModel {
             base = parent;
         }
 
-        return Paths.get(nombreArchivo).toFile();
+        File carpetaComedor = baseInicial.resolve("comedor").toFile();
+        if (carpetaComedor.exists() && carpetaComedor.isDirectory()) {
+            return baseInicial.resolve("comedor").resolve(nombreArchivo).toFile();
+        }
+
+        return baseInicial.resolve(nombreArchivo).toFile();
     }
 }
