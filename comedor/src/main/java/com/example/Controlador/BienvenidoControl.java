@@ -18,7 +18,6 @@ public class BienvenidoControl implements ActionListener {
         this.vista.getBtnDashboard().addActionListener(this);
         this.vista.getBtnMenuDia().addActionListener(this);
         this.vista.getBtnRegTurno().addActionListener(this);
-        this.vista.getBtnHistorial().addActionListener(this);
         this.vista.getBtnMonederoSidebar().addActionListener(this);
         this.vista.getBtnPerfil().addActionListener(this);
         this.vista.getBtnLogout().addActionListener(this);
@@ -48,10 +47,6 @@ public class BienvenidoControl implements ActionListener {
         else if (source == vista.getBtnRegTurno()) {
             vista.changeView("TURNO_VISTA");
             vista.marcarBotonActivo(vista.getBtnRegTurno());
-        }
-        else if (source == vista.getBtnHistorial()) {
-            vista.changeView("HIST_VISTA");
-            vista.marcarBotonActivo(vista.getBtnHistorial());
         }
         else if (source == vista.getBtnPerfil()) {
             vista.changeView("PERFIL_VISTA");

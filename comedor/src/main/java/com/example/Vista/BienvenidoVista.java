@@ -32,7 +32,7 @@ public class BienvenidoVista extends JFrame {
     private JButton btnLogout;
 
     // Botones del menu
-    private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnHistorial, btnPerfil, btnMonedero;
+    private JButton btnConsultarMenu, btnDashboard, btnRegTurno, btnPerfil, btnMonedero;
     
 
     private DashUserPanel dashPanel;
@@ -71,10 +71,6 @@ public class BienvenidoVista extends JFrame {
 
         btnRegTurno = crearBotonMenu("Registrar Turno"); 
         sidebar.add(btnRegTurno);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        btnHistorial = crearBotonMenu("Historial"); 
-        sidebar.add(btnHistorial);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         btnMonedero = crearBotonMenu("Monedero");
@@ -133,12 +129,10 @@ public class BienvenidoVista extends JFrame {
         dashPanel = new DashUserPanel();
         MenuDiaPanel menuPanel = new MenuDiaPanel(); 
         RegistroTurnoPanel regTurnoPanel = new RegistroTurnoPanel(usuario, rol); 
-        HistorialPanel histPanel = new HistorialPanel(); 
         PerfilPanel perfilPanel = new PerfilPanel(usuario);
 
         mainContainer.add(dashPanel, "DASH_VISTA");
         mainContainer.add(menuPanel, "MENU_VISTA");
-        mainContainer.add(histPanel, "HIST_VISTA");
         mainContainer.add(regTurnoPanel, "TURNO_VISTA");
         mainContainer.add(perfilPanel, "PERFIL_VISTA");
 
@@ -177,7 +171,7 @@ public class BienvenidoVista extends JFrame {
     }
 
     public void marcarBotonActivo(JButton botonActivo) {
-        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnHistorial, btnMonedero, btnPerfil};
+        JButton[] botones = {btnDashboard, btnConsultarMenu, btnRegTurno, btnMonedero, btnPerfil};
 
         for (JButton b : botones) {
             if (b == botonActivo) {
@@ -194,7 +188,6 @@ public class BienvenidoVista extends JFrame {
     public JButton getBtnDashboard() { return btnDashboard; }
     public JButton getBtnMenuDia() { return btnConsultarMenu; }
     public JButton getBtnRegTurno() { return btnRegTurno; }
-    public JButton getBtnHistorial() { return btnHistorial; }
     public JButton getBtnPerfil() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
     public JButton getBtnMonederoSidebar() { return btnMonedero; }
