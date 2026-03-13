@@ -42,6 +42,7 @@ import com.example.Modelo.ValidacionFacialService;
 public class RegistroTurnoPanel extends JPanel {
     private static final BigDecimal TARIFA_FALLBACK = new BigDecimal("50.00");
     private static final int UMBRAL_DHASH = 10;
+    private static final String PROP_HORA_PRUEBA_TURNO = "comedor.turnos.horaPrueba";
 
     private final JPanel panelTurnos;
     // Simula si el usuario ya tiene un turno hoy (para evitar doble registro)
@@ -85,10 +86,8 @@ public class RegistroTurnoPanel extends JPanel {
         panelTurnos.removeAll();
         List<Turno> turnos = obtenerTurnosBackend(); // Datos simulados
 
-        // Obtenemos la hora actual para validar Criterio 3
-        LocalTime ahora = LocalTime.now(); 
-        // NOTA DE PRUEBA: Descomenta la siguiente linea para simular que son las 2 PM y probar el bloqueo por hora:
-        // LocalTime ahora = LocalTime.of(14, 00); 
+        // Obtenemos la hora actual para validar Criterio 3, con posibilidad de simulacion por propiedad.
+        LocalTime ahora = obtenerHoraEvaluacionTurnos();
 
         for (Turno turno : turnos) {
             JPanel tarjeta = crearTarjetaTurno(turno, ahora);
@@ -98,6 +97,23 @@ public class RegistroTurnoPanel extends JPanel {
         
         panelTurnos.revalidate();
         panelTurnos.repaint();
+    }
+
+    private LocalTime obtenerHoraEvaluacionTurnos() {
+        String horaPrueba = System.getProperty(PROP_HORA_PRUEBA_TURNO);
+        return resolverHoraEvaluacion(horaPrueba, LocalTime.now());
+    }
+
+    static LocalTime resolverHoraEvaluacion(String horaPrueba, LocalTime horaSistema) {
+        if (horaPrueba == null || horaPrueba.trim().isEmpty()) {
+            return horaSistema;
+        }
+
+        try {
+            return LocalTime.parse(horaPrueba.trim());
+        } catch (RuntimeException ex) {
+            return horaSistema;
+        }
     }
 
     private JPanel crearTarjetaTurno(Turno turno, LocalTime horaActual) {

@@ -27,6 +27,18 @@ mvn -q -DskipTests package
 java -cp target/classes com.example.Main
 ```
 
+### Prueba rapida de horarios de turno
+Para simular una hora especifica (formato `HH:mm`) sin cambiar codigo:
+
+```bash
+cd comedor
+mvn -q -DskipTests package
+java -Dcomedor.turnos.horaPrueba=07:00 -cp target/classes com.example.Main
+```
+
+- Esto fuerza la hora usada para validar cierre por horario en la reserva de turnos.
+- Para revertirlo, ejecuta de nuevo sin `-Dcomedor.turnos.horaPrueba`.
+
 ## Pruebas
 ```bash
 cd comedor
