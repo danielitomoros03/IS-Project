@@ -101,7 +101,7 @@ public class ReportePanel extends JPanel {
         gbc.gridwidth = 1;
         gbc.gridy = 1;
         gbc.gridx = 0;
-        panel.add(new JLabel("CI del estudiante"), gbc);
+        panel.add(new JLabel("CI o correo del estudiante"), gbc);
 
         txtCi = new JTextField(12);
         gbc.gridx = 1;
@@ -209,11 +209,19 @@ public class ReportePanel extends JPanel {
     }
 
     private void guardarBeneficio() {
-        String ci = txtCi.getText();
-        if (ci == null || ci.trim().isEmpty()) {
-            mostrarError("Debes indicar la CI del estudiante.");
+        String identificador = txtCi.getText();
+        if (identificador == null || identificador.trim().isEmpty()) {
+            mostrarError("Debes indicar la CI o el correo del estudiante.");
             return;
         }
+
+        String ci = resolverCiEstudiante(identificador);
+        if (ci.isEmpty()) {
+            mostrarError("No se pudo identificar al estudiante. Usa CI o correo @ucv.ve valido.");
+            return;
+        }
+
+        txtCi.setText(ci);
 
         String[] datos = regUsuarioModelo.obtenerDatosPorCiDesdeArchivo(ci);
         if (datos == null) {
@@ -230,7 +238,7 @@ public class ReportePanel extends JPanel {
         String tipo = (String) comboTipo.getSelectedItem();
         try {
             switch (tipo == null ? "" : tipo) {
-                case "Regular":
+                case "Regular" -> {
                     beneficioModel.registrarRegular(ci);
                     if (!validarPersistenciaBeneficio(ci, BeneficioComensal.TIPO_REGULAR, PORCENTAJE_REGULAR)) {
                         mostrarError("No se pudo actualizar la clasificacion a Regular. Intenta nuevamente.");
@@ -238,8 +246,8 @@ public class ReportePanel extends JPanel {
                     }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText("CI " + ci + " clasificada como Estudiante Regular.");
-                    break;
-                case "Exonerado":
+                }
+                case "Exonerado" -> {
                     beneficioModel.registrarExonerado(ci);
                     if (!validarPersistenciaBeneficio(ci, BeneficioComensal.TIPO_EXONERADO, BigDecimal.ZERO)) {
                         mostrarError("No se pudo actualizar la clasificacion a Exonerado. Intenta nuevamente.");
@@ -247,8 +255,8 @@ public class ReportePanel extends JPanel {
                     }
                     lblEstadoBeneficio.setForeground(new Color(34, 120, 64));
                     lblEstadoBeneficio.setText("CI " + ci + " clasificada como Exonerado.");
-                    break;
-                case "Becario":
+                }
+                case "Becario" -> {
                     BigDecimal porcentaje = parsePorcentaje(txtPorcentaje.getText());
                     if (porcentaje.compareTo(PORCENTAJE_REGULAR) >= 0) {
                         mostrarError("El porcentaje de descuento del Becario debe ser menor a 100%.");
@@ -264,14 +272,34 @@ public class ReportePanel extends JPanel {
                         "CI " + ci + " clasificada como Becario con descuento de "
                             + porcentaje.setScale(2, RoundingMode.HALF_UP).toPlainString() + "% ."
                     );
-                    break;
-                default:
+                }
+                default ->
                     mostrarError("Selecciona un tipo de clasificacion valido.");
-                    break;
             }
         } catch (IllegalArgumentException | IOException ex) {
             mostrarError(ex.getMessage());
         }
+    }
+
+    private String resolverCiEstudiante(String identificador) {
+        if (identificador == null || identificador.trim().isEmpty()) {
+            return "";
+        }
+
+        String valor = identificador.trim();
+        String ciNormalizada = beneficioModel.normalizarCi(valor);
+        if (!ciNormalizada.isEmpty()) {
+            return ciNormalizada;
+        }
+
+        if (valor.contains("@")) {
+            String ciPorEmail = regUsuarioModelo.obtenerCiPorEmailDesdeArchivo(valor);
+            if (ciPorEmail != null && !ciPorEmail.trim().isEmpty()) {
+                return beneficioModel.normalizarCi(ciPorEmail);
+            }
+        }
+
+        return "";
     }
 
     private BigDecimal parsePorcentaje(String valor) {
