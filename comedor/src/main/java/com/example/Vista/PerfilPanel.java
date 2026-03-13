@@ -68,11 +68,6 @@ public class PerfilPanel extends JPanel {
         btnSeleccionar.setMaximumSize(new Dimension(240, 36));
         btnSeleccionar.addActionListener(e -> seleccionarYGuardarFoto());
 
-        JButton btnRefrescar = new JButton("Refrescar estado");
-        btnRefrescar.setFocusPainted(false);
-        btnRefrescar.setMaximumSize(new Dimension(180, 34));
-        btnRefrescar.addActionListener(e -> actualizarEstadoFoto());
-
         card.add(lblUsuario);
         card.add(Box.createRigidArea(new Dimension(0, 8)));
         card.add(lblDescripcion);
@@ -80,8 +75,6 @@ public class PerfilPanel extends JPanel {
         card.add(lblRutaFoto);
         card.add(Box.createRigidArea(new Dimension(0, 16)));
         card.add(btnSeleccionar);
-        card.add(Box.createRigidArea(new Dimension(0, 8)));
-        card.add(btnRefrescar);
         card.add(Box.createRigidArea(new Dimension(0, 12)));
         card.add(lblEstado);
 
