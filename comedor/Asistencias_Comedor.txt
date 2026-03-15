@@ -29,3 +29,11 @@
 2026-03-12T12:15:30,Almuerzo,maria.fernandez@ucv.ve,26333888,Estudiante Exonerado,0.00
 2026-03-12T12:22:11,Almuerzo,ricardo.gomez@ucv.ve,19888777,Empleado,25.00
 2026-03-12T12:30:42,Almuerzo,carmen.salcedo@ucv.ve,14555111,Profesor,27.00
+2026-03-13T11:36:48.0542505,Almuerzo,maria.fernandez@ucv.ve,26333888,Estudiante Regular,25.20
+2026-03-13T11:43:07.042211,Almuerzo,diego.rivas@ucv.ve,25432111,Estudiante Regular,25.20
+2026-03-13T11:51:37.2757659,Almuerzo,ana.mendoza@ucv.ve,28765431,Estudiante Exonerado,0.00
+
+1. Cómo afectó la falta de una fase de elaboración formal en xp a la estabilidad de sus bases de datos en el ultimo sprint
+2. explique un caso de todo el contexto donde se pueda aplicar yagni para descartar algo que estaba en rup
+3. porcentaje de su codigo esta con pruebas tdd con pruebas manuales en rup
+4. identifiquen una decisión técnica que fue mejor haberla decidido en pareja que solo

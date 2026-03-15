@@ -1,4 +1,4 @@
 770199ac-e145-4af8-a662-f010184d70a6,2026-02-26,Almuerzo,Pollo al horno|Arroz blanco|Ensalada Cesar
 id2,2026-02-27,Desayuno,B|C
 id3,2026-02-28,Almuerzo,C
-e4fea135-a4ad-456b-9f38-e05d2f89975d,2027-02-28,Desayuno,Pollo al horno|Café
+e4fea135-a4ad-456b-9f38-e05d2f89975d,2026-03-13,Almuerzo,Carne mechada|Pollo al horno|Café

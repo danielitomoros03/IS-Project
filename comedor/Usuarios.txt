@@ -7,3 +7,7 @@ Estudiante Demo,thibisay@ucv.ve,123123,Estudiante,N/A
 N/A,user@ucv.ve,clave,Estudiante,N/A
 N/A,user@ucv.ve,clave,Estudiante,N/A
 N/A,user@ucv.ve,clave,Estudiante,N/A
+Maria Fernandez,maria.fernandez@ucv.ve,123123,Estudiante,N/A
+Gabriel Navarro,gabriel.navarro@ucv.ve,123123,Estudiante,N/A
+Diego Rivas,diego.rivas@ucv.ve,123123,Estudiante,N/A
+Ana Mendoza,ana.mendoza@ucv.ve,qwer1234,Estudiante,N/A
